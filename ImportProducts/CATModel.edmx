@@ -1,0 +1,736 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DNN_6_0_0Model.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="DNN_6_0_0ModelStoreContainer">
+          <EntitySet Name="CAT_AdvCatPermission" EntityType="DNN_6_0_0Model.Store.CAT_AdvCatPermission" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_AdvCatProducts" EntityType="DNN_6_0_0Model.Store.CAT_AdvCatProducts" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_AdvCats" EntityType="DNN_6_0_0Model.Store.CAT_AdvCats" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_Categories" EntityType="DNN_6_0_0Model.Store.CAT_Categories" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_ProductImages" EntityType="DNN_6_0_0Model.Store.CAT_ProductImages" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_Products" EntityType="DNN_6_0_0Model.Store.CAT_Products" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_CAT_AdvCatPermission_AdvCats" Association="DNN_6_0_0Model.Store.FK_CAT_AdvCatPermission_AdvCats">
+            <End Role="CAT_AdvCats" EntitySet="CAT_AdvCats" />
+            <End Role="CAT_AdvCatPermission" EntitySet="CAT_AdvCatPermission" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CAT_AdvCatProducts_AdvCats" Association="DNN_6_0_0Model.Store.FK_CAT_AdvCatProducts_AdvCats">
+            <End Role="CAT_AdvCats" EntitySet="CAT_AdvCats" />
+            <End Role="CAT_AdvCatProducts" EntitySet="CAT_AdvCatProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CAT_AdvCatProducts_CAT_Products" Association="DNN_6_0_0Model.Store.FK_CAT_AdvCatProducts_CAT_Products">
+            <End Role="CAT_Products" EntitySet="CAT_Products" />
+            <End Role="CAT_AdvCatProducts" EntitySet="CAT_AdvCatProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CAT_AdvCats_CAT_AdvCats" Association="DNN_6_0_0Model.Store.FK_CAT_AdvCats_CAT_AdvCats">
+            <End Role="CAT_AdvCats" EntitySet="CAT_AdvCats" />
+            <End Role="CAT_AdvCats1" EntitySet="CAT_AdvCats" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CAT_ProductImages_Products" Association="DNN_6_0_0Model.Store.FK_CAT_ProductImages_Products">
+            <End Role="CAT_Products" EntitySet="CAT_Products" />
+            <End Role="CAT_ProductImages" EntitySet="CAT_ProductImages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CAT_Products_Categories" Association="DNN_6_0_0Model.Store.FK_CAT_Products_Categories">
+            <End Role="CAT_Categories" EntitySet="CAT_Categories" />
+            <End Role="CAT_Products" EntitySet="CAT_Products" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="CAT_AdvCatPermission">
+          <Key>
+            <PropertyRef Name="AdvCatPermissionID" />
+          </Key>
+          <Property Name="AdvCatPermissionID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="AdvCatID" Type="int" Nullable="false" />
+          <Property Name="PermissionID" Type="int" Nullable="false" />
+          <Property Name="RoleID" Type="int" Nullable="false" />
+          <Property Name="AllowAccess" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CAT_AdvCatProducts">
+          <Key>
+            <PropertyRef Name="AdvCatProductID" />
+          </Key>
+          <Property Name="AdvCatProductID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="AdvCatID" Type="int" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="AddAdvCatToProductDisplay" Type="bit" />
+        </EntityType>
+        <EntityType Name="CAT_AdvCats">
+          <Key>
+            <PropertyRef Name="AdvCatID" />
+          </Key>
+          <Property Name="AdvCatID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="AdvCatOrder" Type="int" Nullable="false" />
+          <Property Name="PortalID" Type="int" />
+          <Property Name="AdvCatName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="IsVisible" Type="bit" Nullable="false" />
+          <Property Name="ParentId" Type="int" />
+          <Property Name="DisableLink" Type="bit" Nullable="false" />
+          <Property Name="Url" Type="nvarchar" MaxLength="255" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="KeyWords" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="IconFile" Type="nvarchar" MaxLength="100" />
+          <Property Name="Level" Type="int" Nullable="false" />
+          <Property Name="AdvCatImportID" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="CAT_Categories">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="PortalID" Type="int" Nullable="false" />
+          <Property Name="CategoryImportID" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="CategoryFolderImage" Type="nvarchar" MaxLength="255" />
+          <Property Name="CategoryOpenFolderImage" Type="nvarchar" MaxLength="255" />
+          <Property Name="CategoryPageImage" Type="nvarchar" MaxLength="255" />
+          <Property Name="CreatedByUser" Type="int" />
+        </EntityType>
+        <EntityType Name="CAT_ProductImages">
+          <Key>
+            <PropertyRef Name="ImageID" />
+          </Key>
+          <Property Name="ImageID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="ImageURL" Type="nvarchar" MaxLength="250" />
+          <Property Name="ImageFile" Type="nvarchar" MaxLength="255" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImageType" Type="char" Nullable="false" MaxLength="1" />
+          <Property Name="ViewOrder" Type="int" />
+        </EntityType>
+        <EntityType Name="CAT_Products">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="int" />
+          <Property Name="Category2ID" Type="int" />
+          <Property Name="Category3" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductName" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EAN" Type="nvarchar" MaxLength="50" />
+          <Property Name="ISBN" Type="nvarchar" MaxLength="50" />
+          <Property Name="Free1" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Free2" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Free3" Type="nvarchar" MaxLength="1000" />
+          <Property Name="KeyWords" Type="nvarchar" MaxLength="1000" />
+          <Property Name="ProductImage" Type="nvarchar" MaxLength="255" />
+          <Property Name="UnitCost" Type="money" Nullable="false" />
+          <Property Name="UnitCost2" Type="money" />
+          <Property Name="UnitCost3" Type="money" />
+          <Property Name="UnitCost4" Type="money" />
+          <Property Name="UnitCost5" Type="money" />
+          <Property Name="UnitCost6" Type="money" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="DescriptionHTML" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Stock" Type="int" />
+          <Property Name="OrderQuant" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="Weight" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="Volume" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="Length" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="Width" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="Height" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="FreightCosts1" Type="money" />
+          <Property Name="FreightCosts2" Type="money" />
+          <Property Name="Featured" Type="bit" Nullable="false" />
+          <Property Name="SalePrice" Type="money" Nullable="false" />
+          <Property Name="SaleStart" Type="datetime" />
+          <Property Name="SaleEnd" Type="datetime" />
+          <Property Name="DownLoad" Type="bit" />
+          <Property Name="ZIPPassWord" Type="nvarchar" MaxLength="30" />
+          <Property Name="DownLoadFile" Type="nvarchar" MaxLength="255" />
+          <Property Name="Archive" Type="bit" />
+          <Property Name="CreatedByUser" Type="int" Nullable="false" />
+          <Property Name="BulkPriceLimit1" Type="int" Nullable="false" />
+          <Property Name="BulkPriceLimit2" Type="int" Nullable="false" />
+          <Property Name="BulkPriceLimit3" Type="int" Nullable="false" />
+          <Property Name="BulkPriceLimit4" Type="int" Nullable="false" />
+          <Property Name="BulkPriceLimit5" Type="int" Nullable="false" />
+          <Property Name="DateCreated" Type="datetime" />
+          <Property Name="RoleID" Type="int" />
+          <Property Name="SubscriptionPeriod" Type="int" />
+          <Property Name="RecurringBilling" Type="bit" />
+          <Property Name="TaxExempt" Type="bit" />
+          <Property Name="ShipExempt" Type="bit" />
+          <Property Name="InsuredValue" Type="money" Nullable="false" />
+          <Property Name="PublicationStart" Type="datetime" />
+          <Property Name="PublicationEnd" Type="datetime" />
+          <Property Name="Status" Type="char" Nullable="false" MaxLength="1" />
+          <Property Name="DonationItem" Type="bit" Nullable="false" />
+          <Property Name="PayPalSubscription" Type="bit" Nullable="false" />
+          <Property Name="UseRoleFees" Type="bit" Nullable="false" />
+          <Property Name="ProductCost" Type="money" Nullable="false" />
+          <Property Name="RoleExpiryType" Type="char" Nullable="false" MaxLength="1" />
+          <Property Name="ItemDeliveryType" Type="char" Nullable="false" MaxLength="1" />
+          <Property Name="ReorderPoint" Type="int" Nullable="false" />
+          <Property Name="OrderQuantValidExpr" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="ShippingAddress" Type="char" Nullable="false" MaxLength="1" />
+          <Property Name="OrigProductID" Type="int" />
+          <Property Name="AuctionFinished" Type="bit" Nullable="false" />
+          <Property Name="StartingPrice" Type="money" />
+          <Property Name="ReservePrice" Type="money" />
+          <Property Name="LastModifiedByUserID" Type="int" />
+          <Property Name="LastModifiedOnDate" Type="datetime" />
+          <Property Name="TaxCode" Type="nvarchar" MaxLength="16" />
+        </EntityType>
+        <Association Name="FK_CAT_AdvCatPermission_AdvCats">
+          <End Role="CAT_AdvCats" Type="DNN_6_0_0Model.Store.CAT_AdvCats" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CAT_AdvCatPermission" Type="DNN_6_0_0Model.Store.CAT_AdvCatPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CAT_AdvCats">
+              <PropertyRef Name="AdvCatID" />
+            </Principal>
+            <Dependent Role="CAT_AdvCatPermission">
+              <PropertyRef Name="AdvCatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CAT_AdvCatProducts_AdvCats">
+          <End Role="CAT_AdvCats" Type="DNN_6_0_0Model.Store.CAT_AdvCats" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CAT_AdvCatProducts" Type="DNN_6_0_0Model.Store.CAT_AdvCatProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CAT_AdvCats">
+              <PropertyRef Name="AdvCatID" />
+            </Principal>
+            <Dependent Role="CAT_AdvCatProducts">
+              <PropertyRef Name="AdvCatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CAT_AdvCatProducts_CAT_Products">
+          <End Role="CAT_Products" Type="DNN_6_0_0Model.Store.CAT_Products" Multiplicity="1" />
+          <End Role="CAT_AdvCatProducts" Type="DNN_6_0_0Model.Store.CAT_AdvCatProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CAT_Products">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="CAT_AdvCatProducts">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CAT_AdvCats_CAT_AdvCats">
+          <End Role="CAT_AdvCats" Type="DNN_6_0_0Model.Store.CAT_AdvCats" Multiplicity="0..1" />
+          <End Role="CAT_AdvCats1" Type="DNN_6_0_0Model.Store.CAT_AdvCats" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CAT_AdvCats">
+              <PropertyRef Name="AdvCatID" />
+            </Principal>
+            <Dependent Role="CAT_AdvCats1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CAT_ProductImages_Products">
+          <End Role="CAT_Products" Type="DNN_6_0_0Model.Store.CAT_Products" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CAT_ProductImages" Type="DNN_6_0_0Model.Store.CAT_ProductImages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CAT_Products">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="CAT_ProductImages">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CAT_Products_Categories">
+          <End Role="CAT_Categories" Type="DNN_6_0_0Model.Store.CAT_Categories" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CAT_Products" Type="DNN_6_0_0Model.Store.CAT_Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CAT_Categories">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="CAT_Products">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DNN_6_0_0Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="DNN_6_0_0Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Products" EntityType="DNN_6_0_0Model.Product" />
+          <EntitySet Name="ProductImages" EntityType="DNN_6_0_0Model.ProductImage" />
+          <AssociationSet Name="FK_CAT_ProductImages_Products" Association="DNN_6_0_0Model.FK_CAT_ProductImages_Products">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ProductImages" EntitySet="ProductImages" />
+          </AssociationSet>
+          <EntitySet Name="AdvCatPermissions" EntityType="DNN_6_0_0Model.AdvCatPermission" />
+          <EntitySet Name="AdvCats" EntityType="DNN_6_0_0Model.AdvCat" />
+          <AssociationSet Name="FK_CAT_AdvCatPermission_AdvCats" Association="DNN_6_0_0Model.FK_CAT_AdvCatPermission_AdvCats">
+            <End Role="CAT_AdvCats" EntitySet="AdvCats" />
+            <End Role="CAT_AdvCatPermission" EntitySet="AdvCatPermissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CAT_AdvCats_CAT_AdvCats" Association="DNN_6_0_0Model.FK_CAT_AdvCats_CAT_AdvCats">
+            <End Role="CAT_AdvCats" EntitySet="AdvCats" />
+            <End Role="CAT_AdvCats1" EntitySet="AdvCats" />
+          </AssociationSet>
+          <EntitySet Name="AdvCatProducts" EntityType="DNN_6_0_0Model.AdvCatProduct" />
+          <AssociationSet Name="FK_CAT_AdvCatProducts_AdvCats" Association="DNN_6_0_0Model.FK_CAT_AdvCatProducts_AdvCats">
+            <End Role="AdvCat" EntitySet="AdvCats" />
+            <End Role="CAT_AdvCatProducts" EntitySet="AdvCatProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CAT_AdvCatProducts_CAT_Products" Association="DNN_6_0_0Model.FK_CAT_AdvCatProducts_CAT_Products">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="CAT_AdvCatProducts" EntitySet="AdvCatProducts" />
+          </AssociationSet>
+          <EntitySet Name="Categories" EntityType="DNN_6_0_0Model.Category" />
+          <AssociationSet Name="FK_CAT_Products_Categories" Association="DNN_6_0_0Model.FK_CAT_Products_Categories">
+            <End Role="CAT_Categories" EntitySet="Categories" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="Category2ID" Type="Int32" />
+          <Property Name="Category3" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="ProductName" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="ProductNumber" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="EAN" Type="String" MaxLength="50" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="ISBN" Type="String" MaxLength="50" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="Free1" Type="String" MaxLength="1000" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="Free2" Type="String" MaxLength="1000" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="Free3" Type="String" MaxLength="1000" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="KeyWords" Type="String" MaxLength="1000" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="ProductImage" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="UnitCost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="UnitCost2" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="UnitCost3" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="UnitCost4" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="UnitCost5" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="UnitCost6" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Description" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DescriptionHTML" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="URL" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="Stock" Type="Int32" DefaultValue="0" />
+          <Property Name="OrderQuant" Type="String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="Weight" Type="Decimal" Precision="10" Scale="4" DefaultValue="0.0000" />
+          <Property Name="Volume" Type="Decimal" Precision="8" Scale="2" DefaultValue="0.00" />
+          <Property Name="Length" Type="Decimal" Precision="8" Scale="2" DefaultValue="0.00" />
+          <Property Name="Width" Type="Decimal" Precision="8" Scale="2" DefaultValue="0.00" />
+          <Property Name="Height" Type="Decimal" Precision="8" Scale="2" DefaultValue="0.00" />
+          <Property Name="FreightCosts1" Type="Decimal" Precision="19" Scale="4" DefaultValue="0.0000" />
+          <Property Name="FreightCosts2" Type="Decimal" Precision="19" Scale="4" DefaultValue="0.0000" />
+          <Property Name="Featured" Type="Boolean" Nullable="false" DefaultValue="false" />
+          <Property Name="SalePrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" DefaultValue="0.0000" />
+          <Property Name="SaleStart" Type="DateTime" DefaultValue="2050-01-01 00:00:00.000Z" />
+          <Property Name="SaleEnd" Type="DateTime" DefaultValue="1900-01-01 00:00:00.000Z" />
+          <Property Name="DownLoad" Type="Boolean" DefaultValue="false" />
+          <Property Name="ZIPPassWord" Type="String" MaxLength="30" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="DownLoadFile" Type="String" MaxLength="255" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="Archive" Type="Boolean" DefaultValue="false" />
+          <Property Name="CreatedByUser" Type="Int32" Nullable="false" DefaultValue="1" />
+          <Property Name="BulkPriceLimit1" Type="Int32" Nullable="false" DefaultValue="0" />
+          <Property Name="BulkPriceLimit2" Type="Int32" Nullable="false" DefaultValue="0" />
+          <Property Name="BulkPriceLimit3" Type="Int32" Nullable="false" DefaultValue="0" />
+          <Property Name="BulkPriceLimit4" Type="Int32" Nullable="false" DefaultValue="0" />
+          <Property Name="BulkPriceLimit5" Type="Int32" Nullable="false" DefaultValue="0" />
+          <Property Name="DateCreated" Type="DateTime" />
+          <Property Name="RoleID" Type="Int32" DefaultValue="-1" />
+          <Property Name="SubscriptionPeriod" Type="Int32" DefaultValue="0" />
+          <Property Name="RecurringBilling" Type="Boolean" DefaultValue="false" />
+          <Property Name="TaxExempt" Type="Boolean" DefaultValue="false" />
+          <Property Name="ShipExempt" Type="Boolean" DefaultValue="false" />
+          <Property Name="InsuredValue" Type="Decimal" Nullable="false" Precision="19" Scale="4" DefaultValue="0.0000" />
+          <Property Name="PublicationStart" Type="DateTime" DefaultValue="2011-10-11 00:00:00.000Z" />
+          <Property Name="PublicationEnd" Type="DateTime" DefaultValue="2061-10-12 00:00:00.000Z" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="1" Unicode="false" FixedLength="true" DefaultValue="0" />
+          <Property Name="DonationItem" Type="Boolean" Nullable="false" DefaultValue="false" />
+          <Property Name="PayPalSubscription" Type="Boolean" Nullable="false" DefaultValue="false" />
+          <Property Name="UseRoleFees" Type="Boolean" Nullable="false" DefaultValue="false" />
+          <Property Name="ProductCost" Type="Decimal" Nullable="false" Precision="19" Scale="4" DefaultValue="0" />
+          <Property Name="RoleExpiryType" Type="String" Nullable="false" MaxLength="1" Unicode="false" FixedLength="true" DefaultValue="0" />
+          <Property Name="ItemDeliveryType" Type="String" Nullable="false" MaxLength="1" Unicode="false" FixedLength="true" DefaultValue="0" />
+          <Property Name="ReorderPoint" Type="Int32" Nullable="false" DefaultValue="0" />
+          <Property Name="OrderQuantValidExpr" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="ShippingAddress" Type="String" Nullable="false" MaxLength="1" Unicode="false" FixedLength="true" DefaultValue="0" />
+          <Property Name="OrigProductID" Type="Int32" />
+          <Property Name="AuctionFinished" Type="Boolean" Nullable="false" DefaultValue="false" />
+          <Property Name="StartingPrice" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ReservePrice" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="LastModifiedByUserID" Type="Int32" />
+          <Property Name="LastModifiedOnDate" Type="DateTime" />
+          <Property Name="TaxCode" Type="String" MaxLength="16" Unicode="true" FixedLength="false" DefaultValue="" />
+          <NavigationProperty Name="ProductImages" Relationship="DNN_6_0_0Model.FK_CAT_ProductImages_Products" FromRole="Product" ToRole="ProductImages" />
+          <NavigationProperty Name="CAT_AdvCatProducts" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatProducts_CAT_Products" FromRole="Product" ToRole="CAT_AdvCatProducts" />
+          <NavigationProperty Name="CAT_Categories" Relationship="DNN_6_0_0Model.FK_CAT_Products_Categories" FromRole="Product" ToRole="CAT_Categories" />
+        </EntityType>
+        <EntityType Name="ProductImage">
+          <Key>
+            <PropertyRef Name="ImageID" />
+          </Key>
+          <Property Type="Int32" Name="ImageID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+          <Property Type="String" Name="ImageURL" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ImageFile" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Description" MaxLength="50" FixedLength="false" Unicode="true" DefaultValue="" />
+          <Property Type="String" Name="ImageType" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" DefaultValue="0" />
+          <Property Type="Int32" Name="ViewOrder" DefaultValue="0" />
+          <NavigationProperty Name="Products" Relationship="DNN_6_0_0Model.FK_CAT_ProductImages_Products" FromRole="ProductImages" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_CAT_ProductImages_Products">
+          <End Type="DNN_6_0_0Model.Product" Role="Product" Multiplicity="1" />
+          <End Type="DNN_6_0_0Model.ProductImage" Role="ProductImages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="ProductImages">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AdvCatPermission">
+          <Key>
+            <PropertyRef Name="AdvCatPermissionID" />
+          </Key>
+          <Property Type="Int32" Name="AdvCatPermissionID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="AdvCatID" Nullable="false" />
+          <Property Type="Int32" Name="PermissionID" Nullable="false" />
+          <Property Type="Int32" Name="RoleID" Nullable="false" />
+          <Property Type="Boolean" Name="AllowAccess" Nullable="false" />
+          <NavigationProperty Name="AdvCats" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatPermission_AdvCats" FromRole="CAT_AdvCatPermission" ToRole="CAT_AdvCats" />
+        </EntityType>
+        <EntityType Name="AdvCat">
+          <Key>
+            <PropertyRef Name="AdvCatID" />
+          </Key>
+          <Property Type="Int32" Name="AdvCatID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="AdvCatOrder" Nullable="false" />
+          <Property Type="Int32" Name="PortalID" />
+          <Property Type="String" Name="AdvCatName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="IsVisible" Nullable="false" />
+          <Property Type="Int32" Name="ParentId" />
+          <Property Type="Boolean" Name="DisableLink" Nullable="false" />
+          <Property Type="String" Name="Url" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="StartDate" />
+          <Property Type="DateTime" Name="EndDate" />
+          <Property Type="String" Name="Title" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Description" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="KeyWords" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="String" Name="IconFile" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="Level" Nullable="false" />
+          <Property Type="String" Name="AdvCatImportID" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdvCatPermission" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatPermission_AdvCats" FromRole="CAT_AdvCats" ToRole="CAT_AdvCatPermission" />
+          <NavigationProperty Name="AdvCats1" Relationship="DNN_6_0_0Model.FK_CAT_AdvCats_CAT_AdvCats" FromRole="CAT_AdvCats" ToRole="CAT_AdvCats1" />
+          <NavigationProperty Name="AdvCats2" Relationship="DNN_6_0_0Model.FK_CAT_AdvCats_CAT_AdvCats" FromRole="CAT_AdvCats1" ToRole="CAT_AdvCats" />
+          <NavigationProperty Name="CAT_AdvCatProducts" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatProducts_AdvCats" FromRole="AdvCat" ToRole="CAT_AdvCatProducts" />
+        </EntityType>
+        <Association Name="FK_CAT_AdvCatPermission_AdvCats">
+          <End Type="DNN_6_0_0Model.AdvCat" Role="CAT_AdvCats" Multiplicity="1" />
+          <End Type="DNN_6_0_0Model.AdvCatPermission" Role="CAT_AdvCatPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CAT_AdvCats">
+              <PropertyRef Name="AdvCatID" />
+            </Principal>
+            <Dependent Role="CAT_AdvCatPermission">
+              <PropertyRef Name="AdvCatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CAT_AdvCats_CAT_AdvCats">
+          <End Type="DNN_6_0_0Model.AdvCat" Role="CAT_AdvCats" Multiplicity="0..1" />
+          <End Type="DNN_6_0_0Model.AdvCat" Role="CAT_AdvCats1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CAT_AdvCats">
+              <PropertyRef Name="AdvCatID" />
+            </Principal>
+            <Dependent Role="CAT_AdvCats1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AdvCatProduct">
+          <Key>
+            <PropertyRef Name="AdvCatProductID" />
+          </Key>
+          <Property Type="Int32" Name="AdvCatProductID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="AdvCatID" Nullable="false" />
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+          <Property Type="Boolean" Name="AddAdvCatToProductDisplay" />
+          <NavigationProperty Name="AdvCats" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatProducts_AdvCats" FromRole="CAT_AdvCatProducts" ToRole="AdvCat" />
+          <NavigationProperty Name="Products" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatProducts_CAT_Products" FromRole="CAT_AdvCatProducts" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_CAT_AdvCatProducts_AdvCats">
+          <End Type="DNN_6_0_0Model.AdvCat" Role="AdvCat" Multiplicity="1" />
+          <End Type="DNN_6_0_0Model.AdvCatProduct" Role="CAT_AdvCatProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdvCat">
+              <PropertyRef Name="AdvCatID" />
+            </Principal>
+            <Dependent Role="CAT_AdvCatProducts">
+              <PropertyRef Name="AdvCatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CAT_AdvCatProducts_CAT_Products">
+          <End Type="DNN_6_0_0Model.Product" Role="Product" Multiplicity="1" />
+          <End Type="DNN_6_0_0Model.AdvCatProduct" Role="CAT_AdvCatProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="CAT_AdvCatProducts">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Type="Int32" Name="CategoryID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="CategoryName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Description" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="PortalID" Nullable="false" />
+          <Property Type="String" Name="CategoryImportID" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CategoryFolderImage" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CategoryOpenFolderImage" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CategoryPageImage" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="CreatedByUser" />
+          <NavigationProperty Name="CAT_Products" Relationship="DNN_6_0_0Model.FK_CAT_Products_Categories" FromRole="CAT_Categories" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_CAT_Products_Categories">
+          <End Type="DNN_6_0_0Model.Category" Role="CAT_Categories" Multiplicity="0..1" />
+          <End Type="DNN_6_0_0Model.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CAT_Categories">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DNN_6_0_0ModelStoreContainer" CdmEntityContainer="DNN_6_0_0Entities">
+          <EntitySetMapping Name="Products"><EntityTypeMapping TypeName="DNN_6_0_0Model.Product"><MappingFragment StoreEntitySet="CAT_Products">
+            <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+            <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+            <ScalarProperty Name="Category2ID" ColumnName="Category2ID" />
+            <ScalarProperty Name="Category3" ColumnName="Category3" />
+            <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+            <ScalarProperty Name="ProductNumber" ColumnName="ProductNumber" />
+            <ScalarProperty Name="EAN" ColumnName="EAN" />
+            <ScalarProperty Name="ISBN" ColumnName="ISBN" />
+            <ScalarProperty Name="Free1" ColumnName="Free1" />
+            <ScalarProperty Name="Free2" ColumnName="Free2" />
+            <ScalarProperty Name="Free3" ColumnName="Free3" />
+            <ScalarProperty Name="KeyWords" ColumnName="KeyWords" />
+            <ScalarProperty Name="ProductImage" ColumnName="ProductImage" />
+            <ScalarProperty Name="UnitCost" ColumnName="UnitCost" />
+            <ScalarProperty Name="UnitCost2" ColumnName="UnitCost2" />
+            <ScalarProperty Name="UnitCost3" ColumnName="UnitCost3" />
+            <ScalarProperty Name="UnitCost4" ColumnName="UnitCost4" />
+            <ScalarProperty Name="UnitCost5" ColumnName="UnitCost5" />
+            <ScalarProperty Name="UnitCost6" ColumnName="UnitCost6" />
+            <ScalarProperty Name="Description" ColumnName="Description" />
+            <ScalarProperty Name="DescriptionHTML" ColumnName="DescriptionHTML" />
+            <ScalarProperty Name="URL" ColumnName="URL" />
+            <ScalarProperty Name="Stock" ColumnName="Stock" />
+            <ScalarProperty Name="OrderQuant" ColumnName="OrderQuant" />
+            <ScalarProperty Name="Weight" ColumnName="Weight" />
+            <ScalarProperty Name="Volume" ColumnName="Volume" />
+            <ScalarProperty Name="Length" ColumnName="Length" />
+            <ScalarProperty Name="Width" ColumnName="Width" />
+            <ScalarProperty Name="Height" ColumnName="Height" />
+            <ScalarProperty Name="FreightCosts1" ColumnName="FreightCosts1" />
+            <ScalarProperty Name="FreightCosts2" ColumnName="FreightCosts2" />
+            <ScalarProperty Name="Featured" ColumnName="Featured" />
+            <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+            <ScalarProperty Name="SaleStart" ColumnName="SaleStart" />
+            <ScalarProperty Name="SaleEnd" ColumnName="SaleEnd" />
+            <ScalarProperty Name="DownLoad" ColumnName="DownLoad" />
+            <ScalarProperty Name="ZIPPassWord" ColumnName="ZIPPassWord" />
+            <ScalarProperty Name="DownLoadFile" ColumnName="DownLoadFile" />
+            <ScalarProperty Name="Archive" ColumnName="Archive" />
+            <ScalarProperty Name="CreatedByUser" ColumnName="CreatedByUser" />
+            <ScalarProperty Name="BulkPriceLimit1" ColumnName="BulkPriceLimit1" />
+            <ScalarProperty Name="BulkPriceLimit2" ColumnName="BulkPriceLimit2" />
+            <ScalarProperty Name="BulkPriceLimit3" ColumnName="BulkPriceLimit3" />
+            <ScalarProperty Name="BulkPriceLimit4" ColumnName="BulkPriceLimit4" />
+            <ScalarProperty Name="BulkPriceLimit5" ColumnName="BulkPriceLimit5" />
+            <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+            <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+            <ScalarProperty Name="SubscriptionPeriod" ColumnName="SubscriptionPeriod" />
+            <ScalarProperty Name="RecurringBilling" ColumnName="RecurringBilling" />
+            <ScalarProperty Name="TaxExempt" ColumnName="TaxExempt" />
+            <ScalarProperty Name="ShipExempt" ColumnName="ShipExempt" />
+            <ScalarProperty Name="InsuredValue" ColumnName="InsuredValue" />
+            <ScalarProperty Name="PublicationStart" ColumnName="PublicationStart" />
+            <ScalarProperty Name="PublicationEnd" ColumnName="PublicationEnd" />
+            <ScalarProperty Name="Status" ColumnName="Status" />
+            <ScalarProperty Name="DonationItem" ColumnName="DonationItem" />
+            <ScalarProperty Name="PayPalSubscription" ColumnName="PayPalSubscription" />
+            <ScalarProperty Name="UseRoleFees" ColumnName="UseRoleFees" />
+            <ScalarProperty Name="ProductCost" ColumnName="ProductCost" />
+            <ScalarProperty Name="RoleExpiryType" ColumnName="RoleExpiryType" />
+            <ScalarProperty Name="ItemDeliveryType" ColumnName="ItemDeliveryType" />
+            <ScalarProperty Name="ReorderPoint" ColumnName="ReorderPoint" />
+            <ScalarProperty Name="OrderQuantValidExpr" ColumnName="OrderQuantValidExpr" />
+            <ScalarProperty Name="ShippingAddress" ColumnName="ShippingAddress" />
+            <ScalarProperty Name="OrigProductID" ColumnName="OrigProductID" />
+            <ScalarProperty Name="AuctionFinished" ColumnName="AuctionFinished" />
+            <ScalarProperty Name="StartingPrice" ColumnName="StartingPrice" />
+            <ScalarProperty Name="ReservePrice" ColumnName="ReservePrice" />
+            <ScalarProperty Name="LastModifiedByUserID" ColumnName="LastModifiedByUserID" />
+            <ScalarProperty Name="LastModifiedOnDate" ColumnName="LastModifiedOnDate" />
+            <ScalarProperty Name="TaxCode" ColumnName="TaxCode" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="ProductImages">
+            <EntityTypeMapping TypeName="DNN_6_0_0Model.ProductImage">
+              <MappingFragment StoreEntitySet="CAT_ProductImages">
+                <ScalarProperty Name="ViewOrder" ColumnName="ViewOrder" />
+                <ScalarProperty Name="ImageType" ColumnName="ImageType" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ImageFile" ColumnName="ImageFile" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ImageID" ColumnName="ImageID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdvCatPermissions">
+            <EntityTypeMapping TypeName="DNN_6_0_0Model.AdvCatPermission">
+              <MappingFragment StoreEntitySet="CAT_AdvCatPermission">
+                <ScalarProperty Name="AllowAccess" ColumnName="AllowAccess" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="PermissionID" ColumnName="PermissionID" />
+                <ScalarProperty Name="AdvCatID" ColumnName="AdvCatID" />
+                <ScalarProperty Name="AdvCatPermissionID" ColumnName="AdvCatPermissionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdvCats">
+            <EntityTypeMapping TypeName="DNN_6_0_0Model.AdvCat">
+              <MappingFragment StoreEntitySet="CAT_AdvCats">
+                <ScalarProperty Name="AdvCatImportID" ColumnName="AdvCatImportID" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="IconFile" ColumnName="IconFile" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="KeyWords" ColumnName="KeyWords" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="DisableLink" ColumnName="DisableLink" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="IsVisible" ColumnName="IsVisible" />
+                <ScalarProperty Name="AdvCatName" ColumnName="AdvCatName" />
+                <ScalarProperty Name="PortalID" ColumnName="PortalID" />
+                <ScalarProperty Name="AdvCatOrder" ColumnName="AdvCatOrder" />
+                <ScalarProperty Name="AdvCatID" ColumnName="AdvCatID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdvCatProducts">
+            <EntityTypeMapping TypeName="DNN_6_0_0Model.AdvCatProduct">
+              <MappingFragment StoreEntitySet="CAT_AdvCatProducts">
+                <ScalarProperty Name="AddAdvCatToProductDisplay" ColumnName="AddAdvCatToProductDisplay" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="AdvCatID" ColumnName="AdvCatID" />
+                <ScalarProperty Name="AdvCatProductID" ColumnName="AdvCatProductID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="DNN_6_0_0Model.Category">
+              <MappingFragment StoreEntitySet="CAT_Categories">
+                <ScalarProperty Name="CreatedByUser" ColumnName="CreatedByUser" />
+                <ScalarProperty Name="CategoryPageImage" ColumnName="CategoryPageImage" />
+                <ScalarProperty Name="CategoryOpenFolderImage" ColumnName="CategoryOpenFolderImage" />
+                <ScalarProperty Name="CategoryFolderImage" ColumnName="CategoryFolderImage" />
+                <ScalarProperty Name="CategoryImportID" ColumnName="CategoryImportID" />
+                <ScalarProperty Name="PortalID" ColumnName="PortalID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="CATModel" ZoomLevel="37">
+        <EntityTypeShape EntityType="DNN_6_0_0Model.Product" Width="1.5" PointX="1.375" PointY="0.625" Height="14.672180989583332" IsExpanded="true" />
+        <EntityTypeShape EntityType="DNN_6_0_0Model.ProductImage" Width="1.5" PointX="3.625" PointY="6.75" Height="2.5571907552083317" />
+        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_ProductImages_Products" >
+          <ConnectorPoint PointX="2.875" PointY="8.0285953776041659" />
+          <ConnectorPoint PointX="3.625" PointY="8.0285953776041659" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="DNN_6_0_0Model.AdvCatPermission" Width="1.5" PointX="8.625" PointY="1.125" Height="2.1725878906249996" />
+        <EntityTypeShape EntityType="DNN_6_0_0Model.AdvCat" Width="1.5" PointX="6.375" PointY="1.125" Height="5.0571093750000031" />
+        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_AdvCatPermission_AdvCats" >
+          <ConnectorPoint PointX="7.875" PointY="2.2112939453125" />
+          <ConnectorPoint PointX="8.625" PointY="2.2112939453125" />
+        </AssociationConnector>
+        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_AdvCats_CAT_AdvCats" >
+          <ConnectorPoint PointX="6.9069230769230767" PointY="6.182109375" />
+          <ConnectorPoint PointX="6.9069230769230767" PointY="6.432109375" />
+          <ConnectorPoint PointX="7.3534615384615378" PointY="6.432109375" />
+          <ConnectorPoint PointX="7.3534615384615378" PointY="6.182109375" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="DNN_6_0_0Model.AdvCatProduct" Width="1.5" PointX="8.625" PointY="7.125" Height="2.1725878906249996" />
+        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_AdvCatProducts_AdvCats" >
+          <ConnectorPoint PointX="6.6097090384615385" PointY="6.182109375" />
+          <ConnectorPoint PointX="6.6097090384615385" PointY="8.2112939453125" />
+          <ConnectorPoint PointX="8.625" PointY="8.2112939453125" />
+        </AssociationConnector>
+        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_AdvCatProducts_CAT_Products" >
+          <ConnectorPoint PointX="2.875" PointY="12.621888020833332" />
+          <ConnectorPoint PointX="9.375" PointY="12.621888020833332" />
+          <ConnectorPoint PointX="9.375" PointY="9.297587890625" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="DNN_6_0_0Model.Category" Width="1.5" PointX="1.375" PointY="16.75" Height="2.9417936197916674" />
+        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_Products_Categories" >
+          <ConnectorPoint PointX="2.125" PointY="16.75" />
+          <ConnectorPoint PointX="2.125" PointY="15.874085286458332" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
