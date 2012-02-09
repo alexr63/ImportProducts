@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using Ionic.Zip;
 
 namespace ImportProducts
 {
@@ -32,10 +35,70 @@ namespace ImportProducts
             }
         }
 
+
+        public static bool SaveFileFromURL(string url, string destinationFileName, int timeoutInSeconds)
+        {
+            // Create a web request to the URL
+            HttpWebRequest MyRequest = (HttpWebRequest) WebRequest.Create(url);
+            MyRequest.Timeout = timeoutInSeconds*1000;
+            try
+            {
+                // Get the web response
+                HttpWebResponse MyResponse = (HttpWebResponse) MyRequest.GetResponse();
+
+                // Make sure the response is valid
+                if (HttpStatusCode.OK == MyResponse.StatusCode)
+                {
+                    // Open the response stream
+                    using (Stream MyResponseStream = MyResponse.GetResponseStream())
+                    {
+                        // Open the destination file
+                        using (
+                            FileStream MyFileStream = new FileStream(destinationFileName, FileMode.OpenOrCreate,
+                                                                     FileAccess.Write))
+                        {
+                            // Create a 4K buffer to chunk the file
+                            byte[] MyBuffer = new byte[4096];
+                            int BytesRead;
+                            // Read the chunk of the web response into the buffer
+                            while (0 < (BytesRead = MyResponseStream.Read(MyBuffer, 0, MyBuffer.Length)))
+                            {
+                                // Write the chunk from the buffer to the file
+                                MyFileStream.Write(MyBuffer, 0, BytesRead);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                throw new Exception("Error saving file from URL:" + err.Message, err);
+            }
+            return true;
+        }
+
         public static bool DoImport(string _URL, out string message)
         {
             bool rc = false;
             message = String.Empty;
+
+            // unzip file to temp folder if needed
+            if (_URL.EndsWith(".zip"))
+            {
+                string zipFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath,
+                                                   "Hotels_Standard.zip");
+                SaveFileFromURL(_URL, zipFileName, 60);
+                using (ZipFile zip1 = ZipFile.Read(zipFileName))
+                {
+                    foreach (ZipEntry zipEntry in zip1)
+                    {
+                        zipEntry.Extract(Properties.Settings.Default.TempPath,
+                                         ExtractExistingFileAction.OverwriteSilently);
+                    }
+                }
+                _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "Hotels_Standard.xml");
+            }
+
             // read hotels from XML
             // use XmlReader to avoid huge file size dependence
             var hotels =
@@ -213,9 +276,12 @@ namespace ImportProducts
                             product.ProductImage = (string)hotel.Images.Element("url");
                             foreach (var image in hotel.Images.Elements("url"))
                             {
-                                ProductImage productImage = new ProductImage();
-                                productImage.ImageFile = image.Value;
-                                product.ProductImages.Add(productImage);
+                                if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
+                                {
+                                    ProductImage productImage = new ProductImage();
+                                    productImage.ImageFile = image.Value;
+                                    product.ProductImages.Add(productImage);
+                                }
                             }
 
                             // add product to product set
@@ -260,7 +326,7 @@ namespace ImportProducts
                         }
 
                         // break application after first record - enough for debiggung/discussing
-                        break;
+                        //break;
                     }
                     rc = true;
                 }

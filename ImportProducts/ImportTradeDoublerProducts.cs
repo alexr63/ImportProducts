@@ -104,8 +104,6 @@ namespace ImportProducts
                             db.Products.Add(product2);
                             db.SaveChanges();
                         }
-
-                        break;
                     }
                     rc = true;
                 }
