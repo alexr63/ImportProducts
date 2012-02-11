@@ -248,7 +248,7 @@ namespace ImportProducts
                         }
 
                         // create new product record
-                        var product = db.Products.SingleOrDefault(p => p.CategoryID == 3 && p.ProductName == hotel.Name);
+                        var product = db.Products.SingleOrDefault(p => p.CategoryID == 3 && p.ProductNumber == hotel.ProductNumber);
                         if (product == null)
                         {
                             product = new Product
@@ -287,6 +287,34 @@ namespace ImportProducts
                             // add product to product set
                             db.Products.Add(product);
                             // store  changes
+                            db.SaveChanges();
+                        }
+                        else
+                        {
+                            product.ProductName = hotel.Name;
+                            product.UnitCost = hotel.UnitCost;
+                            product.UnitCost2 = hotel.UnitCost;
+                            product.UnitCost3 = hotel.UnitCost;
+                            product.UnitCost4 = hotel.UnitCost;
+                            product.UnitCost5 = hotel.UnitCost;
+                            product.UnitCost6 = hotel.UnitCost;
+                            product.Description = hotel.Description;
+                            product.DescriptionHTML = hotel.DescriptionHTML;
+                            product.URL = hotel.URL;
+                            product.ProductCost = hotel.UnitCost;
+
+                            product.ProductImage = (string)hotel.Images.Element("url");
+                            product.ProductImages.Clear();
+                            foreach (var image in hotel.Images.Elements("url"))
+                            {
+                                if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
+                                {
+                                    ProductImage productImage = new ProductImage();
+                                    productImage.ImageFile = image.Value;
+                                    product.ProductImages.Add(productImage);
+                                }
+                            }
+
                             db.SaveChanges();
                         }
 
