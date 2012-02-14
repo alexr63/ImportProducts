@@ -283,6 +283,8 @@ namespace ImportProducts
                                     product.ProductImages.Add(productImage);
                                 }
                             }
+                            // trick to hide Add To Cart button
+                            product.OrderQuant = "0";
 
                             // add product to product set
                             db.Products.Add(product);
@@ -314,6 +316,8 @@ namespace ImportProducts
                                     product.ProductImages.Add(productImage);
                                 }
                             }
+
+                            product.OrderQuant = "0";
 
                             db.SaveChanges();
                         }

@@ -80,12 +80,13 @@ namespace ImportProducts
             bool rc = false;
             message = String.Empty;
 
-#if NONAME
+#if !NONAME
             string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
             SaveFileFromURL(_URL, xmlFileName, 60);
             _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
 #endif
 
+#if NONAME
             var test =
                 from el in StreamRootChildDoc(_URL)
                 select new
@@ -100,6 +101,7 @@ namespace ImportProducts
                                URL = (string) el.Element("productUrl")
                            };
             Console.WriteLine(String.Format("Total count: {0}", test.Count()));
+#endif
 
             var products =
                 from el in StreamRootChildDoc(_URL)
@@ -165,6 +167,7 @@ namespace ImportProducts
                             };
 
                             product2.ProductImage = product.Image;
+                            product2.OrderQuant = "0";
 
                             db.Products.Add(product2);
                             db.SaveChanges();
@@ -184,6 +187,7 @@ namespace ImportProducts
                             product2.URL = product.URL;
                             product2.ProductCost = product.UnitCost;
                             product2.ProductImage = product.Image;
+                            product2.OrderQuant = "0";
 
                             db.SaveChanges();
                         }
