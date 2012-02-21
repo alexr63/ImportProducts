@@ -38,6 +38,9 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\..\..\..\Temp\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-client\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
@@ -158,6 +161,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Model2.cs</LastGenOutput>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\ImportProductsEntities.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

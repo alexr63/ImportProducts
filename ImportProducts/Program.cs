@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
+
 namespace ImportProducts
 {
     static class Program

@@ -12,6 +12,8 @@ namespace ImportProducts
 {
     class ImportHotels
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         static IEnumerable<XElement> StreamRootChildDoc(string uri)
         {
             using (XmlReader reader = XmlReader.Create(uri))
@@ -82,6 +84,7 @@ namespace ImportProducts
             bool rc = false;
             message = String.Empty;
 
+#if !DEBUG
             // unzip file to temp folder if needed
             if (_URL.EndsWith(".zip"))
             {
@@ -98,6 +101,9 @@ namespace ImportProducts
                 }
                 _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "Hotels_Standard.xml");
             }
+#else
+            _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "Hotels_Standard.xml");
+#endif
 
             // read hotels from XML
             // use XmlReader to avoid huge file size dependence
@@ -123,11 +129,23 @@ namespace ImportProducts
                 {
                     foreach (var hotel in hotels)
                     {
+#if DEBUG
+                        if (hotel.Country != "England")
+                        {
+                            continue;
+                        }
+#endif
+
                         Console.WriteLine(hotel.Name); // debug print
 
                         // create advanced categories
                         // todo: send PortalId as command line parameter
                         var hotel1 = hotel;
+                        string hotelCity = hotel1.City;
+                        if (hotel1.City.Length > 50)
+                        {
+                            hotelCity = hotel1.City.Substring(0, 47).PadRight(50, '.');
+                        }
                         int? parentID = null;
                         int? catCountryID = null;
                         int? catCountyID = null;
@@ -224,7 +242,7 @@ namespace ImportProducts
                                 {
                                     AdvCatOrder = maxOrder + 1,
                                     PortalID = 0,
-                                    AdvCatName = hotel.City,
+                                    AdvCatName = hotelCity,
                                     IsVisible = true,
                                     ParentId = parentID.Value,
                                     DisableLink = false,
@@ -306,14 +324,33 @@ namespace ImportProducts
                             product.ProductCost = hotel.UnitCost;
 
                             product.ProductImage = (string)hotel.Images.Element("url");
-                            product.ProductImages.Clear();
-                            foreach (var image in hotel.Images.Elements("url"))
+
+                            foreach (var productImage in product.ProductImages)
+                            {
+                                bool imageExists = false;
+                                foreach (var image in hotel1.Images.Elements("url"))
+                                {
+                                    if (productImage.ImageFile == image.Value)
+                                    {
+                                        imageExists = true;
+                                        break;
+                                    }
+                                }
+                                if (!imageExists)
+                                {
+                                    product.ProductImages.Remove(productImage);
+                                }
+                            }
+                            foreach (var image in hotel1.Images.Elements("url"))
                             {
                                 if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
                                 {
-                                    ProductImage productImage = new ProductImage();
-                                    productImage.ImageFile = image.Value;
-                                    product.ProductImages.Add(productImage);
+                                    if (!product.ProductImages.Any(pi => pi.ImageFile == image.Value))
+                                    {
+                                        ProductImage productImage = new ProductImage();
+                                        productImage.ImageFile = image.Value;
+                                        product.ProductImages.Add(productImage);
+                                    }
                                 }
                             }
 
@@ -366,6 +403,7 @@ namespace ImportProducts
             catch (Exception ex)
             {
                 message = ex.Message;
+                log.Error("Error error logging", ex);
             }
             return rc;
         }
