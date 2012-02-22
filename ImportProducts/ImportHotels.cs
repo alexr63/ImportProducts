@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using System.Threading;
 using Ionic.Zip;
 
 namespace ImportProducts
@@ -36,8 +38,9 @@ namespace ImportProducts
         }
 
 
-        public static bool SaveFileFromURL(string url, string destinationFileName, int timeoutInSeconds)
+        public static void SaveFileFromURL(string url, string destinationFileName, int timeoutInSeconds, BackgroundWorker bw, DoWorkEventArgs e)
         {
+
             // Create a web request to the URL
             HttpWebRequest MyRequest = (HttpWebRequest) WebRequest.Create(url);
             MyRequest.Timeout = timeoutInSeconds*1000;
@@ -52,11 +55,18 @@ namespace ImportProducts
                     // Open the response stream
                     using (Stream MyResponseStream = MyResponse.GetResponseStream())
                     {
+                        // Set step for backgroundWorker
+                        Form1.activeStep = "Load file..";
+                        bw.ReportProgress(0);           // start new step of background process
+
                         // Open the destination file
                         using (
                             FileStream MyFileStream = new FileStream(destinationFileName, FileMode.OpenOrCreate,
                                                                      FileAccess.Write))
                         {
+                            // Get size of file 
+                            long countBuffer = (int) MyFileStream.Length / 2048 ;
+                            long currentBuffer = 0;
                             // Create a 4K buffer to chunk the file
                             byte[] MyBuffer = new byte[4096];
                             int BytesRead;
@@ -65,6 +75,21 @@ namespace ImportProducts
                             {
                                 // Write the chunk from the buffer to the file
                                 MyFileStream.Write(MyBuffer, 0, BytesRead);
+                                // show progress & catch Cancel
+                                currentBuffer++;
+                                if (bw.CancellationPending)
+                                {
+                                    Form1.activeStep = "Cancelling..";
+                                    e.Cancel = true;
+                                    break;
+                                }
+                                else if (bw.WorkerReportsProgress && currentBuffer % 100 == 0) bw.ReportProgress((int)(100 * currentBuffer / countBuffer));
+                            }
+                            // visualization finish process
+                            if (!e.Cancel && currentBuffer < countBuffer)
+                            {
+                                bw.ReportProgress(100);
+                                Thread.Sleep(1000);
                             }
                         }
                     }
@@ -72,32 +97,48 @@ namespace ImportProducts
             }
             catch (Exception err)
             {
-                throw new Exception("Error saving file from URL:" + err.Message, err);
+                e.Result = "ERROR:" + err.Message;
+                //throw new Exception("Error saving file from URL:" + err.Message, err);
             }
-            return true;
         }
 
-        public static bool DoImport(string _URL, out string message)
+        public static void DoImport(object sender, DoWorkEventArgs e)               // static bool    (string _URL, out string message)
         {
-            bool rc = false;
-            message = String.Empty;
-
+            //bool rc = false;
+            //message = String.Empty;
+            BackgroundWorker bw = sender as BackgroundWorker; 
+            string _URL = (string)e.Argument;
             // unzip file to temp folder if needed
             if (_URL.EndsWith(".zip"))
             {
                 string zipFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath,
                                                    "Hotels_Standard.zip");
-                SaveFileFromURL(_URL, zipFileName, 60);
+                // inside this function show progressBar for step: LoadFile
+                SaveFileFromURL(_URL, zipFileName, 60, bw, e);
+                // if user cancel during saving file or ERROR
+                if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;   
+                // Set step for backgroundWorker
+                Form1.activeStep = "Extract file..";
+                bw.ReportProgress(0);           // start new step of background process
                 using (ZipFile zip1 = ZipFile.Read(zipFileName))
                 {
+
                     foreach (ZipEntry zipEntry in zip1)
                     {
                         zipEntry.Extract(Properties.Settings.Default.TempPath,
                                          ExtractExistingFileAction.OverwriteSilently);
+
+
                     }
                 }
                 _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "Hotels_Standard.xml");
             }
+            // show progress & catch Cancel
+            if (bw.CancellationPending)
+            {
+                e.Cancel = true; return;
+            }
+            else if (bw.WorkerReportsProgress) bw.ReportProgress(50);
 
             // read hotels from XML
             // use XmlReader to avoid huge file size dependence
@@ -116,6 +157,19 @@ namespace ImportProducts
                     DescriptionHTML = (string)el.Element("alternate_description"),
                     URL = (string)el.Element("hotel_link")
                 };
+            // show progress & catch Cancel
+            if (bw.CancellationPending)
+            {
+                e.Cancel = true; return;
+            }
+            else if (bw.WorkerReportsProgress) bw.ReportProgress(100);
+            Thread.Sleep(1000); // a little bit slow working for visualisation Progress
+
+           // Set step for backgroundWorker
+           Form1.activeStep = "Import records..";
+           bw.ReportProgress(0);           // start new step of background process
+           long countHotels = hotels.Count();
+           long currentHotel = 0;
 
             try
             {
@@ -123,6 +177,7 @@ namespace ImportProducts
                 {
                     foreach (var hotel in hotels)
                     {
+
                         Console.WriteLine(hotel.Name); // debug print
 
                         // create advanced categories
@@ -359,15 +414,23 @@ namespace ImportProducts
 
                         // break application after first record - enough for debiggung/discussing
                         //break;
+                        currentHotel++;
+                        if (bw.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
+                        else if (bw.WorkerReportsProgress && currentHotel % 100 == 0) bw.ReportProgress((int)(100 * currentHotel / countHotels));
                     }
-                    rc = true;
+                    //    rc = true;
                 }
             }
             catch (Exception ex)
             {
-                message = ex.Message;
+                e.Result =  "ERROR:" + ex.Message;
+                //message = ex.Message;
             }
-            return rc;
+            //return rc;
         }
 
         private static void AddAdvCatDefaultPermissions(DNN_6_0_0Entities db, int advCatID)

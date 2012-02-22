@@ -11,9 +11,44 @@ using System.Windows.Forms;
 
 namespace ImportProducts
 {
+    
+
     public partial class Form1 : Form
     {
         private ImportProductsEntities context;
+        
+        private Feed feed;
+
+        #region SergePSV - 
+        // Event handlers for backgroundWorker events
+        delegate void BackGroundWorkerDelegateWork(object sender, DoWorkEventArgs e);
+        delegate void BackGroundWorkerDelegateProgress(object sender, ProgressChangedEventArgs e);
+        delegate void BackGroundWorkerDelegateCompleted(object sender, RunWorkerCompletedEventArgs e);
+
+        Dictionary<string, BackgroundWorker> bgw = new Dictionary<string, BackgroundWorker>();      // List BackgroundWorker for different downloads
+        Dictionary<string, Feed> bgProcesses = new Dictionary<string, Feed>();                  // aliases&feed of background operations
+        Dictionary<string, string> bgStep = new Dictionary<string, string>();                  // aliases&feed of background operations
+        Dictionary<string, int> bgProgress = new Dictionary<string, int>();                  // aliases&feed of background operations
+        string activeKey = "";                                                     // Id active download which shown by StatusStrip
+        public static string activeStep = "";                                                       // current download step 
+        //string errMessage = "";                                                        // describe error which happens during download
+        BackGroundWorkerDelegateWork workD;
+        BackGroundWorkerDelegateProgress progressD;
+        BackGroundWorkerDelegateCompleted completeD;
+        // Create new BackgroundWorker
+        private BackgroundWorker AddBackGroundWorker(BackGroundWorkerDelegateWork bgwDoWork,
+                                                     BackGroundWorkerDelegateProgress bgwProgressChanged,
+                                                     BackGroundWorkerDelegateCompleted bgwRunWorkerCompleted)
+        {
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
+            backgroundWorker.DoWork += new DoWorkEventHandler(bgwDoWork);
+            backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(bgwProgressChanged);
+            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgwRunWorkerCompleted);
+            backgroundWorker.WorkerReportsProgress = true;
+            backgroundWorker.WorkerSupportsCancellation = true;
+            return backgroundWorker;
+        }
+        #endregion
 
         public Form1()
         {
@@ -34,48 +69,36 @@ namespace ImportProducts
 
         private void toolStripMenuItemRun_Click(object sender, EventArgs e)
         {
+            string keyDownload;
             foreach (DataGridViewRow selectedRow in dataGridView1.SelectedRows)
             {
-                var selectedFeed = selectedRow.DataBoundItem as Feed;
-
-                // hourglass cursor
-                Cursor.Current = Cursors.WaitCursor;
-                try
+               var selectedFeed = selectedRow.DataBoundItem as Feed;
+               keyDownload = selectedFeed.Name; 
+                if (!bgw.Keys.Contains(keyDownload))
                 {
                     context = new ImportProductsEntities();
-                    Feed feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
-                    string message = String.Empty;
-                    bool rc = false;
-                    switch (selectedFeed.Name)
+                    feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
+                    bgProcesses.Add(keyDownload, feed); 
+                    switch (keyDownload)
                     {
                         case "Hotels":
-                            rc = ImportHotels.DoImport(selectedFeed.URL, out message);
+                            workD = new BackGroundWorkerDelegateWork(ImportHotels.DoImport);
                             break;
                         case "Trade Doubler":
-                            rc = ImportTradeDoublerProducts.DoImport(selectedFeed.URL, out message);
+                            workD = new BackGroundWorkerDelegateWork(ImportTradeDoublerProducts.DoImport);
                             break;
                     }
-                    if (rc)
-                    {
-                        feed.LastRun = DateTime.Now;
-                        feed.Status = "Success";
-                        statusStrip1.Items[0].Text = String.Format("{0} imported successfully at {1}",
-                                                                   selectedFeed.Name, DateTime.Now);
-                    }
-                    else
-                    {
-                        feed.LastRun = DateTime.Now;
-                        feed.Status = "Error";
-                        statusStrip1.Items[0].Text = String.Format("{0} not imported. Error message: {1}",
-                                                                   selectedFeed.Name, message);
-                    }
-                    context.SaveChanges();
-                    BindData();
+                    progressD = new BackGroundWorkerDelegateProgress(backgroundWorkerProgressChanged);
+                    completeD = new BackGroundWorkerDelegateCompleted(backgroundWorkerRunWorkerCompleted);
+                    bgw.Add(keyDownload, AddBackGroundWorker(workD, progressD, completeD));
+                    bgProgress.Add(keyDownload, 0);
+                    activeStep = "Start download";
+                    bgStep.Add(keyDownload, activeStep);
+                    bgw[keyDownload].RunWorkerAsync(selectedFeed.URL);   
                 }
-                finally
-                {
-                    Cursor.Current = Cursors.Default;
-                }
+                activeKey = keyDownload;
+                // display status
+                ShiftStatusStripToActiveBackgroudWorker(bgw.Count, activeKey, activeStep, bgw[activeKey].IsBusy, bgProgress[activeKey]);
             }
         }
 
@@ -110,5 +133,162 @@ namespace ImportProducts
             toolStripMenuItemRun.Enabled = dataGridView1.SelectedRows.Count > 0;
             toolStripMenuItemProperties.Enabled = dataGridView1.SelectedRows.Count == 1;
         }
+
+        // SergePSV - check unfinished downloads
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("Do you want to close application?", "Exit application", MessageBoxButtons.YesNo) == DialogResult.No) e.Cancel = true;
+            else
+            {
+                int countUnfinishedProcess = 0;
+                foreach (BackgroundWorker bw in bgw.Values)
+                    if (bw.IsBusy) countUnfinishedProcess++;
+                if (countUnfinishedProcess > 0)
+                    if (MessageBox.Show("There are " + countUnfinishedProcess.ToString() + " active background operations. If you closing the application some data will be lost.\nYou do want to close application?", "Cancel operations", MessageBoxButtons.YesNo) == DialogResult.No) e.Cancel = true;
+                    else
+                    {
+                        foreach (BackgroundWorker bw in bgw.Values)
+                            if (bw.IsBusy) bw.CancelAsync();
+                        MessageBox.Show("All background operations were canceled");
+                    }
+            }
+        }
+
+        private void backgroundWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            BackgroundWorker bw = sender as BackgroundWorker;
+            if (activeKey != "" && bw.Equals(bgw[activeKey]) && bw.WorkerReportsProgress)
+            {   // displayed process
+                if (e.ProgressPercentage == 0) SetInfoForNewStep(activeStep);      // for new process display step
+                // update active step
+                bgStep[activeKey] = activeStep;
+                SetInfoForNewStep(activeStep);
+                tsProgressBar.Value = (e.ProgressPercentage > 100) ? 100 : e.ProgressPercentage;
+                bgProgress[activeKey] = tsProgressBar.Value;
+             }
+            else
+            {
+                bgProgress[activeKey] = bgProgress[activeKey];
+            }
+        }
+
+        private void backgroundWorkerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            bool displayedProcess = false, deactivate = false;
+            BackgroundWorker bw = sender as BackgroundWorker;
+            if (activeKey != "" && bw.Equals(bgw[activeKey])) displayedProcess = true;  // finish displayed process
+            // finish showed process
+            bgProcesses[activeKey].LastRun = DateTime.Now;
+            if (e.Cancelled)
+            {
+                deactivate = true;
+                bgProcesses[activeKey].Status = "Cancel";
+            }
+            else
+                if (e.Error != null || e.Result.ToString().Substring(0, 6).Equals("ERROR:"))
+                {
+                    deactivate = true;
+                    bgProcesses[activeKey].Status = "Error";
+                }
+                else
+                {
+                    deactivate = true;
+                    bgProcesses[activeKey].Status = "Success";
+                }
+            if (displayedProcess && deactivate)
+            {
+                if (bw.WorkerReportsProgress)
+                {   // disable controls for displayed process
+                    tsProgressBar.Enabled = false;
+                    tsddButton.Enabled = false;
+                }
+                // remove backgroundworker & alias of downloads
+                bgw.Remove(activeKey);
+                bgProcesses.Remove(activeKey);
+                bgStep.Remove(activeKey);
+                bgProgress.Remove(activeKey);
+                // find another active process for displaying
+                activeKey = "";
+                foreach (string key in bgw.Keys)
+                    if (bgw[key].IsBusy)
+                    {
+                        activeKey = key;
+                        break;
+                    }
+                if (activeKey != "")
+                    ShiftStatusStripToActiveBackgroudWorker(bgw.Count, activeKey, bgStep[activeKey], bgw[activeKey].IsBusy, bgProgress[activeKey]);
+                else
+                    ShiftStatusStripToActiveBackgroudWorker(0, activeKey, activeKey, false, 0);
+            }
+            // set result of download
+            context.SaveChanges();
+            BindData();
+        }
+
+ 
+
+        private void cancelBGW(object sender, EventArgs e)
+        {
+            //                bgw[activeKey].IsBusy &&
+
+            if (activeKey != "" &&
+                bgw[activeKey].WorkerSupportsCancellation &&
+                MessageBox.Show("Do you really want to cancel?", "Cancelling background process", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                bgw[activeKey].CancelAsync();
+
+            //    //bgw[activeKey].CancelAsync();       // send request for cancelling operation
+            //else
+            //    if (activeKey != "" )   // remove info about error operation  &&                     !bgw[activeKey].IsBusy
+            //    {
+            //        // remove backgroundworker & alias of downloads
+            //        bgw.Remove(activeKey);
+            //        bgProcesses.Remove(activeKey);
+            //        bgStep.Remove(activeKey);
+            //        bgProgress.Remove(activeKey);
+            //        // find another active process for displaying
+            //        activeKey = "";
+            //        foreach (string key in bgw.Keys)
+            //            if (bgw[key].IsBusy)
+            //            {
+            //                activeKey = key;
+            //                break;
+            //            }
+            //        if (activeKey != "")
+            //            ShiftStatusStripToActiveBackgroudWorker(bgw.Count, activeKey, bgStep[activeKey], bgw[activeKey].IsBusy, bgProgress[activeKey]);
+            //        else
+            //            ShiftStatusStripToActiveBackgroudWorker(0, activeKey, activeKey, false, 0);
+            //    }
+        }
+
+        private void ShiftStatusStripToActiveBackgroudWorker(int count, string current, string info, bool enableCancelButton,  int valueProgressBar)
+        {
+            tsslTotalProcess.Text = "Total active process: " + count.ToString().PadLeft(2, ' ');
+            tsslCurrent.Text = current;
+            tsslInfo.Text = info;
+            tsddButton.Enabled = enableCancelButton; // 
+            tsProgressBar.Value = valueProgressBar; //  
+            //tsProgressBar.Invalidate();
+            //statusStrip.Refresh();
+        }
+        // set ext info about process - its step
+        private void SetInfoForNewStep(string info)
+        {
+            tsslInfo.Text = info;
+            //statusStrip.Refresh();
+        }
+        // display status background process if it exists
+        private void dataGridView1_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dataGridView1.Rows.Count > 0)
+            {
+                var selectedFeed = dataGridView1.Rows[e.RowIndex].DataBoundItem as Feed;
+                if (bgw.Keys.Contains(selectedFeed.Name))  // exist bgProcess for this row
+                {
+                    activeKey = selectedFeed.Name;
+                    ShiftStatusStripToActiveBackgroudWorker(bgw.Count, selectedFeed.Name, bgStep[selectedFeed.Name], bgw[selectedFeed.Name].IsBusy, bgProgress[selectedFeed.Name]);
+                }
+            }
+        }
+
     }
 }

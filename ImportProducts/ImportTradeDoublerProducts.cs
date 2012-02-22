@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -34,7 +36,7 @@ namespace ImportProducts
             }
         }
 
-        public static bool SaveFileFromURL(string url, string destinationFileName, int timeoutInSeconds)
+        public static void SaveFileFromURL(string url, string destinationFileName, int timeoutInSeconds, BackgroundWorker bw, DoWorkEventArgs e)
         {
             // Create a web request to the URL
             HttpWebRequest MyRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -50,11 +52,18 @@ namespace ImportProducts
                     // Open the response stream
                     using (Stream MyResponseStream = MyResponse.GetResponseStream())
                     {
+                        // Set step for backgroundWorker
+                        Form1.activeStep = "Load file..";
+                        bw.ReportProgress(0);           // start new step of background process
+                        
                         // Open the destination file
                         using (
                             FileStream MyFileStream = new FileStream(destinationFileName, FileMode.OpenOrCreate,
                                                                      FileAccess.Write))
                         {
+                            // Get size of file 
+                            long countBuffer = (int)MyFileStream.Length / 2048;
+                            long currentBuffer = 0;
                             // Create a 4K buffer to chunk the file
                             byte[] MyBuffer = new byte[4096];
                             int BytesRead;
@@ -63,6 +72,23 @@ namespace ImportProducts
                             {
                                 // Write the chunk from the buffer to the file
                                 MyFileStream.Write(MyBuffer, 0, BytesRead);
+                                // show progress & catch Cancel
+                                currentBuffer++;
+                                if (bw.CancellationPending)
+                                {
+                                    Form1.activeStep = "Cancelling..";
+                                    bw.ReportProgress((int)(100 * currentBuffer / countBuffer));
+                                    throw new Exception("Cancel");
+                                    //e.Cancel = true;
+                                    //break;
+                                }
+                                else if (bw.WorkerReportsProgress && currentBuffer % 1000 == 0) bw.ReportProgress((int)(100 * currentBuffer / countBuffer));
+                            }
+                            // visualization finish process
+                            if (currentBuffer < countBuffer)
+                            {
+                                bw.ReportProgress(100);
+                                Thread.Sleep(1000);
                             }
                         }
                     }
@@ -70,19 +96,31 @@ namespace ImportProducts
             }
             catch (Exception err)
             {
-                throw new Exception("Error saving file from URL:" + err.Message, err);
+                e.Result = "ERROR:" + err.Message;
+                //throw new Exception("Error saving file from URL:" + err.Message, err);
             }
-            return true;
         }
 
-        public static bool DoImport(string _URL, out string message)
+        public static void DoImport(object sender, DoWorkEventArgs e)               //(string _URL, out string message)        // public static bool
         {
-            bool rc = false;
-            message = String.Empty;
+            //bool rc = false;
+            //message = String.Empty;
+            string _URL = (string)e.Argument;
+            BackgroundWorker bw = sender as BackgroundWorker;
 
 #if !NONAME
             string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
-            SaveFileFromURL(_URL, xmlFileName, 60);
+            // inside function display progressbar
+            SaveFileFromURL(_URL, xmlFileName, 60,bw,e);
+
+            // exit if user cancel during saving file or error
+            // show progress & catch Cancel
+            if (bw.CancellationPending)
+            {
+                e.Cancel = true; return;
+            }
+           // if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;
+
             _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
 #endif
 
@@ -102,6 +140,9 @@ namespace ImportProducts
                            };
             Console.WriteLine(String.Format("Total count: {0}", test.Count()));
 #endif
+            // Set step for backgroundWorker
+            Form1.activeStep = "Import records..";
+            bw.ReportProgress(0);           // start new step of background process
 
             var products =
                 from el in StreamRootChildDoc(_URL)
@@ -116,6 +157,11 @@ namespace ImportProducts
                     DescriptionHTML = (string)el.Element("description"),
                     URL = (string)el.Element("productUrl")
                 };
+
+
+            long countProducts = products.Count();
+            long currentProduct = 0;
+
             try
             {
                 using (DNN_6_0_0Entities db = new DNN_6_0_0Entities())
@@ -191,15 +237,24 @@ namespace ImportProducts
 
                             db.SaveChanges();
                         }
+                         currentProduct++;
+                        if (bw.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
+                        else if (bw.WorkerReportsProgress && currentProduct % 100 == 0) bw.ReportProgress((int)(100 * currentProduct / countProducts));
                     }
-                    rc = true;
+                  // rc = true;
                 }
             }
             catch (Exception ex)
             {
-                message = ex.Message;
+                e.Result = "ERROR:" + ex.Message;
+                //throw new Exception("Error saving file from URL:" + ex.Message, ex);
+                //message = ex.Message;
             }
-            return rc;
+            //return rc;
         }
     }
 }
