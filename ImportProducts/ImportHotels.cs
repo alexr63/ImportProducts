@@ -379,23 +379,14 @@ namespace ImportProducts
                             product.ProductCost = hotel.UnitCost;
 
                             product.ProductImage = (string)hotel.Images.Element("url");
-
                             foreach (var productImage in product.ProductImages)
                             {
-                                bool imageExists = false;
-                                foreach (var image in hotel1.Images.Elements("url"))
+                                if (!hotel1.Images.Elements("url").Any(x => x.Value == productImage.ImageFile))
                                 {
-                                    if (productImage.ImageFile == image.Value)
-                                    {
-                                        imageExists = true;
-                                        break;
-                                    }
-                                }
-                                if (!imageExists)
-                                {
-                                    product.ProductImages.Remove(productImage);
+                                    productImage.ImageFile = String.Empty;
                                 }
                             }
+                            var oldImages = product.ProductImages.Where(pi => pi.ImageFile == String.Empty);
                             foreach (var image in hotel1.Images.Elements("url"))
                             {
                                 if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
