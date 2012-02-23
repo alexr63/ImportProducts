@@ -386,7 +386,11 @@ namespace ImportProducts
                                     productImage.ImageFile = String.Empty;
                                 }
                             }
-                            var oldImages = product.ProductImages.Where(pi => pi.ImageFile == String.Empty);
+                            var oldImages = product.ProductImages.Where(pi => pi.ImageFile == String.Empty).ToList();
+                            foreach (var oldImage in oldImages)
+                            {
+                                db.ProductImages.Remove(oldImage);
+                            }
                             foreach (var image in hotel1.Images.Elements("url"))
                             {
                                 if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
