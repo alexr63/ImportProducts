@@ -76,16 +76,16 @@ namespace ImportProducts
                                 currentBuffer++;
                                 if (bw.CancellationPending)
                                 {
-                                    Form1.activeStep = "Cancelling..";
-                                    bw.ReportProgress((int)(100 * currentBuffer / countBuffer));
-                                    throw new Exception("Cancel");
-                                    //e.Cancel = true;
-                                    //break;
+                                    // cancel background work
+                                    e.Cancel = true;                                    
+                                    // Due to too huge size of download it is neccessary explicit closing Stream else operation in background will be cancelled after total download file
+                                    MyRequest.Abort();
+                                    break;
                                 }
-                                else if (bw.WorkerReportsProgress && currentBuffer % 1000 == 0) bw.ReportProgress((int)(100 * currentBuffer / countBuffer));
+                                else if (bw.WorkerReportsProgress && currentBuffer % 100 == 0) bw.ReportProgress((int)(100 * currentBuffer / countBuffer));
                             }
                             // visualization finish process
-                            if (currentBuffer < countBuffer)
+                            if (!e.Cancel && currentBuffer < countBuffer)
                             {
                                 bw.ReportProgress(100);
                                 Thread.Sleep(1000);
@@ -114,12 +114,7 @@ namespace ImportProducts
             SaveFileFromURL(_URL, xmlFileName, 60,bw,e);
 
             // exit if user cancel during saving file or error
-            // show progress & catch Cancel
-            if (bw.CancellationPending)
-            {
-                e.Cancel = true; return;
-            }
-           // if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;
+             if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;
 
             _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
 #endif

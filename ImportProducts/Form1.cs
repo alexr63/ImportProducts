@@ -19,7 +19,7 @@ namespace ImportProducts
         
         private Feed feed;
 
-        #region SergePSV - 
+        #region Orhanization backgroundwork 
         // Event handlers for backgroundWorker events
         delegate void BackGroundWorkerDelegateWork(object sender, DoWorkEventArgs e);
         delegate void BackGroundWorkerDelegateProgress(object sender, ProgressChangedEventArgs e);
@@ -149,11 +149,14 @@ namespace ImportProducts
                     {
                         foreach (BackgroundWorker bw in bgw.Values)
                             if (bw.IsBusy) bw.CancelAsync();
+                        // likely here should be code that check when all active background downloads will be cancelled and after that close application 
+
+                        //
                         MessageBox.Show("All background operations were canceled");
                     }
             }
         }
-
+        // ProgressBar for background
         private void backgroundWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             BackgroundWorker bw = sender as BackgroundWorker;
@@ -183,18 +186,26 @@ namespace ImportProducts
             {
                 deactivate = true;
                 bgProcesses[activeKey].Status = "Cancel";
+                notifyIcon.BalloonTipIcon = ToolTipIcon.Warning;
+                notifyIcon.BalloonTipText = "Import " + activeKey + " has been canceled";
             }
             else
                 if (e.Error != null || e.Result.ToString().Substring(0, 6).Equals("ERROR:"))
                 {
                     deactivate = true;
                     bgProcesses[activeKey].Status = "Error";
+                    notifyIcon.BalloonTipIcon = ToolTipIcon.Error;
+                    notifyIcon.BalloonTipText = "Import " + activeKey + " has been broken due to ERROR";
                 }
                 else
                 {
                     deactivate = true;
                     bgProcesses[activeKey].Status = "Success";
+                    notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+                    notifyIcon.BalloonTipText = "Import " + activeKey + " completed";
                 }
+            // ShowBaloon for non-active process
+            notifyIcon.ShowBalloonTip(15000);
             if (displayedProcess && deactivate)
             {
                 if (bw.WorkerReportsProgress)
@@ -288,6 +299,16 @@ namespace ImportProducts
                     ShiftStatusStripToActiveBackgroudWorker(bgw.Count, selectedFeed.Name, bgStep[selectedFeed.Name], bgw[selectedFeed.Name].IsBusy, bgProgress[selectedFeed.Name]);
                 }
             }
+        }
+
+            // Show the form when the user clicks on the notify icon.
+        private void notifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            // Set the WindowState to normal if the form is minimized.
+            if (this.WindowState == FormWindowState.Minimized)
+                this.WindowState = FormWindowState.Normal;
+            // Activate the form.
+            this.Activate();
         }
 
     }

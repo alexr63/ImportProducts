@@ -81,7 +81,9 @@ namespace ImportProducts
                                 currentBuffer++;
                                 if (bw.CancellationPending)
                                 {
-                                    Form1.activeStep = "Cancelling..";
+                                    // it is neccessary explicit closing Stream else operation in background will be cancelled after total download file
+                                    MyRequest.Abort();
+                                    // cancel background work
                                     e.Cancel = true;
                                     break;
                                 }
@@ -118,11 +120,13 @@ namespace ImportProducts
                                                    "Hotels_Standard.zip");
                 // inside this function show progressBar for step: LoadFile
                 SaveFileFromURL(_URL, zipFileName, 60, bw, e);
+
                 // if user cancel during saving file or ERROR
                 if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;   
                 // Set step for backgroundWorker
                 Form1.activeStep = "Extract file..";
                 bw.ReportProgress(0);           // start new step of background process
+
                 using (ZipFile zip1 = ZipFile.Read(zipFileName))
                 {
 
