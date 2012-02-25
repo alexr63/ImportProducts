@@ -12,6 +12,8 @@ using Ionic.Zip;
 
 namespace ImportProducts
 {
+
+
     class ImportHotels
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -66,8 +68,9 @@ namespace ImportProducts
                             FileStream MyFileStream = new FileStream(destinationFileName, FileMode.OpenOrCreate,
                                                                      FileAccess.Write))
                         {
-                            // Get size of file 
-                            long countBuffer = (int) MyFileStream.Length / 2048 ;
+                            // Get size of stream - it is impossible in advance at all
+                            // so we just can set approximate value if know it or get it before by experience
+                            long countBuffer = 30000;
                             long currentBuffer = 0;
                             // Create a 4K buffer to chunk the file
                             byte[] MyBuffer = new byte[4096];
@@ -110,8 +113,13 @@ namespace ImportProducts
         {
             //bool rc = false;
             //message = String.Empty;
-            BackgroundWorker bw = sender as BackgroundWorker; 
-            string _URL = (string)e.Argument;
+            BackgroundWorker bw = sender as BackgroundWorker;
+            // Parse list input parameters
+            BackgroundWorkParameters param = (BackgroundWorkParameters)e.Argument;
+            string _URL = param.Url;
+            string category = param.Category;
+            int portalId = param.PortalId;
+            //string _URL = (string)e.Argument;
 #if !DEBUG
             // unzip file to temp folder if needed
             if (_URL.EndsWith(".zip"))

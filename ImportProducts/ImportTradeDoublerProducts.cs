@@ -61,8 +61,9 @@ namespace ImportProducts
                             FileStream MyFileStream = new FileStream(destinationFileName, FileMode.OpenOrCreate,
                                                                      FileAccess.Write))
                         {
-                            // Get size of file 
-                            long countBuffer = (int)MyFileStream.Length / 2048;
+                            // Get size of stream - it is impossible in advance at all
+                            // so we just can set approximate value if know it or get it before by experience
+                            long countBuffer = 1000000;
                             long currentBuffer = 0;
                             // Create a 4K buffer to chunk the file
                             byte[] MyBuffer = new byte[4096];

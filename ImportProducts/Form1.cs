@@ -11,7 +11,14 @@ using System.Windows.Forms;
 
 namespace ImportProducts
 {
-    
+
+    // list of parameters that background operation should get
+    struct BackgroundWorkParameters
+    {
+        public string Url;
+        public string Category;
+        public int PortalId;
+    }
 
     public partial class Form1 : Form
     {
@@ -78,7 +85,15 @@ namespace ImportProducts
                 {
                     context = new ImportProductsEntities();
                     feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
-                    bgProcesses.Add(keyDownload, feed); 
+                    bgProcesses.Add(keyDownload, feed);
+                    // set parameters for background process here if lists of parameters are the same for different rows in Feeds
+                    // if it is necessary send different parameter`s list to background operation, assign parameters in block 
+                    // 'switch' as well as set 'BackGroundWorkerDelegateWork' for each row in Feeds
+                    BackgroundWorkParameters bgParams = new BackgroundWorkParameters();
+                    bgParams.Url = selectedFeed.URL;
+                    bgParams.Category = "";   // selectedFeed.Category for instance or something like that
+                    bgParams.PortalId = 0;   // selectedFeed.PortalId for instance or something like that
+
                     switch (keyDownload)
                     {
                         case "Hotels":
@@ -94,7 +109,7 @@ namespace ImportProducts
                     bgProgress.Add(keyDownload, 0);
                     activeStep = "Start download";
                     bgStep.Add(keyDownload, activeStep);
-                    bgw[keyDownload].RunWorkerAsync(selectedFeed.URL);   
+                    bgw[keyDownload].RunWorkerAsync(bgParams);      // selectedFeed.URL
                 }
                 activeKey = keyDownload;
                 // display status
