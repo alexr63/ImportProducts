@@ -106,8 +106,11 @@ namespace ImportProducts
         {
             //bool rc = false;
             //message = String.Empty;
-            string _URL = (string)e.Argument;
             BackgroundWorker bw = sender as BackgroundWorker;
+            // Parse list input parameters
+            BackgroundWorkParameters param = (BackgroundWorkParameters)e.Argument;
+            string _URL = param.Url;
+            int portalId = param.PortalId;
 
 #if !NONAME
             string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
@@ -166,14 +169,14 @@ namespace ImportProducts
                     {
                         Console.WriteLine(product.Name); // debug print
 
-                        Category category = db.Categories.SingleOrDefault(c => c.CategoryName == product.Category);
+                        Category category = db.Categories.SingleOrDefault(c => c.CategoryName == product.Category && c.PortalID == portalId);
                         if (category == null)
                         {
                             category = new Category
                             {
                                 CategoryName = product.Category,
                                 Description = String.Empty,
-                                PortalID = 0,
+                                PortalID = portalId,
                                 CategoryImportID = String.Empty,
                                 CategoryFolderImage = String.Empty,
                                 CategoryOpenFolderImage = String.Empty,

@@ -117,9 +117,9 @@ namespace ImportProducts
             // Parse list input parameters
             BackgroundWorkParameters param = (BackgroundWorkParameters)e.Argument;
             string _URL = param.Url;
-            string category = param.Category;
+            int categoryId = param.CategoryId.Value;
             int portalId = param.PortalId;
-            //string _URL = (string)e.Argument;
+
 #if !DEBUG
             // unzip file to temp folder if needed
             if (_URL.EndsWith(".zip"))
@@ -206,7 +206,6 @@ namespace ImportProducts
                         Console.WriteLine(hotel.Name); // debug print
 
                         // create advanced categories
-                        // todo: send PortalId as command line parameter
                         var hotel1 = hotel;
                         string hotelCity = hotel1.City;
                         if (hotel1.City.Length > 50)
@@ -223,7 +222,7 @@ namespace ImportProducts
                         {
                             var advCatCountry =
                                 db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == 0 && ac.AdvCatName == hotel1.Country && ac.Level == level);
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == hotel1.Country && ac.Level == level);
                             if (advCatCountry == null)
                             {
                                 if (db.AdvCats.Count() > 0)
@@ -233,7 +232,7 @@ namespace ImportProducts
                                 advCatCountry = new AdvCat
                                 {
                                     AdvCatOrder = maxOrder + 1,
-                                    PortalID = 0,
+                                    PortalID = portalId,
                                     AdvCatName = hotel.Country,
                                     IsVisible = true,
                                     DisableLink = false,
@@ -260,7 +259,7 @@ namespace ImportProducts
                         {
                             var advCatCounty =
                                 db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == 0 && ac.AdvCatName == hotel1.County && ac.Level == level);
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == hotel1.County && ac.Level == level);
                             if (advCatCounty == null)
                             {
                                 if (db.AdvCats.Count() > 0)
@@ -270,7 +269,7 @@ namespace ImportProducts
                                 advCatCounty = new AdvCat
                                 {
                                     AdvCatOrder = maxOrder + 1,
-                                    PortalID = 0,
+                                    PortalID = portalId,
                                     AdvCatName = hotel.County,
                                     IsVisible = true,
                                     ParentId = parentID.Value,
@@ -298,7 +297,7 @@ namespace ImportProducts
                         {
                             var advCatCity =
                                 db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == 0 && ac.AdvCatName == hotel1.City && ac.Level == level);
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == hotel1.City && ac.Level == level);
                             if (advCatCity == null)
                             {
                                 if (db.AdvCats.Count() > 0)
@@ -308,7 +307,7 @@ namespace ImportProducts
                                 advCatCity = new AdvCat
                                 {
                                     AdvCatOrder = maxOrder + 1,
-                                    PortalID = 0,
+                                    PortalID = portalId,
                                     AdvCatName = hotelCity,
                                     IsVisible = true,
                                     ParentId = parentID.Value,
@@ -333,13 +332,12 @@ namespace ImportProducts
                         }
 
                         // create new product record
-                        var product = db.Products.SingleOrDefault(p => p.CategoryID == 3 && p.ProductNumber == hotel.ProductNumber);
+                        var product = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == hotel.ProductNumber);
                         if (product == null)
                         {
                             product = new Product
                             {
-                                CategoryID = 3,
-                                // Hotels category ID
+                                CategoryID = categoryId,
                                 Category2ID = 0,
                                 Category3 = String.Empty,
                                 ProductName = hotel.Name,

@@ -19,5 +19,7 @@ namespace ImportProducts
         public string URL { get; set; }
         public Nullable<System.DateTime> LastRun { get; set; }
         public string Status { get; set; }
+        public int PortalId { get; set; }
+        public string Category { get; set; }
     }
 }

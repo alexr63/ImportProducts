@@ -16,7 +16,7 @@ namespace ImportProducts
     struct BackgroundWorkParameters
     {
         public string Url;
-        public string Category;
+        public int? CategoryId;
         public int PortalId;
     }
 
@@ -91,8 +91,33 @@ namespace ImportProducts
                     // 'switch' as well as set 'BackGroundWorkerDelegateWork' for each row in Feeds
                     BackgroundWorkParameters bgParams = new BackgroundWorkParameters();
                     bgParams.Url = selectedFeed.URL;
-                    bgParams.Category = "";   // selectedFeed.Category for instance or something like that
-                    bgParams.PortalId = 0;   // selectedFeed.PortalId for instance or something like that
+                    if (!String.IsNullOrEmpty(selectedFeed.Category))
+                    {
+                        using (DNN_6_0_0Entities db = new DNN_6_0_0Entities())
+                        {
+                            var category = db.Categories.SingleOrDefault(c => c.CategoryName == selectedFeed.Category && c.PortalID == selectedFeed.PortalId);
+                            if (category != null)
+                            {
+                                bgParams.CategoryId = category.CategoryID;
+                            }
+                            else
+                            {
+                                category = new Category();
+                                category.CategoryName = selectedFeed.Category;
+                                category.Description = String.Empty;
+                                category.PortalID = selectedFeed.PortalId;
+                                category.CategoryImportID = String.Empty;
+                                category.CategoryFolderImage = String.Empty;
+                                category.CategoryOpenFolderImage = String.Empty;
+                                category.CategoryPageImage = String.Empty;
+                                category.CreatedByUser = 1;
+                                db.Categories.Add(category);
+                                db.SaveChanges();
+                                bgParams.CategoryId = category.CategoryID;
+                            }
+                        }
+                    }
+                    bgParams.PortalId = selectedFeed.PortalId;
 
                     switch (keyDownload)
                     {
