@@ -149,6 +149,11 @@ namespace ImportProducts
             EditProperties editProperties = new EditProperties();
             editProperties.labelName.Text = selectedFeed.Name;
             editProperties.textBoxURL.Text = selectedFeed.URL;
+            if (!String.IsNullOrEmpty(selectedFeed.Category))
+            {
+                editProperties.textBoxCategory.Text = selectedFeed.Category;
+            }
+            editProperties.numericUpDownPortalId.Value = selectedFeed.PortalId;
             if (selectedFeed.LastRun != null)
             {
                 editProperties.labelLastRun.Text = selectedFeed.LastRun.Value.ToString();
@@ -162,6 +167,11 @@ namespace ImportProducts
                 context = new ImportProductsEntities();
                 Feed feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
                 feed.URL = editProperties.textBoxURL.Text;
+                if (editProperties.textBoxCategory.Text != String.Empty)
+                {
+                    feed.Category = editProperties.textBoxCategory.Text;
+                }
+                feed.PortalId = (int)editProperties.numericUpDownPortalId.Value;
                 context.SaveChanges();
                 BindData();
             }

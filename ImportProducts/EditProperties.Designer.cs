@@ -40,7 +40,12 @@
             this.label4 = new System.Windows.Forms.Label();
             this.labelStatus = new System.Windows.Forms.Label();
             this.labelName = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBoxCategory = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.numericUpDownPortalId = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortalId)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -55,7 +60,7 @@
             // buttonOK
             // 
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(187, 129);
+            this.buttonOK.Location = new System.Drawing.Point(187, 188);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 2;
@@ -66,7 +71,7 @@
             // 
             this.buttonCancel.CausesValidation = false;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(269, 128);
+            this.buttonCancel.Location = new System.Drawing.Point(269, 188);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 3;
@@ -80,7 +85,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 36);
+            this.label2.Location = new System.Drawing.Point(13, 44);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(32, 13);
             this.label2.TabIndex = 4;
@@ -88,7 +93,7 @@
             // 
             // textBoxURL
             // 
-            this.textBoxURL.Location = new System.Drawing.Point(78, 33);
+            this.textBoxURL.Location = new System.Drawing.Point(78, 37);
             this.textBoxURL.Name = "textBoxURL";
             this.textBoxURL.Size = new System.Drawing.Size(400, 20);
             this.textBoxURL.TabIndex = 5;
@@ -97,7 +102,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 63);
+            this.label3.Location = new System.Drawing.Point(13, 137);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 13);
             this.label3.TabIndex = 6;
@@ -106,7 +111,7 @@
             // labelLastRun
             // 
             this.labelLastRun.AutoSize = true;
-            this.labelLastRun.Location = new System.Drawing.Point(78, 63);
+            this.labelLastRun.Location = new System.Drawing.Point(81, 137);
             this.labelLastRun.Name = "labelLastRun";
             this.labelLastRun.Size = new System.Drawing.Size(0, 13);
             this.labelLastRun.TabIndex = 7;
@@ -114,7 +119,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 90);
+            this.label4.Location = new System.Drawing.Point(13, 168);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(40, 13);
             this.label4.TabIndex = 8;
@@ -123,7 +128,7 @@
             // labelStatus
             // 
             this.labelStatus.AutoSize = true;
-            this.labelStatus.Location = new System.Drawing.Point(78, 90);
+            this.labelStatus.Location = new System.Drawing.Point(81, 168);
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.Size = new System.Drawing.Size(0, 13);
             this.labelStatus.TabIndex = 9;
@@ -136,13 +141,49 @@
             this.labelName.Size = new System.Drawing.Size(0, 13);
             this.labelName.TabIndex = 10;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(13, 75);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(49, 13);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "Category";
+            // 
+            // textBoxCategory
+            // 
+            this.textBoxCategory.Location = new System.Drawing.Point(78, 68);
+            this.textBoxCategory.Name = "textBoxCategory";
+            this.textBoxCategory.Size = new System.Drawing.Size(100, 20);
+            this.textBoxCategory.TabIndex = 12;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(13, 106);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(43, 13);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "PortalId";
+            // 
+            // numericUpDownPortalId
+            // 
+            this.numericUpDownPortalId.Location = new System.Drawing.Point(78, 99);
+            this.numericUpDownPortalId.Name = "numericUpDownPortalId";
+            this.numericUpDownPortalId.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownPortalId.TabIndex = 14;
+            // 
             // EditProperties
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(530, 170);
+            this.ClientSize = new System.Drawing.Size(530, 223);
+            this.Controls.Add(this.numericUpDownPortalId);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.textBoxCategory);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.labelName);
             this.Controls.Add(this.labelStatus);
             this.Controls.Add(this.label4);
@@ -156,6 +197,7 @@
             this.Name = "EditProperties";
             this.Text = "EditProperties";
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortalId)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -174,5 +216,9 @@
         public System.Windows.Forms.Label labelLastRun;
         public System.Windows.Forms.TextBox textBoxURL;
         public System.Windows.Forms.Label labelName;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.NumericUpDown numericUpDownPortalId;
+        public System.Windows.Forms.TextBox textBoxCategory;
     }
 }
