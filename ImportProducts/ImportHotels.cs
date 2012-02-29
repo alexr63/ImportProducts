@@ -350,7 +350,7 @@ namespace ImportProducts
                                 UnitCost6 = hotel.UnitCost,
                                 Description = hotel.Description,
                                 DescriptionHTML = hotel.DescriptionHTML,
-                                URL = hotel.URL,
+                                URL = hotel.URL.Replace("[[PARTNERID]]", "2248").Trim(' '),
                                 ProductCost = hotel.UnitCost,
                                 DateCreated = DateTime.Now
                             };
@@ -385,7 +385,7 @@ namespace ImportProducts
                             product.UnitCost6 = hotel.UnitCost;
                             product.Description = hotel.Description;
                             product.DescriptionHTML = hotel.DescriptionHTML;
-                            product.URL = hotel.URL;
+                            product.URL = hotel.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
                             product.ProductCost = hotel.UnitCost;
 
                             product.ProductImage = (string)hotel.Images.Element("url");
