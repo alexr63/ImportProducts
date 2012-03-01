@@ -112,8 +112,11 @@ namespace ImportProducts
             string _URL = param.Url;
             int portalId = param.PortalId;
 
-#if !NONAME
             string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
+            if (File.Exists(xmlFileName))
+            {
+                File.Delete(xmlFileName);
+            }
             // inside function display progressbar
             SaveFileFromURL(_URL, xmlFileName, 60,bw,e);
 
@@ -121,24 +124,7 @@ namespace ImportProducts
              if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;
 
             _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
-#endif
 
-#if NONAME
-            var test =
-                from el in StreamRootChildDoc(_URL)
-                select new
-                           {
-                               Category = (string) el.Element("TDCategoryName"),
-                               ProductNumber = (string) el.Element("TDProductId"),
-                               Name = (string) el.Element("name"),
-                               Image = (string) el.Element("imageUrl"),
-                               UnitCost = (decimal) el.Element("price"),
-                               Description = (string) el.Element("description"),
-                               DescriptionHTML = (string) el.Element("description"),
-                               URL = (string) el.Element("productUrl")
-                           };
-            Console.WriteLine(String.Format("Total count: {0}", test.Count()));
-#endif
             // Set step for backgroundWorker
             Form1.activeStep = "Import records..";
             bw.ReportProgress(0);           // start new step of background process
@@ -167,7 +153,7 @@ namespace ImportProducts
                 {
                     foreach (var product in products)
                     {
-                        Console.WriteLine(product.Name); // debug print
+                        Console.WriteLine(product.Name.Replace("&apos;", "'")); // debug print
 
                         Category category = db.Categories.SingleOrDefault(c => c.CategoryName == product.Category && c.PortalID == portalId);
                         if (category == null)
@@ -195,7 +181,7 @@ namespace ImportProducts
                                 CategoryID = category.CategoryID,
                                 Category2ID = 0,
                                 Category3 = String.Empty,
-                                ProductName = product.Name,
+                                ProductName = product.Name.Replace("&apos;", "'"),
                                 ProductNumber = product.ProductNumber,
                                 UnitCost = product.UnitCost,
                                 UnitCost2 = product.UnitCost,
@@ -219,7 +205,7 @@ namespace ImportProducts
                         }
                         else
                         {
-                            product2.ProductName = product.Name;
+                            product2.ProductName = product.Name.Replace("&apos;", "'");
                             product2.ProductNumber = product.ProductNumber;
                             product2.UnitCost = product.UnitCost;
                             product2.UnitCost2 = product.UnitCost;

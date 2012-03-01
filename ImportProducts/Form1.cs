@@ -125,6 +125,7 @@ namespace ImportProducts
                             workD = new BackGroundWorkerDelegateWork(ImportHotels.DoImport);
                             break;
                         case "Trade Doubler":
+                        case "Home and garden":
                             workD = new BackGroundWorkerDelegateWork(ImportTradeDoublerProducts.DoImport);
                             break;
                     }

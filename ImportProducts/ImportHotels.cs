@@ -120,13 +120,16 @@ namespace ImportProducts
             int categoryId = param.CategoryId.Value;
             int portalId = param.PortalId;
 
-#if !DEBUG
             // unzip file to temp folder if needed
             if (_URL.EndsWith(".zip"))
             {
                 string zipFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath,
                                                    "Hotels_Standard.zip");
                 // inside this function show progressBar for step: LoadFile
+                if (File.Exists(zipFileName))
+                {
+                    File.Delete(zipFileName);
+                }
                 SaveFileFromURL(_URL, zipFileName, 60, bw, e);
 
                 // if user cancel during saving file or ERROR
@@ -148,9 +151,6 @@ namespace ImportProducts
                 }
                 _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "Hotels_Standard.xml");
             }
-#else
-            _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "Hotels_Standard.xml");
-#endif
 
             // show progress & catch Cancel
             if (bw.CancellationPending)
