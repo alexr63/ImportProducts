@@ -241,7 +241,7 @@ namespace ImportProducts
                 notifyIcon.BalloonTipText = "Import " + activeKey + " has been canceled";
             }
             else
-                if (e.Error != null || e.Result.ToString().Substring(0, 6).Equals("ERROR:"))
+                if (e.Error != null || (e.Result != null && e.Result.ToString().Substring(0, 6).Equals("ERROR:")))
                 {
                     deactivate = true;
                     bgProcesses[activeKey].Status = "Error";
