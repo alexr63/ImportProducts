@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity.Validation;
 using System.Data.Objects;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -128,6 +130,9 @@ namespace ImportProducts
                         case "Home and garden":
                             workD = new BackGroundWorkerDelegateWork(ImportTradeDoublerProducts.DoImport);
                             break;
+                        case "Productserve":
+                            workD = new BackGroundWorkerDelegateWork(ImportProductserve.DoImport);
+                            break;
                     }
                     progressD = new BackGroundWorkerDelegateProgress(backgroundWorkerProgressChanged);
                     completeD = new BackGroundWorkerDelegateCompleted(backgroundWorkerRunWorkerCompleted);
@@ -230,7 +235,7 @@ namespace ImportProducts
         {
             bool displayedProcess = false, deactivate = false;
             BackgroundWorker bw = sender as BackgroundWorker;
-            if (activeKey != "" && bw.Equals(bgw[activeKey])) displayedProcess = true;  // finish displayed process
+            if (activeKey != "" && bw.Equals(bgw[activeKey])) displayedProcess = true; // finish displayed process
             // finish showed process
             bgProcesses[activeKey].LastRun = DateTime.Now;
             if (e.Cancelled)
@@ -240,27 +245,27 @@ namespace ImportProducts
                 notifyIcon.BalloonTipIcon = ToolTipIcon.Warning;
                 notifyIcon.BalloonTipText = "Import " + activeKey + " has been canceled";
             }
+            else if (e.Error != null || (e.Result != null && e.Result.ToString().Substring(0, 6).Equals("ERROR:")))
+            {
+                deactivate = true;
+                bgProcesses[activeKey].Status = "Error";
+                notifyIcon.BalloonTipIcon = ToolTipIcon.Error;
+                notifyIcon.BalloonTipText = "Import " + activeKey + " has been broken due to ERROR";
+            }
             else
-                if (e.Error != null || (e.Result != null && e.Result.ToString().Substring(0, 6).Equals("ERROR:")))
-                {
-                    deactivate = true;
-                    bgProcesses[activeKey].Status = "Error";
-                    notifyIcon.BalloonTipIcon = ToolTipIcon.Error;
-                    notifyIcon.BalloonTipText = "Import " + activeKey + " has been broken due to ERROR";
-                }
-                else
-                {
-                    deactivate = true;
-                    bgProcesses[activeKey].Status = "Success";
-                    notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-                    notifyIcon.BalloonTipText = "Import " + activeKey + " completed";
-                }
+            {
+                deactivate = true;
+                bgProcesses[activeKey].Status = "Success";
+                notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+                notifyIcon.BalloonTipText = "Import " + activeKey + " completed";
+            }
             // ShowBaloon for non-active process
             notifyIcon.ShowBalloonTip(15000);
             if (displayedProcess && deactivate)
             {
                 if (bw.WorkerReportsProgress)
-                {   // disable controls for displayed process
+                {
+                    // disable controls for displayed process
                     tsProgressBar.Enabled = false;
                     tsddButton.Enabled = false;
                 }
@@ -278,12 +283,28 @@ namespace ImportProducts
                         break;
                     }
                 if (activeKey != "")
-                    ShiftStatusStripToActiveBackgroudWorker(bgw.Count, activeKey, bgStep[activeKey], bgw[activeKey].IsBusy, bgProgress[activeKey]);
+                    ShiftStatusStripToActiveBackgroudWorker(bgw.Count, activeKey, bgStep[activeKey],
+                                                            bgw[activeKey].IsBusy, bgProgress[activeKey]);
                 else
                     ShiftStatusStripToActiveBackgroudWorker(0, activeKey, activeKey, false, 0);
             }
             // set result of download
-            context.SaveChanges();
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName,
+                                               validationError.ErrorMessage);
+                    }
+                }
+            }
+
             BindData();
         }
 

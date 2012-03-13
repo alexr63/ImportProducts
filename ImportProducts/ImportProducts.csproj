@@ -73,6 +73,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CATModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="ImportProductserve.cs" />
     <Compile Include="EditProperties.cs">
       <SubType>Form</SubType>
     </Compile>
