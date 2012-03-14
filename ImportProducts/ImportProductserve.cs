@@ -166,6 +166,7 @@ namespace ImportProducts
                     DescriptionHTML = (string)el.Element("text").Element("desc"),
                     UnitCost = (decimal)el.Element("price").Element("buynow"),
                     Category = (string)el.Element("cat").Element("mCat"),
+                    Category2 = (string)el.Element("cat").Element("awCat"),
                     URL = (string)el.Element("uri").Element("mLink"),
                     Image = (string)el.Element("uri").Element("mImage"),
                 };
@@ -208,6 +209,23 @@ namespace ImportProducts
                             db.Categories.Add(category);
                             db.SaveChanges();
                         }
+                        Category category2 = db.Categories.SingleOrDefault(c => c.CategoryName == product.Category2 && c.PortalID == portalId);
+                        if (category2 == null)
+                        {
+                            category2 = new Category
+                            {
+                                CategoryName = product.Category2,
+                                Description = String.Empty,
+                                PortalID = portalId,
+                                CategoryImportID = String.Empty,
+                                CategoryFolderImage = String.Empty,
+                                CategoryOpenFolderImage = String.Empty,
+                                CategoryPageImage = String.Empty,
+                                CreatedByUser = 1
+                            };
+                            db.Categories.Add(category2);
+                            db.SaveChanges();
+                        }
 
                         var product2 = db.Products.SingleOrDefault(p => p.CategoryID == category.CategoryID && p.ProductNumber == product.ProductNumber);
                         if (product2 == null)
@@ -215,7 +233,7 @@ namespace ImportProducts
                             product2 = new Product
                             {
                                 CategoryID = category.CategoryID,
-                                Category2ID = 0,
+                                Category2ID = category2.CategoryID,
                                 Category3 = String.Empty,
                                 ProductName = product.Name.Replace("&apos;", "'"),
                                 ProductNumber = product.ProductNumber,
@@ -241,6 +259,8 @@ namespace ImportProducts
                         }
                         else
                         {
+                            product2.CategoryID = category.CategoryID;
+                            product2.Category2ID = category2.CategoryID;
                             product2.ProductName = product.Name.Replace("&apos;", "'");
                             product2.ProductNumber = product.ProductNumber;
                             product2.UnitCost = product.UnitCost;
