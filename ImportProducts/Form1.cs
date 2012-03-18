@@ -133,6 +133,9 @@ namespace ImportProducts
                         case "Productserve":
                             workD = new BackGroundWorkerDelegateWork(ImportProductserve.DoImport);
                             break;
+                        case "Webgains":
+                            workD = new BackGroundWorkerDelegateWork(ImportWebgainsProducts.DoImport);
+                            break;
                     }
                     progressD = new BackGroundWorkerDelegateProgress(backgroundWorkerProgressChanged);
                     completeD = new BackGroundWorkerDelegateCompleted(backgroundWorkerRunWorkerCompleted);
