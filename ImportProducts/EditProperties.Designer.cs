@@ -44,8 +44,11 @@
             this.textBoxCategory = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.numericUpDownPortalId = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.numericUpDownVendorId = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortalId)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVendorId)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -60,7 +63,7 @@
             // buttonOK
             // 
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(187, 188);
+            this.buttonOK.Location = new System.Drawing.Point(187, 217);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 2;
@@ -71,7 +74,7 @@
             // 
             this.buttonCancel.CausesValidation = false;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(269, 188);
+            this.buttonCancel.Location = new System.Drawing.Point(269, 217);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 3;
@@ -102,7 +105,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 137);
+            this.label3.Location = new System.Drawing.Point(13, 166);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 13);
             this.label3.TabIndex = 6;
@@ -119,7 +122,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 168);
+            this.label4.Location = new System.Drawing.Point(13, 197);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(40, 13);
             this.label4.TabIndex = 8;
@@ -173,13 +176,31 @@
             this.numericUpDownPortalId.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownPortalId.TabIndex = 14;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(13, 137);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 13);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "VendorId";
+            // 
+            // numericUpDownVendorId
+            // 
+            this.numericUpDownVendorId.Location = new System.Drawing.Point(78, 135);
+            this.numericUpDownVendorId.Name = "numericUpDownVendorId";
+            this.numericUpDownVendorId.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownVendorId.TabIndex = 16;
+            // 
             // EditProperties
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(530, 223);
+            this.ClientSize = new System.Drawing.Size(530, 254);
+            this.Controls.Add(this.numericUpDownVendorId);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.numericUpDownPortalId);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBoxCategory);
@@ -198,6 +219,7 @@
             this.Text = "EditProperties";
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortalId)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVendorId)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -220,5 +242,7 @@
         private System.Windows.Forms.Label label5;
         public System.Windows.Forms.NumericUpDown numericUpDownPortalId;
         public System.Windows.Forms.TextBox textBoxCategory;
+        private System.Windows.Forms.Label label7;
+        public System.Windows.Forms.NumericUpDown numericUpDownVendorId;
     }
 }

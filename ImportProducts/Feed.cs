@@ -21,5 +21,6 @@ namespace ImportProducts
         public string Status { get; set; }
         public int PortalId { get; set; }
         public string Category { get; set; }
+        public int VendorId { get; set; }
     }
 }

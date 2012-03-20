@@ -111,6 +111,7 @@ namespace ImportProducts
             BackgroundWorkParameters param = (BackgroundWorkParameters)e.Argument;
             string _URL = param.Url;
             int portalId = param.PortalId;
+            int vendorId = param.VendorId;
 
             string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
             if (File.Exists(xmlFileName))
@@ -194,6 +195,7 @@ namespace ImportProducts
                                 URL = product.URL,
                                 ProductCost = product.UnitCost,
                                 ProductImage = product.Image,
+                                CreatedByUser = vendorId,
                                 DateCreated = DateTime.Now
                             };
 

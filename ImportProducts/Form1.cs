@@ -20,6 +20,7 @@ namespace ImportProducts
         public string Url;
         public int? CategoryId;
         public int PortalId;
+        public int VendorId;
     }
 
     public partial class Form1 : Form
@@ -120,11 +121,12 @@ namespace ImportProducts
                         }
                     }
                     bgParams.PortalId = selectedFeed.PortalId;
+                    bgParams.VendorId = selectedFeed.VendorId;
 
                     switch (keyDownload)
                     {
-                        case "Hotels":
-                            workD = new BackGroundWorkerDelegateWork(ImportHotels.DoImport);
+                        case "Laterooms":
+                            workD = new BackGroundWorkerDelegateWork(ImportLaterooms.DoImport);
                             break;
                         case "Trade Doubler":
                         case "Home and garden":
@@ -163,6 +165,7 @@ namespace ImportProducts
                 editProperties.textBoxCategory.Text = selectedFeed.Category;
             }
             editProperties.numericUpDownPortalId.Value = selectedFeed.PortalId;
+            editProperties.numericUpDownVendorId.Value = selectedFeed.VendorId;
             if (selectedFeed.LastRun != null)
             {
                 editProperties.labelLastRun.Text = selectedFeed.LastRun.Value.ToString();
@@ -181,6 +184,7 @@ namespace ImportProducts
                     feed.Category = editProperties.textBoxCategory.Text;
                 }
                 feed.PortalId = (int)editProperties.numericUpDownPortalId.Value;
+                feed.VendorId = (int)editProperties.numericUpDownVendorId.Value;
                 context.SaveChanges();
                 BindData();
             }

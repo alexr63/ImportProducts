@@ -18,7 +18,8 @@
           <Property Name="LastRun" Type="datetime" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="PortalId" Type="int" Nullable="false" />
-          <Property Name="Category" Type="nvarchar" MaxLength="50" />
+          <Property Name="Category" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="VendorId" Type="int" Nullable="false" />
         </EntityType>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -37,7 +38,8 @@
           <Property Type="DateTime" Name="LastRun" />
           <Property Type="String" Name="Status" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="PortalId" Nullable="false" />
-          <Property Type="String" Name="Category" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Category" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Type="Int32" Name="VendorId" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -46,7 +48,8 @@
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ImportProductsModelStoreContainer" CdmEntityContainer="ImportProductsEntities">
           <EntitySetMapping Name="Feeds"><EntityTypeMapping TypeName="ImportProductsModel.Feed"><MappingFragment StoreEntitySet="Feeds">
-            <ScalarProperty Name="Category" ColumnName="Category" />
+            <ScalarProperty Name="VendorId" ColumnName="VendorId" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="PortalId" ColumnName="PortalId" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="LastRun" ColumnName="LastRun" />
