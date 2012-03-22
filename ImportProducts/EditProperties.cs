@@ -27,5 +27,29 @@ namespace ImportProducts
                 errorProvider1.SetError(textBoxURL, "Please enter URL");
             }
         }
+
+        private void textBoxCategory_Validating(object sender, CancelEventArgs e)
+        {
+            if (textBoxCategory.Text.Length > 0)
+            {
+                errorProvider1.SetError(textBoxCategory, "");
+            }
+            else
+            {
+                errorProvider1.SetError(textBoxCategory, "Please enter Category");
+            }
+        }
+
+        private void textBoxAdvancedCategoryRoot_Validating(object sender, CancelEventArgs e)
+        {
+            if (textBoxAdvancedCategoryRoot.Text.Length > 0)
+            {
+                errorProvider1.SetError(textBoxAdvancedCategoryRoot, "");
+            }
+            else
+            {
+                errorProvider1.SetError(textBoxAdvancedCategoryRoot, "Please enter Advanced Category Root");
+            }
+        }
     }
 }

@@ -18,9 +18,10 @@ namespace ImportProducts
     struct BackgroundWorkParameters
     {
         public string Url;
-        public int? CategoryId;
+        public int CategoryId;
         public int PortalId;
         public int VendorId;
+        public string AdvancedCategoryRoot;
     }
 
     public partial class Form1 : Form
@@ -122,6 +123,7 @@ namespace ImportProducts
                     }
                     bgParams.PortalId = selectedFeed.PortalId;
                     bgParams.VendorId = selectedFeed.VendorId;
+                    bgParams.AdvancedCategoryRoot = selectedFeed.AdvancedCategoryRoot;
 
                     switch (keyDownload)
                     {
@@ -160,12 +162,10 @@ namespace ImportProducts
             EditProperties editProperties = new EditProperties();
             editProperties.labelName.Text = selectedFeed.Name;
             editProperties.textBoxURL.Text = selectedFeed.URL;
-            if (!String.IsNullOrEmpty(selectedFeed.Category))
-            {
-                editProperties.textBoxCategory.Text = selectedFeed.Category;
-            }
+            editProperties.textBoxCategory.Text = selectedFeed.Category;
             editProperties.numericUpDownPortalId.Value = selectedFeed.PortalId;
             editProperties.numericUpDownVendorId.Value = selectedFeed.VendorId;
+            editProperties.textBoxAdvancedCategoryRoot.Text = selectedFeed.AdvancedCategoryRoot;
             if (selectedFeed.LastRun != null)
             {
                 editProperties.labelLastRun.Text = selectedFeed.LastRun.Value.ToString();
@@ -179,12 +179,10 @@ namespace ImportProducts
                 context = new ImportProductsEntities();
                 Feed feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
                 feed.URL = editProperties.textBoxURL.Text;
-                if (editProperties.textBoxCategory.Text != String.Empty)
-                {
-                    feed.Category = editProperties.textBoxCategory.Text;
-                }
+                feed.Category = editProperties.textBoxCategory.Text;
                 feed.PortalId = (int)editProperties.numericUpDownPortalId.Value;
                 feed.VendorId = (int)editProperties.numericUpDownVendorId.Value;
+                feed.AdvancedCategoryRoot = editProperties.textBoxAdvancedCategoryRoot.Text;
                 context.SaveChanges();
                 BindData();
             }

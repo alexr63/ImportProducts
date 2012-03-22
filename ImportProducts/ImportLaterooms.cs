@@ -117,9 +117,10 @@ namespace ImportProducts
             // Parse list input parameters
             BackgroundWorkParameters param = (BackgroundWorkParameters)e.Argument;
             string _URL = param.Url;
-            int categoryId = param.CategoryId.Value;
+            int categoryId = param.CategoryId;
             int portalId = param.PortalId;
             int vendorId = param.VendorId;
+            string advancedCategoryRoot = param.AdvancedCategoryRoot;
 
             // unzip file to temp folder if needed
             if (_URL.EndsWith(".zip"))
@@ -162,7 +163,7 @@ namespace ImportProducts
 
             // read hotels from XML
             // use XmlReader to avoid huge file size dependence
-            var hotels =
+            var products =
                 from el in StreamRootChildDoc(_URL)
                 select new
                 {
@@ -188,42 +189,74 @@ namespace ImportProducts
            // Set step for backgroundWorker
            Form1.activeStep = "Import records..";
            bw.ReportProgress(0);           // start new step of background process
-           long countHotels = hotels.Count();
+           long countHotels = products.Count();
            long currentHotel = 0;
 
             try
             {
                 using (DNN_6_0_0Entities db = new DNN_6_0_0Entities())
                 {
-                    foreach (var hotel in hotels)
+                    foreach (var product in products)
                     {
-#if DEBUG
-                        if (hotel.Country != "England")
-                        {
-                            continue;
-                        }
-#endif
-
-                        Console.WriteLine(hotel.Name); // debug print
+                        Console.WriteLine(product.Name); // debug print
 
                         // create advanced categories
-                        var hotel1 = hotel;
-                        string hotelCity = hotel1.City;
-                        if (hotel1.City.Length > 50)
+                        var product1 = product;
+                        string hotelCity = product1.City;
+                        if (product1.City.Length > 50)
                         {
-                            hotelCity = hotel1.City.Substring(0, 47).PadRight(50, '.');
+                            hotelCity = product1.City.Substring(0, 47).PadRight(50, '.');
                         }
                         int? parentID = null;
+                        int? catRootID = null;
                         int? catCountryID = null;
                         int? catCountyID = null;
                         int? catCityID = null;
                         int level = 0;
                         int maxOrder = 0;
-                        if (!String.IsNullOrEmpty(hotel1.Country))
+
+                        if (!String.IsNullOrEmpty(advancedCategoryRoot))
+                        {
+                            var advCatRoot =
+                                db.AdvCats.SingleOrDefault(
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == advancedCategoryRoot && ac.Level == level);
+                            if (advCatRoot == null)
+                            {
+                                if (db.AdvCats.Count() > 0)
+                                {
+                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                }
+                                advCatRoot = new AdvCat
+                                {
+                                    AdvCatOrder = maxOrder + 1,
+                                    PortalID = portalId,
+                                    AdvCatName = advancedCategoryRoot,
+                                    IsVisible = true,
+                                    DisableLink = false,
+                                    Url = String.Empty,
+                                    Title = String.Empty,
+                                    Description = String.Empty,
+                                    KeyWords = String.Empty,
+                                    IsDeleted = false,
+                                    IconFile = String.Empty,
+                                    Level = level,
+                                    AdvCatImportID = String.Empty
+                                };
+                                db.AdvCats.Add(advCatRoot);
+                                db.SaveChanges();
+
+                                Common.AddAdvCatDefaultPermissions(db, advCatRoot.AdvCatID);
+                            }
+                            parentID = advCatRoot.AdvCatID;
+                            catRootID = advCatRoot.AdvCatID;
+                            level++;
+                        }
+
+                        if (!String.IsNullOrEmpty(product1.Country))
                         {
                             var advCatCountry =
                                 db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == portalId && ac.AdvCatName == hotel1.Country && ac.Level == level);
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == product1.Country && ac.Level == level);
                             if (advCatCountry == null)
                             {
                                 if (db.AdvCats.Count() > 0)
@@ -234,7 +267,7 @@ namespace ImportProducts
                                 {
                                     AdvCatOrder = maxOrder + 1,
                                     PortalID = portalId,
-                                    AdvCatName = hotel.Country,
+                                    AdvCatName = product1.Country,
                                     IsVisible = true,
                                     DisableLink = false,
                                     Url = String.Empty,
@@ -249,18 +282,18 @@ namespace ImportProducts
                                 db.AdvCats.Add(advCatCountry);
                                 db.SaveChanges();
 
-                                AddAdvCatDefaultPermissions(db, advCatCountry.AdvCatID);
+                                Common.AddAdvCatDefaultPermissions(db, advCatCountry.AdvCatID);
                             }
                             parentID = advCatCountry.AdvCatID;
                             catCountryID = advCatCountry.AdvCatID;
                             level++;
                         }
 
-                        if (!String.IsNullOrEmpty(hotel1.County))
+                        if (!String.IsNullOrEmpty(product1.County))
                         {
                             var advCatCounty =
                                 db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == portalId && ac.AdvCatName == hotel1.County && ac.Level == level);
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == product1.County && ac.Level == level);
                             if (advCatCounty == null)
                             {
                                 if (db.AdvCats.Count() > 0)
@@ -271,7 +304,7 @@ namespace ImportProducts
                                 {
                                     AdvCatOrder = maxOrder + 1,
                                     PortalID = portalId,
-                                    AdvCatName = hotel.County,
+                                    AdvCatName = product.County,
                                     IsVisible = true,
                                     ParentId = parentID.Value,
                                     DisableLink = false,
@@ -287,18 +320,18 @@ namespace ImportProducts
                                 db.AdvCats.Add(advCatCounty);
                                 db.SaveChanges();
 
-                                AddAdvCatDefaultPermissions(db, advCatCounty.AdvCatID);
+                                Common.AddAdvCatDefaultPermissions(db, advCatCounty.AdvCatID);
                             }
                             parentID = advCatCounty.AdvCatID;
                             catCountyID = advCatCounty.AdvCatID;
                             level++;
                         }
 
-                        if (!String.IsNullOrEmpty(hotel1.City))
+                        if (!String.IsNullOrEmpty(product1.City))
                         {
                             var advCatCity =
                                 db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == portalId && ac.AdvCatName == hotel1.City && ac.Level == level);
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == product1.City && ac.Level == level);
                             if (advCatCity == null)
                             {
                                 if (db.AdvCats.Count() > 0)
@@ -325,7 +358,7 @@ namespace ImportProducts
                                 db.AdvCats.Add(advCatCity);
                                 db.SaveChanges();
 
-                                AddAdvCatDefaultPermissions(db, advCatCity.AdvCatID);
+                                Common.AddAdvCatDefaultPermissions(db, advCatCity.AdvCatID);
                             }
                             parentID = advCatCity.AdvCatID;
                             catCityID = advCatCity.AdvCatID;
@@ -333,131 +366,140 @@ namespace ImportProducts
                         }
 
                         // create new product record
-                        var product = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == hotel.ProductNumber);
-                        if (product == null)
+                        var product2 = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
+                        if (product2 == null)
                         {
-                            product = new Product
+                            product2 = new Product
                             {
                                 CategoryID = categoryId,
                                 Category2ID = 0,
                                 Category3 = String.Empty,
-                                ProductName = hotel.Name,
-                                ProductNumber = hotel.ProductNumber,
-                                UnitCost = hotel.UnitCost,
-                                UnitCost2 = hotel.UnitCost,
-                                UnitCost3 = hotel.UnitCost,
-                                UnitCost4 = hotel.UnitCost,
-                                UnitCost5 = hotel.UnitCost,
-                                UnitCost6 = hotel.UnitCost,
-                                Description = hotel.Description,
-                                DescriptionHTML = hotel.DescriptionHTML,
-                                URL = hotel.URL.Replace("[[PARTNERID]]", "2248").Trim(' '),
-                                ProductCost = hotel.UnitCost,
+                                ProductName = product.Name,
+                                ProductNumber = product.ProductNumber,
+                                UnitCost = product.UnitCost,
+                                UnitCost2 = product.UnitCost,
+                                UnitCost3 = product.UnitCost,
+                                UnitCost4 = product.UnitCost,
+                                UnitCost5 = product.UnitCost,
+                                UnitCost6 = product.UnitCost,
+                                Description = product.Description,
+                                DescriptionHTML = product.DescriptionHTML,
+                                URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '),
+                                ProductCost = product.UnitCost,
                                 CreatedByUser = vendorId,
                                 DateCreated = DateTime.Now
                             };
 
                             // add additional product images
-                            product.ProductImage = (string)hotel.Images.Element("url");
-                            foreach (var image in hotel.Images.Elements("url"))
+                            product2.ProductImage = (string)product.Images.Element("url");
+                            foreach (var image in product.Images.Elements("url"))
                             {
                                 if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
                                 {
                                     ProductImage productImage = new ProductImage();
                                     productImage.ImageFile = image.Value;
-                                    product.ProductImages.Add(productImage);
+                                    product2.ProductImages.Add(productImage);
                                 }
                             }
                             // trick to hide Add To Cart button
-                            product.OrderQuant = "0";
+                            product2.OrderQuant = "0";
 
                             // add product to product set
-                            db.Products.Add(product);
+                            db.Products.Add(product2);
                             // store  changes
                             db.SaveChanges();
                         }
                         else
                         {
-                            product.ProductName = hotel.Name;
-                            product.UnitCost = hotel.UnitCost;
-                            product.UnitCost2 = hotel.UnitCost;
-                            product.UnitCost3 = hotel.UnitCost;
-                            product.UnitCost4 = hotel.UnitCost;
-                            product.UnitCost5 = hotel.UnitCost;
-                            product.UnitCost6 = hotel.UnitCost;
-                            product.Description = hotel.Description;
-                            product.DescriptionHTML = hotel.DescriptionHTML;
-                            product.URL = hotel.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
-                            product.ProductCost = hotel.UnitCost;
+                            product2.ProductName = product.Name;
+                            product2.UnitCost = product.UnitCost;
+                            product2.UnitCost2 = product.UnitCost;
+                            product2.UnitCost3 = product.UnitCost;
+                            product2.UnitCost4 = product.UnitCost;
+                            product2.UnitCost5 = product.UnitCost;
+                            product2.UnitCost6 = product.UnitCost;
+                            product2.Description = product.Description;
+                            product2.DescriptionHTML = product.DescriptionHTML;
+                            product2.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                            product2.ProductCost = product.UnitCost;
 
-                            product.ProductImage = (string)hotel.Images.Element("url");
-                            foreach (var productImage in product.ProductImages)
+                            product2.ProductImage = (string)product.Images.Element("url");
+                            foreach (var productImage in product2.ProductImages)
                             {
-                                if (!hotel1.Images.Elements("url").Any(x => x.Value == productImage.ImageFile))
+                                if (!product1.Images.Elements("url").Any(x => x.Value == productImage.ImageFile))
                                 {
                                     productImage.ImageFile = String.Empty;
                                 }
                             }
-                            var oldImages = product.ProductImages.Where(pi => pi.ImageFile == String.Empty).ToList();
+                            var oldImages = product2.ProductImages.Where(pi => pi.ImageFile == String.Empty).ToList();
                             foreach (var oldImage in oldImages)
                             {
                                 db.ProductImages.Remove(oldImage);
                             }
-                            foreach (var image in hotel1.Images.Elements("url"))
+                            foreach (var image in product1.Images.Elements("url"))
                             {
                                 if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
                                 {
-                                    if (!product.ProductImages.Any(pi => pi.ImageFile == image.Value))
+                                    if (!product2.ProductImages.Any(pi => pi.ImageFile == image.Value))
                                     {
                                         ProductImage productImage = new ProductImage();
                                         productImage.ImageFile = image.Value;
-                                        product.ProductImages.Add(productImage);
+                                        product2.ProductImages.Add(productImage);
                                     }
                                 }
                             }
 
-                            product.OrderQuant = "0";
+                            product2.OrderQuant = "0";
 
                             db.SaveChanges();
                         }
 
                         // add product to advanced categories
-                        if (catCountryID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCountryID.Value && act.ProductID == product.ProductID) == null)
+                        if (catRootID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catRootID.Value && act.ProductID == product2.ProductID) == null)
+                        {
+                            AdvCatProduct advCatProduct = new AdvCatProduct
+                            {
+                                AdvCatID = catRootID.Value,
+                                ProductID = product2.ProductID,
+                                AddAdvCatToProductDisplay = false
+                            };
+                            db.AdvCatProducts.Add(advCatProduct);
+                            db.SaveChanges();
+                        }
+                        if (catCountryID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCountryID.Value && act.ProductID == product2.ProductID) == null)
                         {
                             AdvCatProduct advCatProduct = new AdvCatProduct
                             {
                                 AdvCatID = catCountryID.Value,
-                                ProductID = product.ProductID,
+                                ProductID = product2.ProductID,
                                 AddAdvCatToProductDisplay = false
                             };
                             db.AdvCatProducts.Add(advCatProduct);
                             db.SaveChanges();
                         }
-                        if (catCountyID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCountyID.Value && act.ProductID == product.ProductID) == null)
+                        if (catCountyID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCountyID.Value && act.ProductID == product2.ProductID) == null)
                         {
                             AdvCatProduct advCatProduct = new AdvCatProduct
                             {
                                 AdvCatID = catCountyID.Value,
-                                ProductID = product.ProductID,
+                                ProductID = product2.ProductID,
                                 AddAdvCatToProductDisplay = false
                             };
                             db.AdvCatProducts.Add(advCatProduct);
                             db.SaveChanges();
                         }
-                        if (catCityID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCityID.Value && act.ProductID == product.ProductID) == null)
+                        if (catCityID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCityID.Value && act.ProductID == product2.ProductID) == null)
                         {
                             AdvCatProduct advCatProduct = new AdvCatProduct
                             {
                                 AdvCatID = catCityID.Value,
-                                ProductID = product.ProductID,
+                                ProductID = product2.ProductID,
                                 AddAdvCatToProductDisplay = false
                             };
                             db.AdvCatProducts.Add(advCatProduct);
                             db.SaveChanges();
                         }
 
-                        // break application after first record - enough for debiggung/discussing
-                        //break;
                         currentHotel++;
                         if (bw.CancellationPending)
                         {
@@ -476,35 +518,6 @@ namespace ImportProducts
                 log.Error("Error error logging", ex);
             }
             //return rc;
-        }
-
-        private static void AddAdvCatDefaultPermissions(DNN_6_0_0Entities db, int advCatID)
-        {
-            var advCatPermission = new AdvCatPermission
-            {
-                AdvCatID = advCatID,
-                PermissionID = 1,
-                RoleID = 0,
-                AllowAccess = true
-            };
-            db.AdvCatPermissions.Add(advCatPermission);
-            var advCatPermission2 = new AdvCatPermission
-            {
-                AdvCatID = advCatID,
-                PermissionID = 2,
-                RoleID = 0,
-                AllowAccess = true
-            };
-            db.AdvCatPermissions.Add(advCatPermission2);
-            var advCatPermission3 = new AdvCatPermission
-            {
-                AdvCatID = advCatID,
-                PermissionID = 1,
-                RoleID = -1,
-                AllowAccess = true
-            };
-            db.AdvCatPermissions.Add(advCatPermission3);
-            db.SaveChanges();
         }
     }
 }

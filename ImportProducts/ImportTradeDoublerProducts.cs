@@ -110,8 +110,10 @@ namespace ImportProducts
             // Parse list input parameters
             BackgroundWorkParameters param = (BackgroundWorkParameters)e.Argument;
             string _URL = param.Url;
+            int categoryId = param.CategoryId;
             int portalId = param.PortalId;
             int vendorId = param.VendorId;
+            string advancedCategoryRoot = param.AdvancedCategoryRoot;
 
             string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
             if (File.Exists(xmlFileName))
@@ -156,30 +158,92 @@ namespace ImportProducts
                     {
                         Console.WriteLine(product.Name.Replace("&apos;", "'")); // debug print
 
-                        Category category = db.Categories.SingleOrDefault(c => c.CategoryName == product.Category && c.PortalID == portalId);
-                        if (category == null)
+                        int? parentID = null;
+                        int? catRootID = null;
+                        int? catCategoryID = null;
+                        int level = 0;
+                        int maxOrder = 0;
+
+                        if (!String.IsNullOrEmpty(advancedCategoryRoot))
                         {
-                            category = new Category
+                            var advCatRoot =
+                                db.AdvCats.SingleOrDefault(
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == advancedCategoryRoot && ac.Level == level);
+                            if (advCatRoot == null)
                             {
-                                CategoryName = product.Category,
-                                Description = String.Empty,
-                                PortalID = portalId,
-                                CategoryImportID = String.Empty,
-                                CategoryFolderImage = String.Empty,
-                                CategoryOpenFolderImage = String.Empty,
-                                CategoryPageImage = String.Empty,
-                                CreatedByUser = 1
-                            };
-                            db.Categories.Add(category);
-                            db.SaveChanges();
+                                if (db.AdvCats.Count() > 0)
+                                {
+                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                }
+                                advCatRoot = new AdvCat
+                                {
+                                    AdvCatOrder = maxOrder + 1,
+                                    PortalID = portalId,
+                                    AdvCatName = advancedCategoryRoot,
+                                    IsVisible = true,
+                                    DisableLink = false,
+                                    Url = String.Empty,
+                                    Title = String.Empty,
+                                    Description = String.Empty,
+                                    KeyWords = String.Empty,
+                                    IsDeleted = false,
+                                    IconFile = String.Empty,
+                                    Level = level,
+                                    AdvCatImportID = String.Empty
+                                };
+                                db.AdvCats.Add(advCatRoot);
+                                db.SaveChanges();
+
+                                Common.AddAdvCatDefaultPermissions(db, advCatRoot.AdvCatID);
+                            }
+                            parentID = advCatRoot.AdvCatID;
+                            catRootID = advCatRoot.AdvCatID;
+                            level++;
                         }
 
-                        var product2 = db.Products.SingleOrDefault(p => p.CategoryID == category.CategoryID && p.ProductNumber == product.ProductNumber);
+                        if (!String.IsNullOrEmpty(product.Category))
+                        {
+                            var advCatCategory =
+                                db.AdvCats.SingleOrDefault(
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == product.Category && ac.Level == level);
+                            if (advCatCategory == null)
+                            {
+                                if (db.AdvCats.Count() > 0)
+                                {
+                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                }
+                                advCatCategory = new AdvCat
+                                {
+                                    AdvCatOrder = maxOrder + 1,
+                                    PortalID = portalId,
+                                    AdvCatName = product.Category,
+                                    IsVisible = true,
+                                    DisableLink = false,
+                                    Url = String.Empty,
+                                    Title = String.Empty,
+                                    Description = String.Empty,
+                                    KeyWords = String.Empty,
+                                    IsDeleted = false,
+                                    IconFile = String.Empty,
+                                    Level = level,
+                                    AdvCatImportID = String.Empty
+                                };
+                                db.AdvCats.Add(advCatCategory);
+                                db.SaveChanges();
+
+                                Common.AddAdvCatDefaultPermissions(db, advCatCategory.AdvCatID);
+                            }
+                            parentID = advCatCategory.AdvCatID;
+                            catCategoryID = advCatCategory.AdvCatID;
+                            level++;
+                        }
+
+                        var product2 = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
                         if (product2 == null)
                         {
                             product2 = new Product
                             {
-                                CategoryID = category.CategoryID,
+                                CategoryID = categoryId,
                                 Category2ID = 0,
                                 Category3 = String.Empty,
                                 ProductName = product.Name.Replace("&apos;", "'"),
@@ -224,7 +288,32 @@ namespace ImportProducts
 
                             db.SaveChanges();
                         }
-                         currentProduct++;
+
+                        // add product to advanced categories
+                        if (catRootID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catRootID.Value && act.ProductID == product2.ProductID) == null)
+                        {
+                            AdvCatProduct advCatProduct = new AdvCatProduct
+                            {
+                                AdvCatID = catRootID.Value,
+                                ProductID = product2.ProductID,
+                                AddAdvCatToProductDisplay = false
+                            };
+                            db.AdvCatProducts.Add(advCatProduct);
+                            db.SaveChanges();
+                        }
+                        if (catCategoryID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCategoryID.Value && act.ProductID == product2.ProductID) == null)
+                        {
+                            AdvCatProduct advCatProduct = new AdvCatProduct
+                            {
+                                AdvCatID = catCategoryID.Value,
+                                ProductID = product2.ProductID,
+                                AddAdvCatToProductDisplay = false
+                            };
+                            db.AdvCatProducts.Add(advCatProduct);
+                            db.SaveChanges();
+                        }
+
+                        currentProduct++;
                         if (bw.CancellationPending)
                         {
                             e.Cancel = true;
