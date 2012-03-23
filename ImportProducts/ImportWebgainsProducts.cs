@@ -13,6 +13,8 @@ namespace ImportProducts
 {
     class ImportWebgainsProducts
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         static IEnumerable<XElement> StreamRootChildDoc(string uri)
         {
             using (XmlReader reader = XmlReader.Create(uri))
@@ -307,6 +309,7 @@ namespace ImportProducts
                                 URL = product.URL,
                                 ProductCost = product.UnitCost,
                                 ProductImage = product.Image,
+                                CreatedByUser = vendorId,
                                 DateCreated = DateTime.Now
                             };
 
@@ -318,6 +321,8 @@ namespace ImportProducts
                         }
                         else
                         {
+                            product2.CategoryID = categoryId;
+                            product2.Category2ID = 0;
                             product2.ProductName = product.Name.Replace("&apos;", "'");
                             product2.ProductNumber = product.ProductNumber;
                             product2.UnitCost = product.UnitCost;
@@ -385,8 +390,8 @@ namespace ImportProducts
             catch (Exception ex)
             {
                 e.Result = "ERROR:" + ex.Message;
-                //throw new Exception("Error saving file from URL:" + ex.Message, ex);
                 //message = ex.Message;
+                log.Error("Error error logging", ex);
             }
             //return rc;
         }

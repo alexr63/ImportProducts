@@ -189,8 +189,8 @@ namespace ImportProducts
            // Set step for backgroundWorker
            Form1.activeStep = "Import records..";
            bw.ReportProgress(0);           // start new step of background process
-           long countHotels = products.Count();
-           long currentHotel = 0;
+           long countProducts = products.Count();
+           long currentProduct = 0;
 
             try
             {
@@ -267,7 +267,7 @@ namespace ImportProducts
                                 {
                                     AdvCatOrder = maxOrder + 1,
                                     PortalID = portalId,
-                                    AdvCatName = product1.Country,
+                                    AdvCatName = product.Country,
                                     IsVisible = true,
                                     DisableLink = false,
                                     Url = String.Empty,
@@ -411,7 +411,10 @@ namespace ImportProducts
                         }
                         else
                         {
+                            product2.CategoryID = categoryId;
+                            product2.Category2ID = 0;
                             product2.ProductName = product.Name;
+                            product2.ProductNumber = product.ProductNumber;
                             product2.UnitCost = product.UnitCost;
                             product2.UnitCost2 = product.UnitCost;
                             product2.UnitCost3 = product.UnitCost;
@@ -500,13 +503,13 @@ namespace ImportProducts
                             db.SaveChanges();
                         }
 
-                        currentHotel++;
+                        currentProduct++;
                         if (bw.CancellationPending)
                         {
                             e.Cancel = true;
                             break;
                         }
-                        else if (bw.WorkerReportsProgress && currentHotel % 100 == 0) bw.ReportProgress((int)(100 * currentHotel / countHotels));
+                        else if (bw.WorkerReportsProgress && currentProduct % 100 == 0) bw.ReportProgress((int)(100 * currentProduct / countProducts));
                     }
                     //    rc = true;
                 }
