@@ -97,7 +97,7 @@ namespace ImportProducts
                     bgParams.Url = selectedFeed.URL;
                     if (!String.IsNullOrEmpty(selectedFeed.Category))
                     {
-                        using (DNN_6_0_0Entities db = new DNN_6_0_0Entities())
+                        using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                         {
                             var category = db.Categories.SingleOrDefault(c => c.CategoryName == selectedFeed.Category && c.PortalID == selectedFeed.PortalId);
                             if (category != null)
@@ -193,6 +193,7 @@ namespace ImportProducts
         {
             toolStripMenuItemRun.Enabled = dataGridView1.SelectedRows.Count > 0;
             toolStripMenuItemProperties.Enabled = dataGridView1.SelectedRows.Count == 1;
+            toolStripDeleteProducts.Enabled = dataGridView1.SelectedRows.Count == 1;
         }
 
         // SergePSV - check unfinished downloads
@@ -388,5 +389,34 @@ namespace ImportProducts
             this.Activate();
         }
 
+        private void toolStripDeleteProducts_Click(object sender, EventArgs e)
+        {
+            activeStep = "Deleting products...";
+            try
+            {
+                DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
+                var selectedFeed = selectedRow.DataBoundItem as Feed;
+                var vendorId = selectedFeed.VendorId;
+
+                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                {
+                    var vendorProducts = from p in db.Products
+                                         where p.CreatedByUser == vendorId
+                                         select p;
+                    foreach (var vendorProduct in vendorProducts.ToList())
+                    {
+                        vendorProduct.ProductImages.Clear();
+                        db.Products.Remove(vendorProduct);
+                    }
+                    db.SaveChanges();
+                }
+
+                activeStep = "Products deleted.";
+            }
+            catch (Exception exception)
+            {
+                activeStep = exception.Message;
+            }
+        }
     }
 }

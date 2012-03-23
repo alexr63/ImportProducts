@@ -34,6 +34,7 @@
             this.toolStripMenuItemFeed = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemProperties = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemRun = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripDeleteProducts = new System.Windows.Forms.ToolStripMenuItem();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.tsslTotalProcess = new System.Windows.Forms.ToolStripStatusLabel();
@@ -62,7 +63,8 @@
             // 
             this.toolStripMenuItemFeed.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemProperties,
-            this.toolStripMenuItemRun});
+            this.toolStripMenuItemRun,
+            this.toolStripDeleteProducts});
             this.toolStripMenuItemFeed.Name = "toolStripMenuItemFeed";
             this.toolStripMenuItemFeed.Size = new System.Drawing.Size(44, 20);
             this.toolStripMenuItemFeed.Text = "Feed";
@@ -71,16 +73,23 @@
             // toolStripMenuItemProperties
             // 
             this.toolStripMenuItemProperties.Name = "toolStripMenuItemProperties";
-            this.toolStripMenuItemProperties.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuItemProperties.Size = new System.Drawing.Size(157, 22);
             this.toolStripMenuItemProperties.Text = "Properties...";
             this.toolStripMenuItemProperties.Click += new System.EventHandler(this.toolStripMenuItemProperties_Click);
             // 
             // toolStripMenuItemRun
             // 
             this.toolStripMenuItemRun.Name = "toolStripMenuItemRun";
-            this.toolStripMenuItemRun.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuItemRun.Size = new System.Drawing.Size(157, 22);
             this.toolStripMenuItemRun.Text = "Run";
             this.toolStripMenuItemRun.Click += new System.EventHandler(this.toolStripMenuItemRun_Click);
+            // 
+            // toolStripDeleteProducts
+            // 
+            this.toolStripDeleteProducts.Name = "toolStripDeleteProducts";
+            this.toolStripDeleteProducts.Size = new System.Drawing.Size(157, 22);
+            this.toolStripDeleteProducts.Text = "Delete Products";
+            this.toolStripDeleteProducts.Click += new System.EventHandler(this.toolStripDeleteProducts_Click);
             // 
             // dataGridView1
             // 
@@ -199,6 +208,7 @@
         private System.Windows.Forms.ToolStripStatusLabel tsslCurrent;
         private System.Windows.Forms.ToolStripStatusLabel tsslInfo;
         private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ToolStripMenuItem toolStripDeleteProducts;
     }
 }
 

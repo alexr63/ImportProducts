@@ -4,35 +4,35 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DNN_6_0_0Model.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
-        <EntityContainer Name="DNN_6_0_0ModelStoreContainer">
-          <EntitySet Name="CAT_AdvCatPermission" EntityType="DNN_6_0_0Model.Store.CAT_AdvCatPermission" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="CAT_AdvCatProducts" EntityType="DNN_6_0_0Model.Store.CAT_AdvCatProducts" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="CAT_AdvCats" EntityType="DNN_6_0_0Model.Store.CAT_AdvCats" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="CAT_Categories" EntityType="DNN_6_0_0Model.Store.CAT_Categories" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="CAT_ProductImages" EntityType="DNN_6_0_0Model.Store.CAT_ProductImages" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="CAT_Products" EntityType="DNN_6_0_0Model.Store.CAT_Products" store:Type="Tables" Schema="dbo" />
-          <AssociationSet Name="FK_CAT_AdvCatPermission_AdvCats" Association="DNN_6_0_0Model.Store.FK_CAT_AdvCatPermission_AdvCats">
+    <Schema Namespace="SelectedHotelsModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="SelectedHotelsModelStoreContainer">
+          <EntitySet Name="CAT_AdvCatPermission" EntityType="SelectedHotelsModel.Store.CAT_AdvCatPermission" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_AdvCatProducts" EntityType="SelectedHotelsModel.Store.CAT_AdvCatProducts" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_AdvCats" EntityType="SelectedHotelsModel.Store.CAT_AdvCats" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_Categories" EntityType="SelectedHotelsModel.Store.CAT_Categories" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_ProductImages" EntityType="SelectedHotelsModel.Store.CAT_ProductImages" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CAT_Products" EntityType="SelectedHotelsModel.Store.CAT_Products" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_CAT_AdvCatPermission_AdvCats" Association="SelectedHotelsModel.Store.FK_CAT_AdvCatPermission_AdvCats">
             <End Role="CAT_AdvCats" EntitySet="CAT_AdvCats" />
             <End Role="CAT_AdvCatPermission" EntitySet="CAT_AdvCatPermission" />
           </AssociationSet>
-          <AssociationSet Name="FK_CAT_AdvCatProducts_AdvCats" Association="DNN_6_0_0Model.Store.FK_CAT_AdvCatProducts_AdvCats">
+          <AssociationSet Name="FK_CAT_AdvCatProducts_AdvCats" Association="SelectedHotelsModel.Store.FK_CAT_AdvCatProducts_AdvCats">
             <End Role="CAT_AdvCats" EntitySet="CAT_AdvCats" />
             <End Role="CAT_AdvCatProducts" EntitySet="CAT_AdvCatProducts" />
           </AssociationSet>
-          <AssociationSet Name="FK_CAT_AdvCatProducts_CAT_Products" Association="DNN_6_0_0Model.Store.FK_CAT_AdvCatProducts_CAT_Products">
+          <AssociationSet Name="FK_CAT_AdvCatProducts_CAT_Products" Association="SelectedHotelsModel.Store.FK_CAT_AdvCatProducts_CAT_Products">
             <End Role="CAT_Products" EntitySet="CAT_Products" />
             <End Role="CAT_AdvCatProducts" EntitySet="CAT_AdvCatProducts" />
           </AssociationSet>
-          <AssociationSet Name="FK_CAT_AdvCats_CAT_AdvCats" Association="DNN_6_0_0Model.Store.FK_CAT_AdvCats_CAT_AdvCats">
+          <AssociationSet Name="FK_CAT_AdvCats_CAT_AdvCats" Association="SelectedHotelsModel.Store.FK_CAT_AdvCats_CAT_AdvCats">
             <End Role="CAT_AdvCats" EntitySet="CAT_AdvCats" />
             <End Role="CAT_AdvCats1" EntitySet="CAT_AdvCats" />
           </AssociationSet>
-          <AssociationSet Name="FK_CAT_ProductImages_Products" Association="DNN_6_0_0Model.Store.FK_CAT_ProductImages_Products">
+          <AssociationSet Name="FK_CAT_ProductImages_Products" Association="SelectedHotelsModel.Store.FK_CAT_ProductImages_Products">
             <End Role="CAT_Products" EntitySet="CAT_Products" />
             <End Role="CAT_ProductImages" EntitySet="CAT_ProductImages" />
           </AssociationSet>
-          <AssociationSet Name="FK_CAT_Products_Categories" Association="DNN_6_0_0Model.Store.FK_CAT_Products_Categories">
+          <AssociationSet Name="FK_CAT_Products_Categories" Association="SelectedHotelsModel.Store.FK_CAT_Products_Categories">
             <End Role="CAT_Categories" EntitySet="CAT_Categories" />
             <End Role="CAT_Products" EntitySet="CAT_Products" />
           </AssociationSet>
@@ -181,10 +181,10 @@
           <Property Name="TaxCode" Type="nvarchar" MaxLength="16" />
         </EntityType>
         <Association Name="FK_CAT_AdvCatPermission_AdvCats">
-          <End Role="CAT_AdvCats" Type="DNN_6_0_0Model.Store.CAT_AdvCats" Multiplicity="1">
+          <End Role="CAT_AdvCats" Type="SelectedHotelsModel.Store.CAT_AdvCats" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="CAT_AdvCatPermission" Type="DNN_6_0_0Model.Store.CAT_AdvCatPermission" Multiplicity="*" />
+          <End Role="CAT_AdvCatPermission" Type="SelectedHotelsModel.Store.CAT_AdvCatPermission" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CAT_AdvCats">
               <PropertyRef Name="AdvCatID" />
@@ -195,10 +195,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CAT_AdvCatProducts_AdvCats">
-          <End Role="CAT_AdvCats" Type="DNN_6_0_0Model.Store.CAT_AdvCats" Multiplicity="1">
+          <End Role="CAT_AdvCats" Type="SelectedHotelsModel.Store.CAT_AdvCats" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="CAT_AdvCatProducts" Type="DNN_6_0_0Model.Store.CAT_AdvCatProducts" Multiplicity="*" />
+          <End Role="CAT_AdvCatProducts" Type="SelectedHotelsModel.Store.CAT_AdvCatProducts" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CAT_AdvCats">
               <PropertyRef Name="AdvCatID" />
@@ -209,8 +209,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CAT_AdvCatProducts_CAT_Products">
-          <End Role="CAT_Products" Type="DNN_6_0_0Model.Store.CAT_Products" Multiplicity="1" />
-          <End Role="CAT_AdvCatProducts" Type="DNN_6_0_0Model.Store.CAT_AdvCatProducts" Multiplicity="*" />
+          <End Role="CAT_Products" Type="SelectedHotelsModel.Store.CAT_Products" Multiplicity="1" />
+          <End Role="CAT_AdvCatProducts" Type="SelectedHotelsModel.Store.CAT_AdvCatProducts" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CAT_Products">
               <PropertyRef Name="ProductID" />
@@ -221,8 +221,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CAT_AdvCats_CAT_AdvCats">
-          <End Role="CAT_AdvCats" Type="DNN_6_0_0Model.Store.CAT_AdvCats" Multiplicity="0..1" />
-          <End Role="CAT_AdvCats1" Type="DNN_6_0_0Model.Store.CAT_AdvCats" Multiplicity="*" />
+          <End Role="CAT_AdvCats" Type="SelectedHotelsModel.Store.CAT_AdvCats" Multiplicity="0..1" />
+          <End Role="CAT_AdvCats1" Type="SelectedHotelsModel.Store.CAT_AdvCats" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CAT_AdvCats">
               <PropertyRef Name="AdvCatID" />
@@ -233,10 +233,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CAT_ProductImages_Products">
-          <End Role="CAT_Products" Type="DNN_6_0_0Model.Store.CAT_Products" Multiplicity="1">
+          <End Role="CAT_Products" Type="SelectedHotelsModel.Store.CAT_Products" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="CAT_ProductImages" Type="DNN_6_0_0Model.Store.CAT_ProductImages" Multiplicity="*" />
+          <End Role="CAT_ProductImages" Type="SelectedHotelsModel.Store.CAT_ProductImages" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CAT_Products">
               <PropertyRef Name="ProductID" />
@@ -247,10 +247,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CAT_Products_Categories">
-          <End Role="CAT_Categories" Type="DNN_6_0_0Model.Store.CAT_Categories" Multiplicity="0..1">
+          <End Role="CAT_Categories" Type="SelectedHotelsModel.Store.CAT_Categories" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="CAT_Products" Type="DNN_6_0_0Model.Store.CAT_Products" Multiplicity="*" />
+          <End Role="CAT_Products" Type="SelectedHotelsModel.Store.CAT_Products" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CAT_Categories">
               <PropertyRef Name="CategoryID" />
@@ -263,35 +263,35 @@
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="DNN_6_0_0Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
-        <EntityContainer Name="DNN_6_0_0Entities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Products" EntityType="DNN_6_0_0Model.Product" />
-          <EntitySet Name="ProductImages" EntityType="DNN_6_0_0Model.ProductImage" />
-          <AssociationSet Name="FK_CAT_ProductImages_Products" Association="DNN_6_0_0Model.FK_CAT_ProductImages_Products">
+      <Schema Namespace="SelectedHotelsModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="SelectedHotelsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Products" EntityType="SelectedHotelsModel.Product" />
+          <EntitySet Name="ProductImages" EntityType="SelectedHotelsModel.ProductImage" />
+          <AssociationSet Name="FK_CAT_ProductImages_Products" Association="SelectedHotelsModel.FK_CAT_ProductImages_Products">
             <End Role="Product" EntitySet="Products" />
             <End Role="ProductImages" EntitySet="ProductImages" />
           </AssociationSet>
-          <EntitySet Name="AdvCatPermissions" EntityType="DNN_6_0_0Model.AdvCatPermission" />
-          <EntitySet Name="AdvCats" EntityType="DNN_6_0_0Model.AdvCat" />
-          <AssociationSet Name="FK_CAT_AdvCatPermission_AdvCats" Association="DNN_6_0_0Model.FK_CAT_AdvCatPermission_AdvCats">
+          <EntitySet Name="AdvCatPermissions" EntityType="SelectedHotelsModel.AdvCatPermission" />
+          <EntitySet Name="AdvCats" EntityType="SelectedHotelsModel.AdvCat" />
+          <AssociationSet Name="FK_CAT_AdvCatPermission_AdvCats" Association="SelectedHotelsModel.FK_CAT_AdvCatPermission_AdvCats">
             <End Role="CAT_AdvCats" EntitySet="AdvCats" />
             <End Role="CAT_AdvCatPermission" EntitySet="AdvCatPermissions" />
           </AssociationSet>
-          <AssociationSet Name="FK_CAT_AdvCats_CAT_AdvCats" Association="DNN_6_0_0Model.FK_CAT_AdvCats_CAT_AdvCats">
+          <AssociationSet Name="FK_CAT_AdvCats_CAT_AdvCats" Association="SelectedHotelsModel.FK_CAT_AdvCats_CAT_AdvCats">
             <End Role="CAT_AdvCats" EntitySet="AdvCats" />
             <End Role="CAT_AdvCats1" EntitySet="AdvCats" />
           </AssociationSet>
-          <EntitySet Name="AdvCatProducts" EntityType="DNN_6_0_0Model.AdvCatProduct" />
-          <AssociationSet Name="FK_CAT_AdvCatProducts_AdvCats" Association="DNN_6_0_0Model.FK_CAT_AdvCatProducts_AdvCats">
+          <EntitySet Name="AdvCatProducts" EntityType="SelectedHotelsModel.AdvCatProduct" />
+          <AssociationSet Name="FK_CAT_AdvCatProducts_AdvCats" Association="SelectedHotelsModel.FK_CAT_AdvCatProducts_AdvCats">
             <End Role="AdvCat" EntitySet="AdvCats" />
             <End Role="CAT_AdvCatProducts" EntitySet="AdvCatProducts" />
           </AssociationSet>
-          <AssociationSet Name="FK_CAT_AdvCatProducts_CAT_Products" Association="DNN_6_0_0Model.FK_CAT_AdvCatProducts_CAT_Products">
+          <AssociationSet Name="FK_CAT_AdvCatProducts_CAT_Products" Association="SelectedHotelsModel.FK_CAT_AdvCatProducts_CAT_Products">
             <End Role="Product" EntitySet="Products" />
             <End Role="CAT_AdvCatProducts" EntitySet="AdvCatProducts" />
           </AssociationSet>
-          <EntitySet Name="Categories" EntityType="DNN_6_0_0Model.Category" />
-          <AssociationSet Name="FK_CAT_Products_Categories" Association="DNN_6_0_0Model.FK_CAT_Products_Categories">
+          <EntitySet Name="Categories" EntityType="SelectedHotelsModel.Category" />
+          <AssociationSet Name="FK_CAT_Products_Categories" Association="SelectedHotelsModel.FK_CAT_Products_Categories">
             <End Role="CAT_Categories" EntitySet="Categories" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
@@ -371,9 +371,9 @@
           <Property Name="LastModifiedByUserID" Type="Int32" />
           <Property Name="LastModifiedOnDate" Type="DateTime" />
           <Property Name="TaxCode" Type="String" MaxLength="16" Unicode="true" FixedLength="false" DefaultValue="" />
-          <NavigationProperty Name="ProductImages" Relationship="DNN_6_0_0Model.FK_CAT_ProductImages_Products" FromRole="Product" ToRole="ProductImages" />
-          <NavigationProperty Name="CAT_AdvCatProducts" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatProducts_CAT_Products" FromRole="Product" ToRole="CAT_AdvCatProducts" />
-          <NavigationProperty Name="CAT_Categories" Relationship="DNN_6_0_0Model.FK_CAT_Products_Categories" FromRole="Product" ToRole="CAT_Categories" />
+          <NavigationProperty Name="ProductImages" Relationship="SelectedHotelsModel.FK_CAT_ProductImages_Products" FromRole="Product" ToRole="ProductImages" />
+          <NavigationProperty Name="CAT_AdvCatProducts" Relationship="SelectedHotelsModel.FK_CAT_AdvCatProducts_CAT_Products" FromRole="Product" ToRole="CAT_AdvCatProducts" />
+          <NavigationProperty Name="CAT_Categories" Relationship="SelectedHotelsModel.FK_CAT_Products_Categories" FromRole="Product" ToRole="CAT_Categories" />
         </EntityType>
         <EntityType Name="ProductImage">
           <Key>
@@ -386,11 +386,11 @@
           <Property Type="String" Name="Description" MaxLength="50" FixedLength="false" Unicode="true" DefaultValue="" />
           <Property Type="String" Name="ImageType" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" DefaultValue="0" />
           <Property Type="Int32" Name="ViewOrder" DefaultValue="0" />
-          <NavigationProperty Name="Products" Relationship="DNN_6_0_0Model.FK_CAT_ProductImages_Products" FromRole="ProductImages" ToRole="Product" />
+          <NavigationProperty Name="Products" Relationship="SelectedHotelsModel.FK_CAT_ProductImages_Products" FromRole="ProductImages" ToRole="Product" />
         </EntityType>
         <Association Name="FK_CAT_ProductImages_Products">
-          <End Type="DNN_6_0_0Model.Product" Role="Product" Multiplicity="1" />
-          <End Type="DNN_6_0_0Model.ProductImage" Role="ProductImages" Multiplicity="*" />
+          <End Type="SelectedHotelsModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="SelectedHotelsModel.ProductImage" Role="ProductImages" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Product">
               <PropertyRef Name="ProductID" />
@@ -409,7 +409,7 @@
           <Property Type="Int32" Name="PermissionID" Nullable="false" />
           <Property Type="Int32" Name="RoleID" Nullable="false" />
           <Property Type="Boolean" Name="AllowAccess" Nullable="false" />
-          <NavigationProperty Name="AdvCats" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatPermission_AdvCats" FromRole="CAT_AdvCatPermission" ToRole="CAT_AdvCats" />
+          <NavigationProperty Name="AdvCats" Relationship="SelectedHotelsModel.FK_CAT_AdvCatPermission_AdvCats" FromRole="CAT_AdvCatPermission" ToRole="CAT_AdvCats" />
         </EntityType>
         <EntityType Name="AdvCat">
           <Key>
@@ -432,14 +432,14 @@
           <Property Type="String" Name="IconFile" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Level" Nullable="false" />
           <Property Type="String" Name="AdvCatImportID" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AdvCatPermission" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatPermission_AdvCats" FromRole="CAT_AdvCats" ToRole="CAT_AdvCatPermission" />
-          <NavigationProperty Name="AdvCats1" Relationship="DNN_6_0_0Model.FK_CAT_AdvCats_CAT_AdvCats" FromRole="CAT_AdvCats" ToRole="CAT_AdvCats1" />
-          <NavigationProperty Name="AdvCats2" Relationship="DNN_6_0_0Model.FK_CAT_AdvCats_CAT_AdvCats" FromRole="CAT_AdvCats1" ToRole="CAT_AdvCats" />
-          <NavigationProperty Name="CAT_AdvCatProducts" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatProducts_AdvCats" FromRole="AdvCat" ToRole="CAT_AdvCatProducts" />
+          <NavigationProperty Name="AdvCatPermission" Relationship="SelectedHotelsModel.FK_CAT_AdvCatPermission_AdvCats" FromRole="CAT_AdvCats" ToRole="CAT_AdvCatPermission" />
+          <NavigationProperty Name="AdvCats1" Relationship="SelectedHotelsModel.FK_CAT_AdvCats_CAT_AdvCats" FromRole="CAT_AdvCats" ToRole="CAT_AdvCats1" />
+          <NavigationProperty Name="AdvCats2" Relationship="SelectedHotelsModel.FK_CAT_AdvCats_CAT_AdvCats" FromRole="CAT_AdvCats1" ToRole="CAT_AdvCats" />
+          <NavigationProperty Name="CAT_AdvCatProducts" Relationship="SelectedHotelsModel.FK_CAT_AdvCatProducts_AdvCats" FromRole="AdvCat" ToRole="CAT_AdvCatProducts" />
         </EntityType>
         <Association Name="FK_CAT_AdvCatPermission_AdvCats">
-          <End Type="DNN_6_0_0Model.AdvCat" Role="CAT_AdvCats" Multiplicity="1" />
-          <End Type="DNN_6_0_0Model.AdvCatPermission" Role="CAT_AdvCatPermission" Multiplicity="*" />
+          <End Type="SelectedHotelsModel.AdvCat" Role="CAT_AdvCats" Multiplicity="1" />
+          <End Type="SelectedHotelsModel.AdvCatPermission" Role="CAT_AdvCatPermission" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CAT_AdvCats">
               <PropertyRef Name="AdvCatID" />
@@ -450,8 +450,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CAT_AdvCats_CAT_AdvCats">
-          <End Type="DNN_6_0_0Model.AdvCat" Role="CAT_AdvCats" Multiplicity="0..1" />
-          <End Type="DNN_6_0_0Model.AdvCat" Role="CAT_AdvCats1" Multiplicity="*" />
+          <End Type="SelectedHotelsModel.AdvCat" Role="CAT_AdvCats" Multiplicity="0..1" />
+          <End Type="SelectedHotelsModel.AdvCat" Role="CAT_AdvCats1" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CAT_AdvCats">
               <PropertyRef Name="AdvCatID" />
@@ -469,12 +469,12 @@
           <Property Type="Int32" Name="AdvCatID" Nullable="false" />
           <Property Type="Int32" Name="ProductID" Nullable="false" />
           <Property Type="Boolean" Name="AddAdvCatToProductDisplay" />
-          <NavigationProperty Name="AdvCats" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatProducts_AdvCats" FromRole="CAT_AdvCatProducts" ToRole="AdvCat" />
-          <NavigationProperty Name="Products" Relationship="DNN_6_0_0Model.FK_CAT_AdvCatProducts_CAT_Products" FromRole="CAT_AdvCatProducts" ToRole="Product" />
+          <NavigationProperty Name="AdvCats" Relationship="SelectedHotelsModel.FK_CAT_AdvCatProducts_AdvCats" FromRole="CAT_AdvCatProducts" ToRole="AdvCat" />
+          <NavigationProperty Name="Products" Relationship="SelectedHotelsModel.FK_CAT_AdvCatProducts_CAT_Products" FromRole="CAT_AdvCatProducts" ToRole="Product" />
         </EntityType>
         <Association Name="FK_CAT_AdvCatProducts_AdvCats">
-          <End Type="DNN_6_0_0Model.AdvCat" Role="AdvCat" Multiplicity="1" />
-          <End Type="DNN_6_0_0Model.AdvCatProduct" Role="CAT_AdvCatProducts" Multiplicity="*" />
+          <End Type="SelectedHotelsModel.AdvCat" Role="AdvCat" Multiplicity="1" />
+          <End Type="SelectedHotelsModel.AdvCatProduct" Role="CAT_AdvCatProducts" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AdvCat">
               <PropertyRef Name="AdvCatID" />
@@ -485,8 +485,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CAT_AdvCatProducts_CAT_Products">
-          <End Type="DNN_6_0_0Model.Product" Role="Product" Multiplicity="1" />
-          <End Type="DNN_6_0_0Model.AdvCatProduct" Role="CAT_AdvCatProducts" Multiplicity="*" />
+          <End Type="SelectedHotelsModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="SelectedHotelsModel.AdvCatProduct" Role="CAT_AdvCatProducts" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Product">
               <PropertyRef Name="ProductID" />
@@ -509,11 +509,11 @@
           <Property Type="String" Name="CategoryOpenFolderImage" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CategoryPageImage" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="CreatedByUser" />
-          <NavigationProperty Name="CAT_Products" Relationship="DNN_6_0_0Model.FK_CAT_Products_Categories" FromRole="CAT_Categories" ToRole="Product" />
+          <NavigationProperty Name="CAT_Products" Relationship="SelectedHotelsModel.FK_CAT_Products_Categories" FromRole="CAT_Categories" ToRole="Product" />
         </EntityType>
         <Association Name="FK_CAT_Products_Categories">
-          <End Type="DNN_6_0_0Model.Category" Role="CAT_Categories" Multiplicity="0..1" />
-          <End Type="DNN_6_0_0Model.Product" Role="Product" Multiplicity="*" />
+          <End Type="SelectedHotelsModel.Category" Role="CAT_Categories" Multiplicity="0..1" />
+          <End Type="SelectedHotelsModel.Product" Role="Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CAT_Categories">
               <PropertyRef Name="CategoryID" />
@@ -528,8 +528,8 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="DNN_6_0_0ModelStoreContainer" CdmEntityContainer="DNN_6_0_0Entities">
-          <EntitySetMapping Name="Products"><EntityTypeMapping TypeName="DNN_6_0_0Model.Product"><MappingFragment StoreEntitySet="CAT_Products">
+        <EntityContainerMapping StorageEntityContainer="SelectedHotelsModelStoreContainer" CdmEntityContainer="SelectedHotelsEntities">
+          <EntitySetMapping Name="Products"><EntityTypeMapping TypeName="SelectedHotelsModel.Product"><MappingFragment StoreEntitySet="CAT_Products">
             <ScalarProperty Name="ProductID" ColumnName="ProductID" />
             <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
             <ScalarProperty Name="Category2ID" ColumnName="Category2ID" />
@@ -603,7 +603,7 @@
             <ScalarProperty Name="TaxCode" ColumnName="TaxCode" />
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
           <EntitySetMapping Name="ProductImages">
-            <EntityTypeMapping TypeName="DNN_6_0_0Model.ProductImage">
+            <EntityTypeMapping TypeName="SelectedHotelsModel.ProductImage">
               <MappingFragment StoreEntitySet="CAT_ProductImages">
                 <ScalarProperty Name="ViewOrder" ColumnName="ViewOrder" />
                 <ScalarProperty Name="ImageType" ColumnName="ImageType" />
@@ -616,7 +616,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AdvCatPermissions">
-            <EntityTypeMapping TypeName="DNN_6_0_0Model.AdvCatPermission">
+            <EntityTypeMapping TypeName="SelectedHotelsModel.AdvCatPermission">
               <MappingFragment StoreEntitySet="CAT_AdvCatPermission">
                 <ScalarProperty Name="AllowAccess" ColumnName="AllowAccess" />
                 <ScalarProperty Name="RoleID" ColumnName="RoleID" />
@@ -627,7 +627,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AdvCats">
-            <EntityTypeMapping TypeName="DNN_6_0_0Model.AdvCat">
+            <EntityTypeMapping TypeName="SelectedHotelsModel.AdvCat">
               <MappingFragment StoreEntitySet="CAT_AdvCats">
                 <ScalarProperty Name="AdvCatImportID" ColumnName="AdvCatImportID" />
                 <ScalarProperty Name="Level" ColumnName="Level" />
@@ -650,7 +650,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AdvCatProducts">
-            <EntityTypeMapping TypeName="DNN_6_0_0Model.AdvCatProduct">
+            <EntityTypeMapping TypeName="SelectedHotelsModel.AdvCatProduct">
               <MappingFragment StoreEntitySet="CAT_AdvCatProducts">
                 <ScalarProperty Name="AddAdvCatToProductDisplay" ColumnName="AddAdvCatToProductDisplay" />
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />
@@ -660,7 +660,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Categories">
-            <EntityTypeMapping TypeName="DNN_6_0_0Model.Category">
+            <EntityTypeMapping TypeName="SelectedHotelsModel.Category">
               <MappingFragment StoreEntitySet="CAT_Categories">
                 <ScalarProperty Name="CreatedByUser" ColumnName="CreatedByUser" />
                 <ScalarProperty Name="CategoryPageImage" ColumnName="CategoryPageImage" />
@@ -696,37 +696,37 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram Name="CATModel" ZoomLevel="37">
-        <EntityTypeShape EntityType="DNN_6_0_0Model.Product" Width="1.5" PointX="1.375" PointY="0.625" Height="14.672180989583332" IsExpanded="true" />
-        <EntityTypeShape EntityType="DNN_6_0_0Model.ProductImage" Width="1.5" PointX="3.625" PointY="6.75" Height="2.5571907552083317" />
-        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_ProductImages_Products" >
+        <EntityTypeShape EntityType="SelectedHotelsModel.Product" Width="1.5" PointX="1.375" PointY="0.625" Height="14.672180989583332" IsExpanded="true" />
+        <EntityTypeShape EntityType="SelectedHotelsModel.ProductImage" Width="1.5" PointX="3.625" PointY="6.75" Height="2.5571907552083317" />
+        <AssociationConnector Association="SelectedHotelsModel.FK_CAT_ProductImages_Products" >
           <ConnectorPoint PointX="2.875" PointY="8.0285953776041659" />
           <ConnectorPoint PointX="3.625" PointY="8.0285953776041659" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="DNN_6_0_0Model.AdvCatPermission" Width="1.5" PointX="8.625" PointY="1.125" Height="2.1725878906249996" />
-        <EntityTypeShape EntityType="DNN_6_0_0Model.AdvCat" Width="1.5" PointX="6.375" PointY="1.125" Height="5.0571093750000031" />
-        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_AdvCatPermission_AdvCats" >
+        <EntityTypeShape EntityType="SelectedHotelsModel.AdvCatPermission" Width="1.5" PointX="8.625" PointY="1.125" Height="2.1725878906249996" />
+        <EntityTypeShape EntityType="SelectedHotelsModel.AdvCat" Width="1.5" PointX="6.375" PointY="1.125" Height="5.0571093750000031" />
+        <AssociationConnector Association="SelectedHotelsModel.FK_CAT_AdvCatPermission_AdvCats" >
           <ConnectorPoint PointX="7.875" PointY="2.2112939453125" />
           <ConnectorPoint PointX="8.625" PointY="2.2112939453125" />
         </AssociationConnector>
-        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_AdvCats_CAT_AdvCats" >
+        <AssociationConnector Association="SelectedHotelsModel.FK_CAT_AdvCats_CAT_AdvCats" >
           <ConnectorPoint PointX="6.9069230769230767" PointY="6.182109375" />
           <ConnectorPoint PointX="6.9069230769230767" PointY="6.432109375" />
           <ConnectorPoint PointX="7.3534615384615378" PointY="6.432109375" />
           <ConnectorPoint PointX="7.3534615384615378" PointY="6.182109375" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="DNN_6_0_0Model.AdvCatProduct" Width="1.5" PointX="8.625" PointY="7.125" Height="2.1725878906249996" />
-        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_AdvCatProducts_AdvCats" >
+        <EntityTypeShape EntityType="SelectedHotelsModel.AdvCatProduct" Width="1.5" PointX="8.625" PointY="7.125" Height="2.1725878906249996" />
+        <AssociationConnector Association="SelectedHotelsModel.FK_CAT_AdvCatProducts_AdvCats" >
           <ConnectorPoint PointX="6.6097090384615385" PointY="6.182109375" />
           <ConnectorPoint PointX="6.6097090384615385" PointY="8.2112939453125" />
           <ConnectorPoint PointX="8.625" PointY="8.2112939453125" />
         </AssociationConnector>
-        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_AdvCatProducts_CAT_Products" >
+        <AssociationConnector Association="SelectedHotelsModel.FK_CAT_AdvCatProducts_CAT_Products" >
           <ConnectorPoint PointX="2.875" PointY="12.621888020833332" />
           <ConnectorPoint PointX="9.375" PointY="12.621888020833332" />
           <ConnectorPoint PointX="9.375" PointY="9.297587890625" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="DNN_6_0_0Model.Category" Width="1.5" PointX="1.375" PointY="16.75" Height="2.9417936197916674" />
-        <AssociationConnector Association="DNN_6_0_0Model.FK_CAT_Products_Categories" >
+        <EntityTypeShape EntityType="SelectedHotelsModel.Category" Width="1.5" PointX="1.375" PointY="16.75" Height="2.9417936197916674" />
+        <AssociationConnector Association="SelectedHotelsModel.FK_CAT_Products_Categories" >
           <ConnectorPoint PointX="2.125" PointY="16.75" />
           <ConnectorPoint PointX="2.125" PointY="15.874085286458332" />
         </AssociationConnector>

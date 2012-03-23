@@ -194,7 +194,7 @@ namespace ImportProducts
 
             try
             {
-                using (DNN_6_0_0Entities db = new DNN_6_0_0Entities())
+                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                 {
                     foreach (var product in products)
                     {

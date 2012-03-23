@@ -13,10 +13,10 @@ namespace ImportProducts
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class DNN_6_0_0Entities : DbContext
+    public partial class SelectedHotelsEntities : DbContext
     {
-        public DNN_6_0_0Entities()
-            : base("name=DNN_6_0_0Entities")
+        public SelectedHotelsEntities()
+            : base("name=SelectedHotelsEntities")
         {
         }
     

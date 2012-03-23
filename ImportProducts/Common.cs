@@ -7,7 +7,7 @@ namespace ImportProducts
 {
     class Common
     {
-        public static void AddAdvCatDefaultPermissions(DNN_6_0_0Entities db, int advCatID)
+        public static void AddAdvCatDefaultPermissions(SelectedHotelsEntities db, int advCatID)
         {
             var advCatPermission = new AdvCatPermission
             {
