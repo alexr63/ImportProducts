@@ -244,26 +244,27 @@ namespace ImportProducts
             if (activeKey != "" && bw.Equals(bgw[activeKey])) displayedProcess = true; // finish displayed process
             // finish showed process
             bgProcesses[activeKey].LastRun = DateTime.Now;
+            string ballonTextFirst = (activeKey.Substring(0, 6).Equals("DELETE") ? "" : "Import ") + activeKey;
             if (e.Cancelled)
             {
                 deactivate = true;
                 bgProcesses[activeKey].Status = "Cancel";
                 notifyIcon.BalloonTipIcon = ToolTipIcon.Warning;
-                notifyIcon.BalloonTipText = "Import " + activeKey + " has been canceled";
+                notifyIcon.BalloonTipText = ballonTextFirst + " has been canceled";
             }
             else if (e.Error != null || (e.Result != null && e.Result.ToString().Substring(0, 6).Equals("ERROR:")))
             {
                 deactivate = true;
                 bgProcesses[activeKey].Status = "Error";
                 notifyIcon.BalloonTipIcon = ToolTipIcon.Error;
-                notifyIcon.BalloonTipText = "Import " + activeKey + " has been broken due to ERROR";
+                notifyIcon.BalloonTipText = ballonTextFirst + " has been broken due to ERROR";
             }
             else
             {
                 deactivate = true;
                 bgProcesses[activeKey].Status = "Success";
                 notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-                notifyIcon.BalloonTipText = "Import " + activeKey + " completed";
+                notifyIcon.BalloonTipText = ballonTextFirst + " completed";
             }
             // ShowBaloon for non-active process
             notifyIcon.ShowBalloonTip(15000);
@@ -320,7 +321,7 @@ namespace ImportProducts
         {
             //                bgw[activeKey].IsBusy &&
 
-            if (activeKey != "" &&
+            if (activeKey != "" && !activeKey.Substring(0,6).Equals("DELETE") &&            // cancellation of deleting is prohibited
                 bgw[activeKey].WorkerSupportsCancellation &&
                 MessageBox.Show("Do you really want to cancel?", "Cancelling background process", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 bgw[activeKey].CancelAsync();
@@ -391,32 +392,74 @@ namespace ImportProducts
 
         private void toolStripDeleteProducts_Click(object sender, EventArgs e)
         {
-            activeStep = "Deleting products...";
+            // background DELETING is locked for cancel and if during deleting user shift "ProgressBar" to another bg operation it is impossible to return to deleting progressbar.
+            // after finish DELETING BalloonTip will be displayed
             try
             {
                 DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
                 var selectedFeed = selectedRow.DataBoundItem as Feed;
                 var vendorId = selectedFeed.VendorId;
-
-                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                string keyDownload = "DELETE_" + selectedFeed.Name;    
+                if (!bgw.Keys.Contains(keyDownload))
                 {
-                    var vendorProducts = from p in db.Products
-                                         where p.CreatedByUser == vendorId
-                                         select p;
-                    foreach (var vendorProduct in vendorProducts.ToList())
-                    {
-                        vendorProduct.ProductImages.Clear();
-                        db.Products.Remove(vendorProduct);
-                    }
-                    db.SaveChanges();
+                    context = new ImportProductsEntities();
+                    feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
+                    bgProcesses.Add(keyDownload, feed);
+                    workD = new BackGroundWorkerDelegateWork(DeleteProducts);
+                    progressD = new BackGroundWorkerDelegateProgress(backgroundWorkerProgressChanged);
+                    completeD = new BackGroundWorkerDelegateCompleted(backgroundWorkerRunWorkerCompleted);
+                    bgw.Add(keyDownload, AddBackGroundWorker(workD, progressD, completeD));
+                    bgProgress.Add(keyDownload, 0);
+                    activeStep = "Deleting products...";
+                    bgStep.Add(keyDownload, activeStep);
+                    bgw[keyDownload].RunWorkerAsync(vendorId);     
                 }
-
-                activeStep = "Products deleted.";
+                activeKey = keyDownload;
+                // display status
+                ShiftStatusStripToActiveBackgroudWorker(bgw.Count, activeKey, activeStep, bgw[activeKey].IsBusy, bgProgress[activeKey]);
             }
             catch (Exception exception)
             {
                 activeStep = exception.Message;
             }
         }
+
+        private void DeleteProducts(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker bw = sender as BackgroundWorker;
+            int vendorId = (int)e.Argument;
+
+            using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+            {
+                bw.ReportProgress(0);           // start new step of background process
+                var vendorProducts = from p in db.Products
+                                        where p.CreatedByUser == vendorId
+                                        select p;
+                long countDeletedProducts = vendorProducts.Count();
+                long currentDeletedProduct = 0;
+                try
+                {
+                    foreach (var vendorProduct in vendorProducts.ToList())
+                    {
+                        vendorProduct.ProductImages.Clear();
+                        db.Products.Remove(vendorProduct);
+
+                        currentDeletedProduct++;
+                        if (bw.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
+                        else if (bw.WorkerReportsProgress && currentDeletedProduct % 100 == 0) bw.ReportProgress((int)(100 * currentDeletedProduct / countDeletedProducts));
+                    }
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    e.Result = "ERROR:" + ex.Message;
+                }
+            }
+        }
+
     }
 }
