@@ -389,8 +389,11 @@
           <NavigationProperty Name="Products" Relationship="SelectedHotelsModel.FK_CAT_ProductImages_Products" FromRole="ProductImages" ToRole="Product" />
         </EntityType>
         <Association Name="FK_CAT_ProductImages_Products">
-          <End Type="SelectedHotelsModel.Product" Role="Product" Multiplicity="1" />
-          <End Type="SelectedHotelsModel.ProductImage" Role="ProductImages" Multiplicity="*" />
+          <End Type="SelectedHotelsModel.Product" Role="Product" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SelectedHotelsModel.ProductImage" Role="ProductImages" Multiplicity="*" >
+          </End>
           <ReferentialConstraint>
             <Principal Role="Product">
               <PropertyRef Name="ProductID" />
@@ -485,8 +488,11 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CAT_AdvCatProducts_CAT_Products">
-          <End Type="SelectedHotelsModel.Product" Role="Product" Multiplicity="1" />
-          <End Type="SelectedHotelsModel.AdvCatProduct" Role="CAT_AdvCatProducts" Multiplicity="*" />
+          <End Type="SelectedHotelsModel.Product" Role="Product" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SelectedHotelsModel.AdvCatProduct" Role="CAT_AdvCatProducts" Multiplicity="*" >
+          </End>
           <ReferentialConstraint>
             <Principal Role="Product">
               <PropertyRef Name="ProductID" />
@@ -695,7 +701,7 @@
     </Options>
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
-      <Diagram Name="CATModel" ZoomLevel="37">
+      <Diagram Name="CATModel" ZoomLevel="94">
         <EntityTypeShape EntityType="SelectedHotelsModel.Product" Width="1.5" PointX="1.375" PointY="0.625" Height="14.672180989583332" IsExpanded="true" />
         <EntityTypeShape EntityType="SelectedHotelsModel.ProductImage" Width="1.5" PointX="3.625" PointY="6.75" Height="2.5571907552083317" />
         <AssociationConnector Association="SelectedHotelsModel.FK_CAT_ProductImages_Products" >

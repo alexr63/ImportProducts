@@ -441,7 +441,6 @@ namespace ImportProducts
                 {
                     foreach (var vendorProduct in vendorProducts.ToList())
                     {
-                        vendorProduct.ProductImages.Clear();
                         db.Products.Remove(vendorProduct);
 
                         currentDeletedProduct++;
