@@ -22,6 +22,7 @@ namespace ImportProducts
         public int PortalId;
         public int VendorId;
         public string AdvancedCategoryRoot;
+        public string Filter;
     }
 
     public partial class Form1 : Form
@@ -124,6 +125,7 @@ namespace ImportProducts
                     bgParams.PortalId = selectedFeed.PortalId;
                     bgParams.VendorId = selectedFeed.VendorId;
                     bgParams.AdvancedCategoryRoot = selectedFeed.AdvancedCategoryRoot;
+                    bgParams.Filter = selectedFeed.Filter;
 
                     switch (keyDownload)
                     {
@@ -166,6 +168,7 @@ namespace ImportProducts
             editProperties.numericUpDownPortalId.Value = selectedFeed.PortalId;
             editProperties.numericUpDownVendorId.Value = selectedFeed.VendorId;
             editProperties.textBoxAdvancedCategoryRoot.Text = selectedFeed.AdvancedCategoryRoot;
+            editProperties.textBoxFilter = selectedFeed.Filter;
             if (selectedFeed.LastRun != null)
             {
                 editProperties.labelLastRun.Text = selectedFeed.LastRun.Value.ToString();
@@ -183,6 +186,7 @@ namespace ImportProducts
                 feed.PortalId = (int)editProperties.numericUpDownPortalId.Value;
                 feed.VendorId = (int)editProperties.numericUpDownVendorId.Value;
                 feed.AdvancedCategoryRoot = editProperties.textBoxAdvancedCategoryRoot.Text;
+                feed.Filter = editProperties.textBoxFilter.Text;
                 context.SaveChanges();
                 BindData();
             }

@@ -116,6 +116,7 @@ namespace ImportProducts
             int portalId = param.PortalId;
             int vendorId = param.VendorId;
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
+            string filter = param.Filter;
 
             string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
             if (File.Exists(xmlFileName))

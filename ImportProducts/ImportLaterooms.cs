@@ -121,6 +121,7 @@ namespace ImportProducts
             int portalId = param.PortalId;
             int vendorId = param.VendorId;
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
+            string filter = param.Filter;
 
             // unzip file to temp folder if needed
             if (_URL.EndsWith(".zip"))
@@ -178,6 +179,12 @@ namespace ImportProducts
                     DescriptionHTML = (string)el.Element("alternate_description"),
                     URL = (string)el.Element("hotel_link")
                 };
+
+            if (!String.IsNullOrEmpty(filter))
+            {
+                products = products.Where(p => p.City == filter || p.County == filter || p.Country == filter);
+            }
+
             // show progress & catch Cancel
             if (bw.CancellationPending)
             {

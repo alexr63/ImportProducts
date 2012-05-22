@@ -123,6 +123,7 @@ namespace ImportProducts
             int portalId = param.PortalId;
             int vendorId = param.VendorId;
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
+            string filter = param.Filter;
 
             string zipFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath,
                                                 "datafeed.zip");

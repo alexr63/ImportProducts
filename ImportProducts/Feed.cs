@@ -23,5 +23,6 @@ namespace ImportProducts
         public string Category { get; set; }
         public int VendorId { get; set; }
         public string AdvancedCategoryRoot { get; set; }
+        public string Filter { get; set; }
     }
 }
