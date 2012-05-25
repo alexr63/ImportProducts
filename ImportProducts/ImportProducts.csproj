@@ -97,6 +97,9 @@
       <DependentUpon>ImportProductsModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="ImportTradeDoublerProducts.cs" />
+    <Compile Include="List.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model1.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

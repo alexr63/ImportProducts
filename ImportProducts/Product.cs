@@ -140,6 +140,7 @@ namespace ImportProducts
         public Nullable<int> LastModifiedByUserID { get; set; }
         public Nullable<System.DateTime> LastModifiedOnDate { get; set; }
         public string TaxCode { get; set; }
+        public Nullable<decimal> MaxWeight { get; set; }
     
         public virtual ICollection<ProductImage> ProductImages { get; set; }
         public virtual ICollection<AdvCatProduct> CAT_AdvCatProducts { get; set; }

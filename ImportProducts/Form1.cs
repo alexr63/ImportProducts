@@ -168,7 +168,7 @@ namespace ImportProducts
             editProperties.numericUpDownPortalId.Value = selectedFeed.PortalId;
             editProperties.numericUpDownVendorId.Value = selectedFeed.VendorId;
             editProperties.textBoxAdvancedCategoryRoot.Text = selectedFeed.AdvancedCategoryRoot;
-            editProperties.textBoxFilter.Text = selectedFeed.Filter;
+            editProperties.comboBoxCountry.Text = selectedFeed.Filter;
             if (selectedFeed.LastRun != null)
             {
                 editProperties.labelLastRun.Text = selectedFeed.LastRun.Value.ToString();
@@ -186,7 +186,7 @@ namespace ImportProducts
                 feed.PortalId = (int)editProperties.numericUpDownPortalId.Value;
                 feed.VendorId = (int)editProperties.numericUpDownVendorId.Value;
                 feed.AdvancedCategoryRoot = editProperties.textBoxAdvancedCategoryRoot.Text;
-                feed.Filter = editProperties.textBoxFilter.Text;
+                feed.Filter = editProperties.comboBoxCountry.Text;
                 context.SaveChanges();
                 BindData();
             }

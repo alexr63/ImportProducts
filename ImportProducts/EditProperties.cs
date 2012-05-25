@@ -14,6 +14,11 @@ namespace ImportProducts
         public EditProperties()
         {
             InitializeComponent();
+            SelectedHotelsEntities db = new SelectedHotelsEntities();
+            comboBoxCountry.DataSource = (from l in db.Lists
+                                    where l.ListName == "Country"
+                                    orderby l.Text
+                                    select l.Text).ToList();
         }
 
         private void textBoxURL_Validating(object sender, CancelEventArgs e)

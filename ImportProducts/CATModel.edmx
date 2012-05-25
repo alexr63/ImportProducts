@@ -12,16 +12,13 @@
           <EntitySet Name="CAT_Categories" EntityType="SelectedHotelsModel.Store.CAT_Categories" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CAT_ProductImages" EntityType="SelectedHotelsModel.Store.CAT_ProductImages" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CAT_Products" EntityType="SelectedHotelsModel.Store.CAT_Products" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Lists" EntityType="SelectedHotelsModel.Store.Lists" store:Type="Tables" Schema="dbo" />
           <AssociationSet Name="FK_CAT_AdvCatPermission_AdvCats" Association="SelectedHotelsModel.Store.FK_CAT_AdvCatPermission_AdvCats">
             <End Role="CAT_AdvCats" EntitySet="CAT_AdvCats" />
             <End Role="CAT_AdvCatPermission" EntitySet="CAT_AdvCatPermission" />
           </AssociationSet>
           <AssociationSet Name="FK_CAT_AdvCatProducts_AdvCats" Association="SelectedHotelsModel.Store.FK_CAT_AdvCatProducts_AdvCats">
             <End Role="CAT_AdvCats" EntitySet="CAT_AdvCats" />
-            <End Role="CAT_AdvCatProducts" EntitySet="CAT_AdvCatProducts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CAT_AdvCatProducts_CAT_Products" Association="SelectedHotelsModel.Store.FK_CAT_AdvCatProducts_CAT_Products">
-            <End Role="CAT_Products" EntitySet="CAT_Products" />
             <End Role="CAT_AdvCatProducts" EntitySet="CAT_AdvCatProducts" />
           </AssociationSet>
           <AssociationSet Name="FK_CAT_AdvCats_CAT_AdvCats" Association="SelectedHotelsModel.Store.FK_CAT_AdvCats_CAT_AdvCats">
@@ -179,6 +176,27 @@
           <Property Name="LastModifiedByUserID" Type="int" />
           <Property Name="LastModifiedOnDate" Type="datetime" />
           <Property Name="TaxCode" Type="nvarchar" MaxLength="16" />
+          <Property Name="MaxWeight" Type="decimal" Precision="10" Scale="4" />
+        </EntityType>
+        <EntityType Name="Lists">
+          <Key>
+            <PropertyRef Name="EntryID" />
+          </Key>
+          <Property Name="EntryID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ListName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Value" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="Text" Type="nvarchar" Nullable="false" MaxLength="150" />
+          <Property Name="ParentID" Type="int" Nullable="false" />
+          <Property Name="Level" Type="int" Nullable="false" />
+          <Property Name="SortOrder" Type="int" Nullable="false" />
+          <Property Name="DefinitionID" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="PortalID" Type="int" Nullable="false" />
+          <Property Name="SystemList" Type="bit" Nullable="false" />
+          <Property Name="CreatedByUserID" Type="int" />
+          <Property Name="CreatedOnDate" Type="datetime" />
+          <Property Name="LastModifiedByUserID" Type="int" />
+          <Property Name="LastModifiedOnDate" Type="datetime" />
         </EntityType>
         <Association Name="FK_CAT_AdvCatPermission_AdvCats">
           <End Role="CAT_AdvCats" Type="SelectedHotelsModel.Store.CAT_AdvCats" Multiplicity="1">
@@ -205,18 +223,6 @@
             </Principal>
             <Dependent Role="CAT_AdvCatProducts">
               <PropertyRef Name="AdvCatID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CAT_AdvCatProducts_CAT_Products">
-          <End Role="CAT_Products" Type="SelectedHotelsModel.Store.CAT_Products" Multiplicity="1" />
-          <End Role="CAT_AdvCatProducts" Type="SelectedHotelsModel.Store.CAT_AdvCatProducts" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CAT_Products">
-              <PropertyRef Name="ProductID" />
-            </Principal>
-            <Dependent Role="CAT_AdvCatProducts">
-              <PropertyRef Name="ProductID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -295,6 +301,7 @@
             <End Role="CAT_Categories" EntitySet="Categories" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
+          <EntitySet Name="Lists" EntityType="SelectedHotelsModel.List" />
         </EntityContainer>
         <EntityType Name="Product">
           <Key>
@@ -374,6 +381,7 @@
           <NavigationProperty Name="ProductImages" Relationship="SelectedHotelsModel.FK_CAT_ProductImages_Products" FromRole="Product" ToRole="ProductImages" />
           <NavigationProperty Name="CAT_AdvCatProducts" Relationship="SelectedHotelsModel.FK_CAT_AdvCatProducts_CAT_Products" FromRole="Product" ToRole="CAT_AdvCatProducts" />
           <NavigationProperty Name="CAT_Categories" Relationship="SelectedHotelsModel.FK_CAT_Products_Categories" FromRole="Product" ToRole="CAT_Categories" />
+          <Property Type="Decimal" Name="MaxWeight" Precision="10" Scale="4" />
         </EntityType>
         <EntityType Name="ProductImage">
           <Key>
@@ -529,6 +537,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="List">
+          <Key>
+            <PropertyRef Name="EntryID" />
+          </Key>
+          <Property Type="Int32" Name="EntryID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="ListName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Value" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Text" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="ParentID" Nullable="false" />
+          <Property Type="Int32" Name="Level" Nullable="false" />
+          <Property Type="Int32" Name="SortOrder" Nullable="false" />
+          <Property Type="Int32" Name="DefinitionID" Nullable="false" />
+          <Property Type="String" Name="Description" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="PortalID" Nullable="false" />
+          <Property Type="Boolean" Name="SystemList" Nullable="false" />
+          <Property Type="Int32" Name="CreatedByUserID" />
+          <Property Type="DateTime" Name="CreatedOnDate" />
+          <Property Type="Int32" Name="LastModifiedByUserID" />
+          <Property Type="DateTime" Name="LastModifiedOnDate" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -536,7 +564,8 @@
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="SelectedHotelsModelStoreContainer" CdmEntityContainer="SelectedHotelsEntities">
           <EntitySetMapping Name="Products"><EntityTypeMapping TypeName="SelectedHotelsModel.Product"><MappingFragment StoreEntitySet="CAT_Products">
-            <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+            <ScalarProperty Name="MaxWeight" ColumnName="MaxWeight" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
             <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
             <ScalarProperty Name="Category2ID" ColumnName="Category2ID" />
             <ScalarProperty Name="Category3" ColumnName="Category3" />
@@ -680,6 +709,27 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Lists">
+            <EntityTypeMapping TypeName="SelectedHotelsModel.List">
+              <MappingFragment StoreEntitySet="Lists">
+                <ScalarProperty Name="LastModifiedOnDate" ColumnName="LastModifiedOnDate" />
+                <ScalarProperty Name="LastModifiedByUserID" ColumnName="LastModifiedByUserID" />
+                <ScalarProperty Name="CreatedOnDate" ColumnName="CreatedOnDate" />
+                <ScalarProperty Name="CreatedByUserID" ColumnName="CreatedByUserID" />
+                <ScalarProperty Name="SystemList" ColumnName="SystemList" />
+                <ScalarProperty Name="PortalID" ColumnName="PortalID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DefinitionID" ColumnName="DefinitionID" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="ListName" ColumnName="ListName" />
+                <ScalarProperty Name="EntryID" ColumnName="EntryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -701,7 +751,7 @@
     </Options>
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
-      <Diagram Name="CATModel" ZoomLevel="94">
+      <Diagram Name="CATModel" ZoomLevel="67">
         <EntityTypeShape EntityType="SelectedHotelsModel.Product" Width="1.5" PointX="1.375" PointY="0.625" Height="14.672180989583332" IsExpanded="true" />
         <EntityTypeShape EntityType="SelectedHotelsModel.ProductImage" Width="1.5" PointX="3.625" PointY="6.75" Height="2.5571907552083317" />
         <AssociationConnector Association="SelectedHotelsModel.FK_CAT_ProductImages_Products" >
@@ -727,15 +777,16 @@
           <ConnectorPoint PointX="8.625" PointY="8.2112939453125" />
         </AssociationConnector>
         <AssociationConnector Association="SelectedHotelsModel.FK_CAT_AdvCatProducts_CAT_Products" >
-          <ConnectorPoint PointX="2.875" PointY="12.621888020833332" />
-          <ConnectorPoint PointX="9.375" PointY="12.621888020833332" />
+          <ConnectorPoint PointX="2.875" PointY="12.718038736979166" />
+          <ConnectorPoint PointX="9.375" PointY="12.718038736979166" />
           <ConnectorPoint PointX="9.375" PointY="9.297587890625" />
         </AssociationConnector>
         <EntityTypeShape EntityType="SelectedHotelsModel.Category" Width="1.5" PointX="1.375" PointY="16.75" Height="2.9417936197916674" />
         <AssociationConnector Association="SelectedHotelsModel.FK_CAT_Products_Categories" >
           <ConnectorPoint PointX="2.125" PointY="16.75" />
-          <ConnectorPoint PointX="2.125" PointY="15.874085286458332" />
+          <ConnectorPoint PointX="2.125" PointY="16.06638671875" />
         </AssociationConnector>
+        <EntityTypeShape EntityType="SelectedHotelsModel.List" Width="1.5" PointX="14.375" PointY="1.375" Height="3.9033007812499996" />
       </Diagram>
     </Diagrams>
   </Designer>

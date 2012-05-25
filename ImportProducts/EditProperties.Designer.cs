@@ -49,7 +49,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.textBoxAdvancedCategoryRoot = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.textBoxFilter = new System.Windows.Forms.TextBox();
+            this.comboBoxCountry = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortalId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVendorId)).BeginInit();
@@ -219,16 +219,17 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(13, 198);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(29, 13);
+            this.label9.Size = new System.Drawing.Size(68, 13);
             this.label9.TabIndex = 12;
-            this.label9.Text = "Filter";
+            this.label9.Text = "Country Filter";
             // 
-            // textBoxFilter
+            // comboBoxCountry
             // 
-            this.textBoxFilter.Location = new System.Drawing.Point(167, 190);
-            this.textBoxFilter.Name = "textBoxFilter";
-            this.textBoxFilter.Size = new System.Drawing.Size(100, 20);
-            this.textBoxFilter.TabIndex = 13;
+            this.comboBoxCountry.FormattingEnabled = true;
+            this.comboBoxCountry.Location = new System.Drawing.Point(167, 190);
+            this.comboBoxCountry.Name = "comboBoxCountry";
+            this.comboBoxCountry.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxCountry.TabIndex = 13;
             // 
             // EditProperties
             // 
@@ -237,7 +238,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(589, 340);
-            this.Controls.Add(this.textBoxFilter);
+            this.Controls.Add(this.comboBoxCountry);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.textBoxAdvancedCategoryRoot);
             this.Controls.Add(this.label8);
@@ -289,6 +290,6 @@
         private System.Windows.Forms.Label label8;
         public System.Windows.Forms.TextBox textBoxAdvancedCategoryRoot;
         private System.Windows.Forms.Label label9;
-        public System.Windows.Forms.TextBox textBoxFilter;
+        public System.Windows.Forms.ComboBox comboBoxCountry;
     }
 }
