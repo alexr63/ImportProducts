@@ -14,6 +14,7 @@
           </Key>
           <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="URL" Type="nvarchar" MaxLength="1000" />
           <Property Name="LastRun" Type="datetime" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -44,6 +45,7 @@
           <Property Type="Int32" Name="VendorId" Nullable="false" />
           <Property Type="String" Name="AdvancedCategoryRoot" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Filter" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Description" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -52,7 +54,8 @@
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ImportProductsModelStoreContainer" CdmEntityContainer="ImportProductsEntities">
           <EntitySetMapping Name="Feeds"><EntityTypeMapping TypeName="ImportProductsModel.Feed"><MappingFragment StoreEntitySet="Feeds">
-            <ScalarProperty Name="Filter" ColumnName="Filter" />
+            <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Filter" ColumnName="Filter" />
                 <ScalarProperty Name="AdvancedCategoryRoot" ColumnName="AdvancedCategoryRoot" />
                 <ScalarProperty Name="VendorId" ColumnName="VendorId" />
                 <ScalarProperty Name="Category" ColumnName="Category" />

@@ -130,6 +130,7 @@ namespace ImportProducts
                     switch (keyDownload)
                     {
                         case "Laterooms":
+                        case "Laterooms (filtered)":
                             workD = new BackGroundWorkerDelegateWork(ImportLaterooms.DoImport);
                             break;
                         case "Trade Doubler":
