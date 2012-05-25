@@ -123,6 +123,9 @@ namespace ImportProducts
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
             string filter = param.Filter;
 
+#if DEBUG
+            _URL = @"C:\Temp\Hotels_Standard.xml";
+#else
             // unzip file to temp folder if needed
             if (_URL.EndsWith(".zip"))
             {
@@ -154,6 +157,7 @@ namespace ImportProducts
                 }
                 _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "Hotels_Standard.xml");
             }
+#endif
 
             // show progress & catch Cancel
             if (bw.CancellationPending)
@@ -261,9 +265,23 @@ namespace ImportProducts
 
                         if (!String.IsNullOrEmpty(product1.Country))
                         {
-                            var advCatCountry =
-                                db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == portalId && ac.AdvCatName == product1.Country && ac.Level == level);
+                            AdvCat advCatCountry;
+                            if (parentID.HasValue)
+                            {
+                                advCatCountry =
+                                    db.AdvCats.SingleOrDefault(
+                                        ac =>
+                                        ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
+                                        ac.Level == level && ac.ParentId == parentID.Value);
+                            }
+                            else
+                            {
+                                advCatCountry =
+                                    db.AdvCats.SingleOrDefault(
+                                        ac =>
+                                        ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
+                                        ac.Level == level);
+                            }
                             if (advCatCountry == null)
                             {
                                 if (db.AdvCats.Count() > 0)
@@ -286,6 +304,10 @@ namespace ImportProducts
                                     Level = level,
                                     AdvCatImportID = String.Empty
                                 };
+                                if (parentID.HasValue)
+                                {
+                                    advCatCountry.ParentId = parentID.Value;
+                                }
                                 db.AdvCats.Add(advCatCountry);
                                 db.SaveChanges();
 

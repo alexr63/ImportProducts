@@ -168,7 +168,7 @@ namespace ImportProducts
             editProperties.numericUpDownPortalId.Value = selectedFeed.PortalId;
             editProperties.numericUpDownVendorId.Value = selectedFeed.VendorId;
             editProperties.textBoxAdvancedCategoryRoot.Text = selectedFeed.AdvancedCategoryRoot;
-            editProperties.textBoxFilter = selectedFeed.Filter;
+            editProperties.textBoxFilter.Text = selectedFeed.Filter;
             if (selectedFeed.LastRun != null)
             {
                 editProperties.labelLastRun.Text = selectedFeed.LastRun.Value.ToString();
