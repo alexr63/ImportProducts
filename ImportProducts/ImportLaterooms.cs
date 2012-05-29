@@ -124,7 +124,7 @@ namespace ImportProducts
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
 
-#if DEBUG
+#if TEST
             _URL = @"C:\Temp\Hotels_Standard.xml";
 #else
             // unzip file to temp folder if needed
