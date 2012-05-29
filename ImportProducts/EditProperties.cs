@@ -14,11 +14,13 @@ namespace ImportProducts
         public EditProperties()
         {
             InitializeComponent();
-            SelectedHotelsEntities db = new SelectedHotelsEntities();
-            comboBoxCountry.DataSource = (from l in db.Lists
-                                    where l.ListName == "Country"
-                                    orderby l.Text
-                                    select l.Text).ToList();
+            ImportProductsEntities db = new ImportProductsEntities();
+            List<Country> countries = (from c in db.Countries
+                                       orderby c.Name
+                                       select c).ToList();
+            Country emptyCountry = new Country {Id = 0, Name = String.Empty};
+            countries.Insert(0, emptyCountry);
+            comboBoxCountry.DataSource = countries;
         }
 
         private void textBoxURL_Validating(object sender, CancelEventArgs e)
@@ -54,6 +56,23 @@ namespace ImportProducts
             else
             {
                 errorProvider1.SetError(textBoxAdvancedCategoryRoot, "Please enter Advanced Category Root");
+            }
+        }
+
+        private void comboBoxCountry_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int result;
+            if (int.TryParse(comboBoxCountry.SelectedValue.ToString(), out result))
+            {
+                int countryId = int.Parse(comboBoxCountry.SelectedValue.ToString());
+                ImportProductsEntities db = new ImportProductsEntities();
+                List<City> cities = (from c in db.Cities
+                                     where c.CountryId == countryId
+                                     orderby c.Name
+                                     select c).ToList();
+                City emptyCity = new City { Id = 0, Name = String.Empty, CountryId = 0 };
+                cities.Insert(0, emptyCity);
+                comboBoxCity.DataSource = cities;
             }
         }
     }

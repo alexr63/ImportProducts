@@ -121,9 +121,10 @@ namespace ImportProducts
             int portalId = param.PortalId;
             int vendorId = param.VendorId;
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
-            string filter = param.Filter;
+            string countryFilter = param.CountryFilter;
+            string cityFilter = param.CityFilter;
 
-#if DEBUG
+#if TEST
             _URL = @"C:\Temp\Hotels_Standard.xml";
 #else
             // unzip file to temp folder if needed
@@ -184,9 +185,43 @@ namespace ImportProducts
                     URL = (string)el.Element("hotel_link")
                 };
 
-            if (!String.IsNullOrEmpty(filter))
+            using (ImportProductsEntities db = new ImportProductsEntities())
             {
-                products = products.Where(p => p.City == filter || p.County == filter || p.Country == filter);
+                foreach (var product in products)
+                {
+                    if (!String.IsNullOrEmpty(product.Country))
+                    {
+                        var country = db.Countries.SingleOrDefault(c => c.Name == product.Country);
+                        if (country == null)
+                        {
+                            country = new Country { Name = product.Country };
+                            db.Countries.Add(country);
+                            db.SaveChanges();
+                        }
+                        string hotelCity = product.City;
+                        if (product.City.Length > 50)
+                        {
+                            hotelCity = product.City.Substring(0, 47).PadRight(50, '.');
+                        }
+                        var city = db.Cities.SingleOrDefault(c => c.Name == hotelCity && c.CountryId == country.Id);
+                        if (city == null)
+                        {
+                            city = new City { Name = hotelCity, CountryId = country.Id };
+                            db.Cities.Add(city);
+                            db.SaveChanges();
+                        }
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(countryFilter))
+            {
+                products = products.Where(p => p.Country == countryFilter);
+            }
+
+            if (!String.IsNullOrEmpty(cityFilter))
+            {
+                products = products.Where(p => p.City == cityFilter);
             }
 
             // show progress & catch Cancel

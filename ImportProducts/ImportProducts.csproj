@@ -73,6 +73,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CATModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="City.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Country.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="ImportWebgainsProducts.cs" />
     <Compile Include="ImportProductserve.cs" />
     <Compile Include="EditProperties.cs">

@@ -24,7 +24,9 @@ namespace ImportProducts
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
         public DbSet<Feed> Feeds { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<City> Cities { get; set; }
     }
 }
