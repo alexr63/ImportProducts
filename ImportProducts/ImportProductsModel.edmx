@@ -6,8 +6,29 @@
     <edmx:StorageModels>
     <Schema Namespace="ImportProductsModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="ImportProductsModelStoreContainer">
+          <EntitySet Name="Cities" EntityType="ImportProductsModel.Store.Cities" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Countries" EntityType="ImportProductsModel.Store.Countries" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Feeds" EntityType="ImportProductsModel.Store.Feeds" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Cities_Countries" Association="ImportProductsModel.Store.FK_Cities_Countries">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Cities" EntitySet="Cities" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Cities">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="CountryId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Countries">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+        </EntityType>
         <EntityType Name="Feeds">
           <Key>
             <PropertyRef Name="Id" />
@@ -24,12 +45,30 @@
           <Property Name="AdvancedCategoryRoot" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Filter" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <Association Name="FK_Cities_Countries">
+          <End Role="Countries" Type="ImportProductsModel.Store.Countries" Multiplicity="1" />
+          <End Role="Cities" Type="ImportProductsModel.Store.Cities" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Cities">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ImportProductsModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
         <EntityContainer Name="ImportProductsEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Feeds" EntityType="ImportProductsModel.Feed" />
+          <EntitySet Name="Cities" EntityType="ImportProductsModel.City" />
+          <EntitySet Name="Countries" EntityType="ImportProductsModel.Country" />
+          <AssociationSet Name="FK_Cities_Countries" Association="ImportProductsModel.FK_Cities_Countries">
+            <End Role="Country" EntitySet="Countries" />
+            <End Role="City" EntitySet="Cities" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Feed">
           <Key>
@@ -47,6 +86,35 @@
           <Property Type="String" Name="Filter" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Description" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="City">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="CountryId" Nullable="false" />
+          <NavigationProperty Name="Country" Relationship="ImportProductsModel.FK_Cities_Countries" FromRole="City" ToRole="Country" />
+        </EntityType>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Cities" Relationship="ImportProductsModel.FK_Cities_Countries" FromRole="Country" ToRole="City" />
+        </EntityType>
+        <Association Name="FK_Cities_Countries">
+          <End Type="ImportProductsModel.Country" Role="Country" Multiplicity="1" />
+          <End Type="ImportProductsModel.City" Role="City" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="City">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -66,6 +134,23 @@
             <ScalarProperty Name="Name" ColumnName="Name" />
             <ScalarProperty Name="URL" ColumnName="URL" />
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Cities">
+            <EntityTypeMapping TypeName="ImportProductsModel.City">
+              <MappingFragment StoreEntitySet="Cities">
+                <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="ImportProductsModel.Country">
+              <MappingFragment StoreEntitySet="Countries">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -80,7 +165,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>
@@ -89,6 +174,12 @@
     <Diagrams>
       <Diagram Name="ImportProductsModel">
         <EntityTypeShape EntityType="ImportProductsModel.Feed" Width="1.5" PointX="0.75" PointY="0.75" Height="1.59568359375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ImportProductsModel.City" Width="1.5" PointX="5.625" PointY="0.875" Height="1.7879850260416674" />
+        <EntityTypeShape EntityType="ImportProductsModel.Country" Width="1.5" PointX="3.375" PointY="1" Height="1.5956835937499996" />
+        <AssociationConnector Association="ImportProductsModel.FK_Cities_Countries" >
+          <ConnectorPoint PointX="4.875" PointY="1.7978417968749998" />
+          <ConnectorPoint PointX="5.625" PointY="1.7978417968749998" />
+        </AssociationConnector>
       </Diagram>
     </Diagrams>
   </Designer>

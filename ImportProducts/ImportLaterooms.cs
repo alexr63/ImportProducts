@@ -184,6 +184,35 @@ namespace ImportProducts
                     URL = (string)el.Element("hotel_link")
                 };
 
+            using (ImportProductsEntities db = new ImportProductsEntities())
+            {
+                foreach (var product in products)
+                {
+                    if (!String.IsNullOrEmpty(product.Country))
+                    {
+                        var country = db.Countries.SingleOrDefault(c => c.Name == product.Country);
+                        if (country == null)
+                        {
+                            country = new Country { Name = product.Country };
+                            db.Countries.Add(country);
+                            db.SaveChanges();
+                        }
+                        string hotelCity = product.City;
+                        if (product.City.Length > 50)
+                        {
+                            hotelCity = product.City.Substring(0, 47).PadRight(50, '.');
+                        }
+                        var city = db.Cities.SingleOrDefault(c => c.Name == hotelCity && c.CountryId == country.Id);
+                        if (city == null)
+                        {
+                            city = new City { Name = hotelCity, CountryId = country.Id };
+                            db.Cities.Add(city);
+                            db.SaveChanges();
+                        }
+                    }
+                }
+            }
+
             if (!String.IsNullOrEmpty(filter))
             {
                 products = products.Where(p => p.City == filter || p.County == filter || p.Country == filter);
