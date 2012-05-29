@@ -121,7 +121,8 @@ namespace ImportProducts
             int portalId = param.PortalId;
             int vendorId = param.VendorId;
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
-            string filter = param.Filter;
+            string countryFilter = param.CountryFilter;
+            string cityFilter = param.CityFilter;
 
 #if DEBUG
             _URL = @"C:\Temp\Hotels_Standard.xml";
@@ -213,9 +214,14 @@ namespace ImportProducts
                 }
             }
 
-            if (!String.IsNullOrEmpty(filter))
+            if (!String.IsNullOrEmpty(countryFilter))
             {
-                products = products.Where(p => p.City == filter || p.County == filter || p.Country == filter);
+                products = products.Where(p => p.Country == countryFilter);
+            }
+
+            if (!String.IsNullOrEmpty(cityFilter))
+            {
+                products = products.Where(p => p.City == cityFilter);
             }
 
             // show progress & catch Cancel

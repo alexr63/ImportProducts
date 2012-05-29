@@ -22,7 +22,8 @@ namespace ImportProducts
         public int PortalId;
         public int VendorId;
         public string AdvancedCategoryRoot;
-        public string Filter;
+        public string CountryFilter;
+        public string CityFilter;
     }
 
     public partial class Form1 : Form
@@ -125,7 +126,8 @@ namespace ImportProducts
                     bgParams.PortalId = selectedFeed.PortalId;
                     bgParams.VendorId = selectedFeed.VendorId;
                     bgParams.AdvancedCategoryRoot = selectedFeed.AdvancedCategoryRoot;
-                    bgParams.Filter = selectedFeed.Filter;
+                    bgParams.CountryFilter = selectedFeed.CountryFilter;
+                    bgParams.CityFilter = selectedFeed.CityFilter;
 
                     switch (keyDownload)
                     {
@@ -169,7 +171,8 @@ namespace ImportProducts
             editProperties.numericUpDownPortalId.Value = selectedFeed.PortalId;
             editProperties.numericUpDownVendorId.Value = selectedFeed.VendorId;
             editProperties.textBoxAdvancedCategoryRoot.Text = selectedFeed.AdvancedCategoryRoot;
-            editProperties.comboBoxCountry.Text = selectedFeed.Filter;
+            editProperties.comboBoxCountry.Text = selectedFeed.CountryFilter;
+            editProperties.comboBoxCity.Text = selectedFeed.CityFilter;
             if (selectedFeed.LastRun != null)
             {
                 editProperties.labelLastRun.Text = selectedFeed.LastRun.Value.ToString();
@@ -187,7 +190,8 @@ namespace ImportProducts
                 feed.PortalId = (int)editProperties.numericUpDownPortalId.Value;
                 feed.VendorId = (int)editProperties.numericUpDownVendorId.Value;
                 feed.AdvancedCategoryRoot = editProperties.textBoxAdvancedCategoryRoot.Text;
-                feed.Filter = editProperties.comboBoxCountry.Text;
+                feed.CountryFilter = editProperties.comboBoxCountry.Text;
+                feed.CityFilter = editProperties.comboBoxCity.Text;
                 context.SaveChanges();
                 BindData();
             }

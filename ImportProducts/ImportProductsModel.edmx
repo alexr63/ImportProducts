@@ -43,7 +43,8 @@
           <Property Name="Category" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="VendorId" Type="int" Nullable="false" />
           <Property Name="AdvancedCategoryRoot" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Filter" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountryFilter" Type="nvarchar" MaxLength="50" />
+          <Property Name="CityFilter" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_Cities_Countries">
           <End Role="Countries" Type="ImportProductsModel.Store.Countries" Multiplicity="1" />
@@ -83,8 +84,9 @@
           <Property Type="String" Name="Category" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Type="Int32" Name="VendorId" Nullable="false" />
           <Property Type="String" Name="AdvancedCategoryRoot" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Filter" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Description" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CountryFilter" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CityFilter" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="City">
           <Key>
@@ -122,8 +124,9 @@
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ImportProductsModelStoreContainer" CdmEntityContainer="ImportProductsEntities">
           <EntitySetMapping Name="Feeds"><EntityTypeMapping TypeName="ImportProductsModel.Feed"><MappingFragment StoreEntitySet="Feeds">
-            <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Filter" ColumnName="Filter" />
+            <ScalarProperty Name="CityFilter" ColumnName="CityFilter" />
+                <ScalarProperty Name="CountryFilter" ColumnName="CountryFilter" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="AdvancedCategoryRoot" ColumnName="AdvancedCategoryRoot" />
                 <ScalarProperty Name="VendorId" ColumnName="VendorId" />
                 <ScalarProperty Name="Category" ColumnName="Category" />
@@ -173,7 +176,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram Name="ImportProductsModel">
-        <EntityTypeShape EntityType="ImportProductsModel.Feed" Width="1.5" PointX="0.75" PointY="0.75" Height="1.59568359375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ImportProductsModel.Feed" Width="1.5" PointX="0.75" PointY="0.75" Height="3.3263964843749996" IsExpanded="true" />
         <EntityTypeShape EntityType="ImportProductsModel.City" Width="1.5" PointX="5.625" PointY="0.875" Height="1.7879850260416674" />
         <EntityTypeShape EntityType="ImportProductsModel.Country" Width="1.5" PointX="3.375" PointY="1" Height="1.5956835937499996" />
         <AssociationConnector Association="ImportProductsModel.FK_Cities_Countries" >
