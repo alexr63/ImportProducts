@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -96,7 +98,7 @@ namespace ImportProducts
                             if (!e.Cancel && currentBuffer < countBuffer)
                             {
                                 bw.ReportProgress(100);
-                                Thread.Sleep(1000);
+                                Thread.Sleep(100);
                             }
                         }
                     }
@@ -229,7 +231,7 @@ namespace ImportProducts
                 e.Cancel = true; return;
             }
             else if (bw.WorkerReportsProgress) bw.ReportProgress(100);
-            Thread.Sleep(1000); // a little bit slow working for visualisation Progress
+            Thread.Sleep(100); // a little bit slow working for visualisation Progress
 
            // Set step for backgroundWorker
            Form1.activeStep = "Import records..";
@@ -241,6 +243,44 @@ namespace ImportProducts
             {
                 using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                 {
+                    DataTable dataTable = new DataTable();
+                    DataColumn dataColumn = new DataColumn("ProductName", typeof(System.String));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("CategoryID", typeof(System.Int32));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("Category2ID", typeof(System.Int32));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("ProductNumber", typeof(System.String));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("UnitCost", typeof(System.Decimal));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("UnitCost2", typeof(System.Decimal));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("UnitCost3", typeof(System.Decimal));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("UnitCost4", typeof(System.Decimal));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("UnitCost5", typeof(System.Decimal));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("UnitCost6", typeof(System.Decimal));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("Description", typeof(System.String));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("DescriptionHTML", typeof(System.String));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("URL", typeof(System.String));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("ProductCost", typeof(System.String));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("ProductImage", typeof(System.String));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("OrderQuant", typeof(System.String));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("CreatedByUser", typeof(System.Int32));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("DateCreated", typeof(System.DateTime));
+                    dataTable.Columns.Add(dataColumn);
+
                     foreach (var product in products)
                     {
                         Console.WriteLine(product.Name); // debug print
@@ -288,7 +328,7 @@ namespace ImportProducts
                                     AdvCatImportID = String.Empty
                                 };
                                 db.AdvCats.Add(advCatRoot);
-                                db.SaveChanges();
+                                SaveChanges3(db);
 
                                 Common.AddAdvCatDefaultPermissions(db, advCatRoot.AdvCatID);
                             }
@@ -343,7 +383,7 @@ namespace ImportProducts
                                     advCatCountry.ParentId = parentID.Value;
                                 }
                                 db.AdvCats.Add(advCatCountry);
-                                db.SaveChanges();
+                                SaveChanges4(db);
 
                                 Common.AddAdvCatDefaultPermissions(db, advCatCountry.AdvCatID);
                             }
@@ -381,7 +421,7 @@ namespace ImportProducts
                                     AdvCatImportID = String.Empty
                                 };
                                 db.AdvCats.Add(advCatCounty);
-                                db.SaveChanges();
+                                SaveChanges5(db);
 
                                 Common.AddAdvCatDefaultPermissions(db, advCatCounty.AdvCatID);
                             }
@@ -419,7 +459,7 @@ namespace ImportProducts
                                     AdvCatImportID = String.Empty
                                 };
                                 db.AdvCats.Add(advCatCity);
-                                db.SaveChanges();
+                                SaveChanges6(db);
 
                                 Common.AddAdvCatDefaultPermissions(db, advCatCity.AdvCatID);
                             }
@@ -453,8 +493,12 @@ namespace ImportProducts
                                 DateCreated = DateTime.Now
                             };
 
-                            // add additional product images
                             product2.ProductImage = (string)product.Images.Element("url");
+                            // trick to hide Add To Cart button
+                            product2.OrderQuant = "0";
+
+#if ADDIMAGES
+                            // add additional product images
                             foreach (var image in product.Images.Elements("url"))
                             {
                                 if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
@@ -464,32 +508,163 @@ namespace ImportProducts
                                     product2.ProductImages.Add(productImage);
                                 }
                             }
-                            // trick to hide Add To Cart button
-                            product2.OrderQuant = "0";
+#endif
 
                             // add product to product set
-                            db.Products.Add(product2);
+                            //db.Products.Add(product2);
                             // store  changes
-                            db.SaveChanges();
+                            //SaveChanges7(db);
+
+                            DataRow dataRow = dataTable.NewRow();
+                            dataRow["CategoryID"] = categoryId;
+                            dataRow["Category2ID"] = 0;
+                            dataRow["Category3"] = String.Empty;
+                            dataRow["ProductName"] = categoryId;
+                            dataRow["ProductNumber"] = product.ProductNumber;
+                            dataRow["UnitCost"] = product.UnitCost;
+                            dataRow["UnitCost2"] = product.UnitCost;
+                            dataRow["UnitCost3"] = product.UnitCost;
+                            dataRow["UnitCost4"] = product.UnitCost;
+                            dataRow["UnitCost5"] = product.UnitCost;
+                            dataRow["UnitCost6"] = product.UnitCost;
+                            dataRow["Description"] = product.Description;
+                            dataRow["DescriptionHTML"] = product.DescriptionHTML;
+                            dataRow["URL"] = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                            dataRow["ProductCost"] = product.UnitCost;
+                            dataRow["ProductImage"] = (string)product.Images.Element("url");
+                            dataRow["OrderQuant"] = "0";
+                            dataRow["CreatedByUser"] = vendorId;
+                            dataRow["DateCreated"] = DateTime.Now;
+                            dataTable.Rows.Add(dataRow);
+
+                            if (dataTable.Rows.Count >= 100)
+                            {
+                                using (
+                                    SqlConnection destinationConnection =
+                                        new SqlConnection(db.Database.Connection.ConnectionString))
+                                {
+                                    destinationConnection.Open();
+
+                                    // Set up the bulk copy object. 
+                                    // Note that the column positions in the source
+                                    // data reader match the column positions in 
+                                    // the destination table so there is no need to
+                                    // map columns.
+                                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(destinationConnection))
+                                    {
+                                        bulkCopy.DestinationTableName = "dbo.CAT_Products";
+
+                                        try
+                                        {
+                                            // Write from the source to the destination.
+                                            bulkCopy.WriteToServer(dataTable);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine(ex.Message);
+                                        }
+                                        finally
+                                        {
+                                            // Close the SqlDataReader. The SqlBulkCopy
+                                            // object is automatically closed at the end
+                                            // of the using block.
+                                            //reader.Close();
+                                        }
+                                    }
+                                }
+                                dataTable.Rows.Clear();
+                            }
                         }
                         else
                         {
-                            product2.CategoryID = categoryId;
-                            product2.Category2ID = 0;
-                            product2.ProductName = product.Name;
-                            product2.ProductNumber = product.ProductNumber;
-                            product2.UnitCost = product.UnitCost;
-                            product2.UnitCost2 = product.UnitCost;
-                            product2.UnitCost3 = product.UnitCost;
-                            product2.UnitCost4 = product.UnitCost;
-                            product2.UnitCost5 = product.UnitCost;
-                            product2.UnitCost6 = product.UnitCost;
-                            product2.Description = product.Description;
-                            product2.DescriptionHTML = product.DescriptionHTML;
-                            product2.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
-                            product2.ProductCost = product.UnitCost;
+                            bool isChanged = false;
+                            if (product2.CategoryID != categoryId)
+                            {
+                                product2.CategoryID = categoryId;
+                                isChanged = true;
+                            }
+                            if (product2.Category2ID != 0)
+                            {
+                                product2.Category2ID = 0;
+                                isChanged = true;
+                            }
+                            if (product2.ProductName != product.Name)
+                            {
+                                product2.ProductName = product.Name;
+                                isChanged = true;
+                            }
+                            if (product2.ProductNumber != product.ProductNumber)
+                            {
+                                product2.ProductNumber = product.ProductNumber;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost != product.UnitCost)
+                            {
+                                product2.UnitCost = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost2 != product.UnitCost)
+                            {
+                                product2.UnitCost2 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost3 != product.UnitCost)
+                            {
+                                product2.UnitCost3 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost4 != product.UnitCost)
+                            {
+                                product2.UnitCost4 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost5 != product.UnitCost)
+                            {
+                                product2.UnitCost5 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost6 != product.UnitCost)
+                            {
+                                product2.UnitCost6 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.Description != product.Description)
+                            {
+                                product2.Description = product.Description;
+                                isChanged = true;
+                            }
+                            if (product2.DescriptionHTML != product.DescriptionHTML)
+                            {
+                                product2.DescriptionHTML = product.DescriptionHTML;
+                                isChanged = true;
+                            }
+                            if (product2.URL != product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
+                            {
+                                product2.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                                isChanged = true;
+                            }
+                            if (product2.ProductCost != product.UnitCost)
+                            {
+                                product2.ProductCost = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.ProductImage != (string)product.Images.Element("url"))
+                            {
+                                product2.ProductImage = (string)product.Images.Element("url");
+                                isChanged = true;
+                            }
+                            if (product2.OrderQuant != "0")
+                            {
+                                product2.OrderQuant = "0";
+                                isChanged = true;
+                            }
 
-                            product2.ProductImage = (string)product.Images.Element("url");
+                            if (isChanged)
+                            {
+                                SaveChanges8(db);
+                            }
+
+#if ADDIMAGES
                             foreach (var productImage in product2.ProductImages)
                             {
                                 if (!product1.Images.Elements("url").Any(x => x.Value == productImage.ImageFile))
@@ -515,9 +690,8 @@ namespace ImportProducts
                                 }
                             }
 
-                            product2.OrderQuant = "0";
-
-                            db.SaveChanges();
+                            SaveChanges81(db);
+#endif
                         }
 
                         // add product to advanced categories
@@ -530,7 +704,7 @@ namespace ImportProducts
                                 AddAdvCatToProductDisplay = false
                             };
                             db.AdvCatProducts.Add(advCatProduct);
-                            db.SaveChanges();
+                            SaveChanges9(db);
                         }
                         if (catCountryID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCountryID.Value && act.ProductID == product2.ProductID) == null)
                         {
@@ -541,7 +715,7 @@ namespace ImportProducts
                                 AddAdvCatToProductDisplay = false
                             };
                             db.AdvCatProducts.Add(advCatProduct);
-                            db.SaveChanges();
+                            SaveChanges10(db);
                         }
                         if (catCountyID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCountyID.Value && act.ProductID == product2.ProductID) == null)
                         {
@@ -552,7 +726,7 @@ namespace ImportProducts
                                 AddAdvCatToProductDisplay = false
                             };
                             db.AdvCatProducts.Add(advCatProduct);
-                            db.SaveChanges();
+                            SaveChanges11(db);
                         }
                         if (catCityID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCityID.Value && act.ProductID == product2.ProductID) == null)
                         {
@@ -563,7 +737,7 @@ namespace ImportProducts
                                 AddAdvCatToProductDisplay = false
                             };
                             db.AdvCatProducts.Add(advCatProduct);
-                            db.SaveChanges();
+                            SaveChanges12(db);
                         }
 
                         currentProduct++;
@@ -584,6 +758,59 @@ namespace ImportProducts
                 log.Error("Error error logging", ex);
             }
             //return rc;
+        }
+
+        private static void SaveChanges1(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges2(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges3(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges4(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges5(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges6(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges7(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges8(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges81(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges9(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges10(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges11(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
+        }
+        private static void SaveChanges12(SelectedHotelsEntities db)
+        {
+            db.SaveChanges();
         }
     }
 }

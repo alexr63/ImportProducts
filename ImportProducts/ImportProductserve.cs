@@ -98,7 +98,7 @@ namespace ImportProducts
                             if (!e.Cancel && currentBuffer < countBuffer)
                             {
                                 bw.ReportProgress(100);
-                                Thread.Sleep(1000);
+                                Thread.Sleep(100);
                             }
                         }
                     }
@@ -181,7 +181,7 @@ namespace ImportProducts
                 e.Cancel = true; return;
             }
             else if (bw.WorkerReportsProgress) bw.ReportProgress(100);
-            Thread.Sleep(1000); // a little bit slow working for visualisation Progress
+            Thread.Sleep(100); // a little bit slow working for visualisation Progress
 
            // Set step for backgroundWorker
            Form1.activeStep = "Import records..";
@@ -349,24 +349,92 @@ namespace ImportProducts
                         }
                         else
                         {
-                            product2.CategoryID = categoryId;
-                            product2.Category2ID = 0;
-                            product2.ProductName = product.Name.Replace("&apos;", "'");
-                            product2.ProductNumber = product.ProductNumber;
-                            product2.UnitCost = product.UnitCost;
-                            product2.UnitCost2 = product.UnitCost;
-                            product2.UnitCost3 = product.UnitCost;
-                            product2.UnitCost4 = product.UnitCost;
-                            product2.UnitCost5 = product.UnitCost;
-                            product2.UnitCost6 = product.UnitCost;
-                            product2.Description = product.Description;
-                            product2.DescriptionHTML = product.DescriptionHTML;
-                            product2.URL = product.URL;
-                            product2.ProductCost = product.UnitCost;
-                            product2.ProductImage = product.Image;
-                            product2.OrderQuant = "0";
+                            bool isChanged = false;
+                            if (product2.CategoryID != categoryId)
+                            {
+                                product2.CategoryID = categoryId;
+                                isChanged = true;
+                            }
+                            if (product2.Category2ID != 0)
+                            {
+                                product2.Category2ID = 0;
+                                isChanged = true;
+                            }
+                            if (product2.ProductName != product.Name.Replace("&apos;", "'"))
+                            {
+                                product2.ProductName = product.Name.Replace("&apos;", "'");
+                                isChanged = true;
+                            }
+                            if (product2.ProductNumber != product.ProductNumber)
+                            {
+                                product2.ProductNumber = product.ProductNumber;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost != product.UnitCost)
+                            {
+                                product2.UnitCost = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost2 != product.UnitCost)
+                            {
+                                product2.UnitCost2 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost3 != product.UnitCost)
+                            {
+                                product2.UnitCost3 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost4 != product.UnitCost)
+                            {
+                                product2.UnitCost4 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost5 != product.UnitCost)
+                            {
+                                product2.UnitCost5 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost6 != product.UnitCost)
+                            {
+                                product2.UnitCost6 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.Description != product.Description)
+                            {
+                                product2.Description = product.Description;
+                                isChanged = true;
+                            }
+                            if (product2.DescriptionHTML != product.DescriptionHTML)
+                            {
+                                product2.DescriptionHTML = product.DescriptionHTML;
+                                isChanged = true;
+                            }
+                            if (product2.URL != product.URL)
+                            {
+                                product2.URL = product.URL;
+                                isChanged = true;
+                            }
+                            if (product2.ProductCost != product.UnitCost)
+                            {
+                                product2.ProductCost = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.ProductImage != product.Image)
+                            {
+                                product2.ProductImage = product.Image;
+                                isChanged = true;
+                            }
+                            if (product2.OrderQuant != "0")
+                            {
+                                product2.OrderQuant = "0";
+                                isChanged = true;
+                            }
 
-                            db.SaveChanges();
+                            if (isChanged)
+                            {
+                                db.SaveChanges();
+                            }
                         }
 
                         // add product to advanced categories

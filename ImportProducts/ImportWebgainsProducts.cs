@@ -91,7 +91,7 @@ namespace ImportProducts
                             if (!e.Cancel && currentBuffer < countBuffer)
                             {
                                 bw.ReportProgress(100);
-                                Thread.Sleep(1000);
+                                Thread.Sleep(100);
                             }
                         }
                     }
