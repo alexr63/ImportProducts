@@ -76,6 +76,7 @@
     <Compile Include="City.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="UpdateLocationsFromLaterooms.cs" />
     <Compile Include="Country.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

@@ -186,35 +186,6 @@ namespace ImportProducts
                     URL = (string)el.Element("hotel_link")
                 };
 
-            using (ImportProductsEntities db = new ImportProductsEntities())
-            {
-                foreach (var product in products)
-                {
-                    if (!String.IsNullOrEmpty(product.Country))
-                    {
-                        var country = db.Countries.SingleOrDefault(c => c.Name == product.Country);
-                        if (country == null)
-                        {
-                            country = new Country { Name = product.Country };
-                            db.Countries.Add(country);
-                            db.SaveChanges();
-                        }
-                        string hotelCity = product.City;
-                        if (product.City.Length > 50)
-                        {
-                            hotelCity = product.City.Substring(0, 47).PadRight(50, '.');
-                        }
-                        var city = db.Cities.SingleOrDefault(c => c.Name == hotelCity && c.CountryId == country.Id);
-                        if (city == null)
-                        {
-                            city = new City { Name = hotelCity, CountryId = country.Id };
-                            db.Cities.Add(city);
-                            db.SaveChanges();
-                        }
-                    }
-                }
-            }
-
             if (!String.IsNullOrEmpty(countryFilter))
             {
                 products = products.Where(p => p.Country == countryFilter);
@@ -249,6 +220,8 @@ namespace ImportProducts
                     dataColumn = new DataColumn("CategoryID", typeof(System.Int32));
                     dataTable.Columns.Add(dataColumn);
                     dataColumn = new DataColumn("Category2ID", typeof(System.Int32));
+                    dataTable.Columns.Add(dataColumn);
+                    dataColumn = new DataColumn("Category3", typeof(System.String));
                     dataTable.Columns.Add(dataColumn);
                     dataColumn = new DataColumn("ProductNumber", typeof(System.String));
                     dataTable.Columns.Add(dataColumn);
@@ -519,7 +492,7 @@ namespace ImportProducts
                             dataRow["CategoryID"] = categoryId;
                             dataRow["Category2ID"] = 0;
                             dataRow["Category3"] = String.Empty;
-                            dataRow["ProductName"] = categoryId;
+                            dataRow["ProductName"] = product.Name;
                             dataRow["ProductNumber"] = product.ProductNumber;
                             dataRow["UnitCost"] = product.UnitCost;
                             dataRow["UnitCost2"] = product.UnitCost;
@@ -553,6 +526,25 @@ namespace ImportProducts
                                     using (SqlBulkCopy bulkCopy = new SqlBulkCopy(destinationConnection))
                                     {
                                         bulkCopy.DestinationTableName = "dbo.CAT_Products";
+                                        bulkCopy.ColumnMappings.Add("CategoryID", "CategoryID");
+                                        bulkCopy.ColumnMappings.Add("Category2ID", "Category2ID");
+                                        bulkCopy.ColumnMappings.Add("Category3", "Category3");
+                                        bulkCopy.ColumnMappings.Add("ProductName", "ProductName");
+                                        bulkCopy.ColumnMappings.Add("ProductNumber", "ProductNumber");
+                                        bulkCopy.ColumnMappings.Add("UnitCost", "UnitCost");
+                                        bulkCopy.ColumnMappings.Add("UnitCost2", "UnitCost2");
+                                        bulkCopy.ColumnMappings.Add("UnitCost3", "UnitCost3");
+                                        bulkCopy.ColumnMappings.Add("UnitCost4", "UnitCost4");
+                                        bulkCopy.ColumnMappings.Add("UnitCost5", "UnitCost5");
+                                        bulkCopy.ColumnMappings.Add("UnitCost6", "UnitCost6");
+                                        bulkCopy.ColumnMappings.Add("Description", "Description");
+                                        bulkCopy.ColumnMappings.Add("DescriptionHTML", "DescriptionHTML");
+                                        bulkCopy.ColumnMappings.Add("URL", "URL");
+                                        bulkCopy.ColumnMappings.Add("ProductCost", "ProductCost");
+                                        bulkCopy.ColumnMappings.Add("ProductImage", "ProductImage");
+                                        bulkCopy.ColumnMappings.Add("OrderQuant", "OrderQuant");
+                                        bulkCopy.ColumnMappings.Add("CreatedByUser", "CreatedByUser");
+                                        bulkCopy.ColumnMappings.Add("DateCreated", "DateCreated");
 
                                         try
                                         {
@@ -586,6 +578,11 @@ namespace ImportProducts
                             if (product2.Category2ID != 0)
                             {
                                 product2.Category2ID = 0;
+                                isChanged = true;
+                            }
+                            if (product2.Category3 != String.Empty)
+                            {
+                                product2.Category3 = String.Empty;
                                 isChanged = true;
                             }
                             if (product2.ProductName != product.Name)
