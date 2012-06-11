@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.Entity.Validation;
 using System.Data.Objects;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -444,6 +445,7 @@ namespace ImportProducts
             using (SelectedHotelsEntities db = new SelectedHotelsEntities())
             {
                 bw.ReportProgress(0);           // start new step of background process
+
                 var vendorProducts = from p in db.Products
                                         where p.CreatedByUser == vendorId
                                         select p;
@@ -451,6 +453,7 @@ namespace ImportProducts
                 long currentDeletedProduct = 0;
                 try
                 {
+#if LINQDELETION
                     foreach (var vendorProduct in vendorProducts.ToList())
                     {
                         db.Products.Remove(vendorProduct);
@@ -464,6 +467,16 @@ namespace ImportProducts
                         else if (bw.WorkerReportsProgress && currentDeletedProduct % 100 == 0) bw.ReportProgress((int)(100 * currentDeletedProduct / countDeletedProducts));
                     }
                     db.SaveChanges();
+#else
+                    using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
+                    {
+                        destinationConnection.Open();
+                        SqlCommand commandDelete = new SqlCommand("delete from CAT_Products where CreatedByUser = @CreatedByUser", destinationConnection);
+                        commandDelete.Parameters.Add("@CreatedByUser", SqlDbType.Int);
+                        commandDelete.Parameters["@CreatedByUser"].Value = vendorId;
+                        commandDelete.ExecuteNonQuery();
+                    }
+#endif
                 }
                 catch (Exception ex)
                 {

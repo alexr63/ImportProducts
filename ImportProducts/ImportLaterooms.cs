@@ -214,6 +214,8 @@ namespace ImportProducts
             {
                 using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                 {
+                    bool isVendorProductsEmpty = db.Products.Count(p => p.CreatedByUser == vendorId) == 0;
+
                     DataTable dataTable = new DataTable();
                     DataColumn dataColumn = new DataColumn("ProductName", typeof(System.String));
                     dataTable.Columns.Add(dataColumn);
@@ -407,7 +409,7 @@ namespace ImportProducts
                         {
                             var advCatCity =
                                 db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == portalId && ac.AdvCatName == product1.City && ac.Level == level);
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == hotelCity && ac.Level == level);
                             if (advCatCity == null)
                             {
                                 if (db.AdvCats.Count() > 0)
@@ -442,52 +444,8 @@ namespace ImportProducts
                         }
 
                         // create new product record
-                        var product2 = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
-                        if (product2 == null)
+                        if (isVendorProductsEmpty)
                         {
-                            product2 = new Product
-                            {
-                                CategoryID = categoryId,
-                                Category2ID = 0,
-                                Category3 = String.Empty,
-                                ProductName = product.Name,
-                                ProductNumber = product.ProductNumber,
-                                UnitCost = product.UnitCost,
-                                UnitCost2 = product.UnitCost,
-                                UnitCost3 = product.UnitCost,
-                                UnitCost4 = product.UnitCost,
-                                UnitCost5 = product.UnitCost,
-                                UnitCost6 = product.UnitCost,
-                                Description = product.Description,
-                                DescriptionHTML = product.DescriptionHTML,
-                                URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '),
-                                ProductCost = product.UnitCost,
-                                CreatedByUser = vendorId,
-                                DateCreated = DateTime.Now
-                            };
-
-                            product2.ProductImage = (string)product.Images.Element("url");
-                            // trick to hide Add To Cart button
-                            product2.OrderQuant = "0";
-
-#if ADDIMAGES
-                            // add additional product images
-                            foreach (var image in product.Images.Elements("url"))
-                            {
-                                if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
-                                {
-                                    ProductImage productImage = new ProductImage();
-                                    productImage.ImageFile = image.Value;
-                                    product2.ProductImages.Add(productImage);
-                                }
-                            }
-#endif
-
-                            // add product to product set
-                            //db.Products.Add(product2);
-                            // store  changes
-                            //SaveChanges7(db);
-
                             DataRow dataRow = dataTable.NewRow();
                             dataRow["CategoryID"] = categoryId;
                             dataRow["Category2ID"] = 0;
@@ -510,7 +468,7 @@ namespace ImportProducts
                             dataRow["DateCreated"] = DateTime.Now;
                             dataTable.Rows.Add(dataRow);
 
-                            if (dataTable.Rows.Count >= 100)
+                            if (dataTable.Rows.Count >= 500)
                             {
                                 using (
                                     SqlConnection destinationConnection =
@@ -525,6 +483,8 @@ namespace ImportProducts
                                     // map columns.
                                     using (SqlBulkCopy bulkCopy = new SqlBulkCopy(destinationConnection))
                                     {
+                                        bulkCopy.BatchSize = 5000;
+
                                         bulkCopy.DestinationTableName = "dbo.CAT_Products";
                                         bulkCopy.ColumnMappings.Add("CategoryID", "CategoryID");
                                         bulkCopy.ColumnMappings.Add("Category2ID", "Category2ID");
@@ -569,97 +529,226 @@ namespace ImportProducts
                         }
                         else
                         {
-                            bool isChanged = false;
-                            if (product2.CategoryID != categoryId)
+                            var product2 = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
+                            if (product2 == null)
                             {
-                                product2.CategoryID = categoryId;
-                                isChanged = true;
-                            }
-                            if (product2.Category2ID != 0)
-                            {
-                                product2.Category2ID = 0;
-                                isChanged = true;
-                            }
-                            if (product2.Category3 != String.Empty)
-                            {
-                                product2.Category3 = String.Empty;
-                                isChanged = true;
-                            }
-                            if (product2.ProductName != product.Name)
-                            {
-                                product2.ProductName = product.Name;
-                                isChanged = true;
-                            }
-                            if (product2.ProductNumber != product.ProductNumber)
-                            {
-                                product2.ProductNumber = product.ProductNumber;
-                                isChanged = true;
-                            }
-                            if (product2.UnitCost != product.UnitCost)
-                            {
-                                product2.UnitCost = product.UnitCost;
-                                isChanged = true;
-                            }
-                            if (product2.UnitCost2 != product.UnitCost)
-                            {
-                                product2.UnitCost2 = product.UnitCost;
-                                isChanged = true;
-                            }
-                            if (product2.UnitCost3 != product.UnitCost)
-                            {
-                                product2.UnitCost3 = product.UnitCost;
-                                isChanged = true;
-                            }
-                            if (product2.UnitCost4 != product.UnitCost)
-                            {
-                                product2.UnitCost4 = product.UnitCost;
-                                isChanged = true;
-                            }
-                            if (product2.UnitCost5 != product.UnitCost)
-                            {
-                                product2.UnitCost5 = product.UnitCost;
-                                isChanged = true;
-                            }
-                            if (product2.UnitCost6 != product.UnitCost)
-                            {
-                                product2.UnitCost6 = product.UnitCost;
-                                isChanged = true;
-                            }
-                            if (product2.Description != product.Description)
-                            {
-                                product2.Description = product.Description;
-                                isChanged = true;
-                            }
-                            if (product2.DescriptionHTML != product.DescriptionHTML)
-                            {
-                                product2.DescriptionHTML = product.DescriptionHTML;
-                                isChanged = true;
-                            }
-                            if (product2.URL != product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
-                            {
-                                product2.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
-                                isChanged = true;
-                            }
-                            if (product2.ProductCost != product.UnitCost)
-                            {
-                                product2.ProductCost = product.UnitCost;
-                                isChanged = true;
-                            }
-                            if (product2.ProductImage != (string)product.Images.Element("url"))
-                            {
-                                product2.ProductImage = (string)product.Images.Element("url");
-                                isChanged = true;
-                            }
-                            if (product2.OrderQuant != "0")
-                            {
-                                product2.OrderQuant = "0";
-                                isChanged = true;
-                            }
+                                product2 = new Product
+                                {
+                                    CategoryID = categoryId,
+                                    Category2ID = 0,
+                                    Category3 = String.Empty,
+                                    ProductName = product.Name,
+                                    ProductNumber = product.ProductNumber,
+                                    UnitCost = product.UnitCost,
+                                    UnitCost2 = product.UnitCost,
+                                    UnitCost3 = product.UnitCost,
+                                    UnitCost4 = product.UnitCost,
+                                    UnitCost5 = product.UnitCost,
+                                    UnitCost6 = product.UnitCost,
+                                    Description = product.Description,
+                                    DescriptionHTML = product.DescriptionHTML,
+                                    URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '),
+                                    ProductCost = product.UnitCost,
+                                    CreatedByUser = vendorId,
+                                    DateCreated = DateTime.Now
+                                };
 
-                            if (isChanged)
+                                product2.ProductImage = (string)product.Images.Element("url");
+                                // trick to hide Add To Cart button
+                                product2.OrderQuant = "0";
+
+#if ADDIMAGES
+                            // add additional product images
+                            foreach (var image in product.Images.Elements("url"))
                             {
-                                SaveChanges8(db);
+                                if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
+                                {
+                                    ProductImage productImage = new ProductImage();
+                                    productImage.ImageFile = image.Value;
+                                    product2.ProductImages.Add(productImage);
+                                }
                             }
+#endif
+
+                                // add product to product set
+                                //db.Products.Add(product2);
+                                // store  changes
+                                //SaveChanges7(db);
+
+                                DataRow dataRow = dataTable.NewRow();
+                                dataRow["CategoryID"] = categoryId;
+                                dataRow["Category2ID"] = 0;
+                                dataRow["Category3"] = String.Empty;
+                                dataRow["ProductName"] = product.Name;
+                                dataRow["ProductNumber"] = product.ProductNumber;
+                                dataRow["UnitCost"] = product.UnitCost;
+                                dataRow["UnitCost2"] = product.UnitCost;
+                                dataRow["UnitCost3"] = product.UnitCost;
+                                dataRow["UnitCost4"] = product.UnitCost;
+                                dataRow["UnitCost5"] = product.UnitCost;
+                                dataRow["UnitCost6"] = product.UnitCost;
+                                dataRow["Description"] = product.Description;
+                                dataRow["DescriptionHTML"] = product.DescriptionHTML;
+                                dataRow["URL"] = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                                dataRow["ProductCost"] = product.UnitCost;
+                                dataRow["ProductImage"] = (string)product.Images.Element("url");
+                                dataRow["OrderQuant"] = "0";
+                                dataRow["CreatedByUser"] = vendorId;
+                                dataRow["DateCreated"] = DateTime.Now;
+                                dataTable.Rows.Add(dataRow);
+
+                                if (dataTable.Rows.Count >= 500)
+                                {
+                                    using (
+                                        SqlConnection destinationConnection =
+                                            new SqlConnection(db.Database.Connection.ConnectionString))
+                                    {
+                                        destinationConnection.Open();
+
+                                        // Set up the bulk copy object. 
+                                        // Note that the column positions in the source
+                                        // data reader match the column positions in 
+                                        // the destination table so there is no need to
+                                        // map columns.
+                                        using (SqlBulkCopy bulkCopy = new SqlBulkCopy(destinationConnection))
+                                        {
+                                            bulkCopy.BatchSize = 5000;
+
+                                            bulkCopy.DestinationTableName = "dbo.CAT_Products";
+                                            bulkCopy.ColumnMappings.Add("CategoryID", "CategoryID");
+                                            bulkCopy.ColumnMappings.Add("Category2ID", "Category2ID");
+                                            bulkCopy.ColumnMappings.Add("Category3", "Category3");
+                                            bulkCopy.ColumnMappings.Add("ProductName", "ProductName");
+                                            bulkCopy.ColumnMappings.Add("ProductNumber", "ProductNumber");
+                                            bulkCopy.ColumnMappings.Add("UnitCost", "UnitCost");
+                                            bulkCopy.ColumnMappings.Add("UnitCost2", "UnitCost2");
+                                            bulkCopy.ColumnMappings.Add("UnitCost3", "UnitCost3");
+                                            bulkCopy.ColumnMappings.Add("UnitCost4", "UnitCost4");
+                                            bulkCopy.ColumnMappings.Add("UnitCost5", "UnitCost5");
+                                            bulkCopy.ColumnMappings.Add("UnitCost6", "UnitCost6");
+                                            bulkCopy.ColumnMappings.Add("Description", "Description");
+                                            bulkCopy.ColumnMappings.Add("DescriptionHTML", "DescriptionHTML");
+                                            bulkCopy.ColumnMappings.Add("URL", "URL");
+                                            bulkCopy.ColumnMappings.Add("ProductCost", "ProductCost");
+                                            bulkCopy.ColumnMappings.Add("ProductImage", "ProductImage");
+                                            bulkCopy.ColumnMappings.Add("OrderQuant", "OrderQuant");
+                                            bulkCopy.ColumnMappings.Add("CreatedByUser", "CreatedByUser");
+                                            bulkCopy.ColumnMappings.Add("DateCreated", "DateCreated");
+
+                                            try
+                                            {
+                                                // Write from the source to the destination.
+                                                bulkCopy.WriteToServer(dataTable);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Console.WriteLine(ex.Message);
+                                            }
+                                            finally
+                                            {
+                                                // Close the SqlDataReader. The SqlBulkCopy
+                                                // object is automatically closed at the end
+                                                // of the using block.
+                                                //reader.Close();
+                                            }
+                                        }
+                                    }
+                                    dataTable.Rows.Clear();
+                                }
+                            }
+                            else
+                            {
+                                bool isChanged = false;
+                                if (product2.CategoryID != categoryId)
+                                {
+                                    product2.CategoryID = categoryId;
+                                    isChanged = true;
+                                }
+                                if (product2.Category2ID != 0)
+                                {
+                                    product2.Category2ID = 0;
+                                    isChanged = true;
+                                }
+                                if (product2.Category3 != String.Empty)
+                                {
+                                    product2.Category3 = String.Empty;
+                                    isChanged = true;
+                                }
+                                if (product2.ProductName != product.Name)
+                                {
+                                    product2.ProductName = product.Name;
+                                    isChanged = true;
+                                }
+                                if (product2.ProductNumber != product.ProductNumber)
+                                {
+                                    product2.ProductNumber = product.ProductNumber;
+                                    isChanged = true;
+                                }
+                                if (product2.UnitCost != product.UnitCost)
+                                {
+                                    product2.UnitCost = product.UnitCost;
+                                    isChanged = true;
+                                }
+                                if (product2.UnitCost2 != product.UnitCost)
+                                {
+                                    product2.UnitCost2 = product.UnitCost;
+                                    isChanged = true;
+                                }
+                                if (product2.UnitCost3 != product.UnitCost)
+                                {
+                                    product2.UnitCost3 = product.UnitCost;
+                                    isChanged = true;
+                                }
+                                if (product2.UnitCost4 != product.UnitCost)
+                                {
+                                    product2.UnitCost4 = product.UnitCost;
+                                    isChanged = true;
+                                }
+                                if (product2.UnitCost5 != product.UnitCost)
+                                {
+                                    product2.UnitCost5 = product.UnitCost;
+                                    isChanged = true;
+                                }
+                                if (product2.UnitCost6 != product.UnitCost)
+                                {
+                                    product2.UnitCost6 = product.UnitCost;
+                                    isChanged = true;
+                                }
+                                if (product2.Description != product.Description)
+                                {
+                                    product2.Description = product.Description;
+                                    isChanged = true;
+                                }
+                                if (product2.DescriptionHTML != product.DescriptionHTML)
+                                {
+                                    product2.DescriptionHTML = product.DescriptionHTML;
+                                    isChanged = true;
+                                }
+                                if (product2.URL != product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
+                                {
+                                    product2.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                                    isChanged = true;
+                                }
+                                if (product2.ProductCost != product.UnitCost)
+                                {
+                                    product2.ProductCost = product.UnitCost;
+                                    isChanged = true;
+                                }
+                                if (product2.ProductImage != (string)product.Images.Element("url"))
+                                {
+                                    product2.ProductImage = (string)product.Images.Element("url");
+                                    isChanged = true;
+                                }
+                                if (product2.OrderQuant != "0")
+                                {
+                                    product2.OrderQuant = "0";
+                                    isChanged = true;
+                                }
+
+                                if (isChanged)
+                                {
+                                    SaveChanges8(db);
+                                }
 
 #if ADDIMAGES
                             foreach (var productImage in product2.ProductImages)
@@ -689,52 +778,7 @@ namespace ImportProducts
 
                             SaveChanges81(db);
 #endif
-                        }
-
-                        // add product to advanced categories
-                        if (catRootID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catRootID.Value && act.ProductID == product2.ProductID) == null)
-                        {
-                            AdvCatProduct advCatProduct = new AdvCatProduct
-                            {
-                                AdvCatID = catRootID.Value,
-                                ProductID = product2.ProductID,
-                                AddAdvCatToProductDisplay = false
-                            };
-                            db.AdvCatProducts.Add(advCatProduct);
-                            SaveChanges9(db);
-                        }
-                        if (catCountryID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCountryID.Value && act.ProductID == product2.ProductID) == null)
-                        {
-                            AdvCatProduct advCatProduct = new AdvCatProduct
-                            {
-                                AdvCatID = catCountryID.Value,
-                                ProductID = product2.ProductID,
-                                AddAdvCatToProductDisplay = false
-                            };
-                            db.AdvCatProducts.Add(advCatProduct);
-                            SaveChanges10(db);
-                        }
-                        if (catCountyID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCountyID.Value && act.ProductID == product2.ProductID) == null)
-                        {
-                            AdvCatProduct advCatProduct = new AdvCatProduct
-                            {
-                                AdvCatID = catCountyID.Value,
-                                ProductID = product2.ProductID,
-                                AddAdvCatToProductDisplay = false
-                            };
-                            db.AdvCatProducts.Add(advCatProduct);
-                            SaveChanges11(db);
-                        }
-                        if (catCityID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCityID.Value && act.ProductID == product2.ProductID) == null)
-                        {
-                            AdvCatProduct advCatProduct = new AdvCatProduct
-                            {
-                                AdvCatID = catCityID.Value,
-                                ProductID = product2.ProductID,
-                                AddAdvCatToProductDisplay = false
-                            };
-                            db.AdvCatProducts.Add(advCatProduct);
-                            SaveChanges12(db);
+                            }
                         }
 
                         currentProduct++;
@@ -745,6 +789,86 @@ namespace ImportProducts
                         }
                         else if (bw.WorkerReportsProgress && currentProduct % 100 == 0) bw.ReportProgress((int)(100 * currentProduct / countProducts));
                     }
+
+#if ADVCATS
+                   // Set step for backgroundWorker
+                   Form1.activeStep = "Update advanced categories..";
+                   bw.ReportProgress(0);           // start new step of background process
+                   currentProduct = 0;
+
+                   using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
+                   {
+                       destinationConnection.Open();
+
+                       foreach (var product in products)
+                       {
+                           Console.WriteLine(product.Name); // debug print
+                           // add product to advanced categories
+                           if (catRootID.HasValue)
+                           {
+                               SqlCommand commandAdd = new SqlCommand(
+                                   "exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
+                               commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
+                               commandAdd.Parameters["@AdvCatID"].Value = catRootID.Value;
+                               commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
+                               commandAdd.Parameters["@ProductID"].Value = product.ProductID;
+                               commandAdd.ExecuteNonQuery();
+                           }
+
+                           if (catCountryID.HasValue &&
+                               db.AdvCatProducts.SingleOrDefault(
+                                   act => act.AdvCatID == catCountryID.Value && act.ProductID == product2.ProductID) ==
+                               null)
+                           {
+                               AdvCatProduct advCatProduct = new AdvCatProduct
+                                                                 {
+                                                                     AdvCatID = catCountryID.Value,
+                                                                     ProductID = product2.ProductID,
+                                                                     AddAdvCatToProductDisplay = false
+                                                                 };
+                               db.AdvCatProducts.Add(advCatProduct);
+                               SaveChanges10(db);
+                           }
+                           if (catCountyID.HasValue &&
+                               db.AdvCatProducts.SingleOrDefault(
+                                   act => act.AdvCatID == catCountyID.Value && act.ProductID == product2.ProductID) ==
+                               null)
+                           {
+                               AdvCatProduct advCatProduct = new AdvCatProduct
+                                                                 {
+                                                                     AdvCatID = catCountyID.Value,
+                                                                     ProductID = product2.ProductID,
+                                                                     AddAdvCatToProductDisplay = false
+                                                                 };
+                               db.AdvCatProducts.Add(advCatProduct);
+                               SaveChanges11(db);
+                           }
+                           if (catCityID.HasValue &&
+                               db.AdvCatProducts.SingleOrDefault(
+                                   act => act.AdvCatID == catCityID.Value && act.ProductID == product2.ProductID) ==
+                               null)
+                           {
+                               AdvCatProduct advCatProduct = new AdvCatProduct
+                                                                 {
+                                                                     AdvCatID = catCityID.Value,
+                                                                     ProductID = product2.ProductID,
+                                                                     AddAdvCatToProductDisplay = false
+                                                                 };
+                               db.AdvCatProducts.Add(advCatProduct);
+                               SaveChanges12(db);
+                           }
+
+                           currentProduct++;
+                           if (bw.CancellationPending)
+                           {
+                               e.Cancel = true;
+                               break;
+                           }
+                           else if (bw.WorkerReportsProgress && currentProduct%100 == 0)
+                               bw.ReportProgress((int) (100*currentProduct/countProducts));
+                       }
+                   }
+#endif
                     //    rc = true;
                 }
             }
