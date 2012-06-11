@@ -260,189 +260,6 @@ namespace ImportProducts
                     {
                         Console.WriteLine(product.Name); // debug print
 
-                        // create advanced categories
-                        var product1 = product;
-                        string hotelCity = product1.City;
-                        if (product1.City.Length > 50)
-                        {
-                            hotelCity = product1.City.Substring(0, 47).PadRight(50, '.');
-                        }
-                        int? parentID = null;
-                        int? catRootID = null;
-                        int? catCountryID = null;
-                        int? catCountyID = null;
-                        int? catCityID = null;
-                        int level = 0;
-                        int maxOrder = 0;
-
-                        if (!String.IsNullOrEmpty(advancedCategoryRoot))
-                        {
-                            var advCatRoot =
-                                db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == portalId && ac.AdvCatName == advancedCategoryRoot && ac.Level == level);
-                            if (advCatRoot == null)
-                            {
-                                if (db.AdvCats.Count() > 0)
-                                {
-                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
-                                }
-                                advCatRoot = new AdvCat
-                                {
-                                    AdvCatOrder = maxOrder + 1,
-                                    PortalID = portalId,
-                                    AdvCatName = advancedCategoryRoot,
-                                    IsVisible = true,
-                                    DisableLink = false,
-                                    Url = String.Empty,
-                                    Title = String.Empty,
-                                    Description = String.Empty,
-                                    KeyWords = String.Empty,
-                                    IsDeleted = false,
-                                    IconFile = String.Empty,
-                                    Level = level,
-                                    AdvCatImportID = String.Empty
-                                };
-                                db.AdvCats.Add(advCatRoot);
-                                SaveChanges3(db);
-
-                                Common.AddAdvCatDefaultPermissions(db, advCatRoot.AdvCatID);
-                            }
-                            parentID = advCatRoot.AdvCatID;
-                            catRootID = advCatRoot.AdvCatID;
-                            level++;
-                        }
-
-                        if (!String.IsNullOrEmpty(product1.Country))
-                        {
-                            AdvCat advCatCountry;
-                            if (parentID.HasValue)
-                            {
-                                advCatCountry =
-                                    db.AdvCats.SingleOrDefault(
-                                        ac =>
-                                        ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
-                                        ac.Level == level && ac.ParentId == parentID.Value);
-                            }
-                            else
-                            {
-                                advCatCountry =
-                                    db.AdvCats.SingleOrDefault(
-                                        ac =>
-                                        ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
-                                        ac.Level == level);
-                            }
-                            if (advCatCountry == null)
-                            {
-                                if (db.AdvCats.Count() > 0)
-                                {
-                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
-                                }
-                                advCatCountry = new AdvCat
-                                {
-                                    AdvCatOrder = maxOrder + 1,
-                                    PortalID = portalId,
-                                    AdvCatName = product.Country,
-                                    IsVisible = true,
-                                    DisableLink = false,
-                                    Url = String.Empty,
-                                    Title = String.Empty,
-                                    Description = String.Empty,
-                                    KeyWords = String.Empty,
-                                    IsDeleted = false,
-                                    IconFile = String.Empty,
-                                    Level = level,
-                                    AdvCatImportID = String.Empty
-                                };
-                                if (parentID.HasValue)
-                                {
-                                    advCatCountry.ParentId = parentID.Value;
-                                }
-                                db.AdvCats.Add(advCatCountry);
-                                SaveChanges4(db);
-
-                                Common.AddAdvCatDefaultPermissions(db, advCatCountry.AdvCatID);
-                            }
-                            parentID = advCatCountry.AdvCatID;
-                            catCountryID = advCatCountry.AdvCatID;
-                            level++;
-                        }
-
-                        if (!String.IsNullOrEmpty(product1.County))
-                        {
-                            var advCatCounty =
-                                db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == portalId && ac.AdvCatName == product1.County && ac.Level == level);
-                            if (advCatCounty == null)
-                            {
-                                if (db.AdvCats.Count() > 0)
-                                {
-                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
-                                }
-                                advCatCounty = new AdvCat
-                                {
-                                    AdvCatOrder = maxOrder + 1,
-                                    PortalID = portalId,
-                                    AdvCatName = product.County,
-                                    IsVisible = true,
-                                    ParentId = parentID.Value,
-                                    DisableLink = false,
-                                    Url = String.Empty,
-                                    Title = String.Empty,
-                                    Description = String.Empty,
-                                    KeyWords = String.Empty,
-                                    IsDeleted = false,
-                                    IconFile = String.Empty,
-                                    Level = level,
-                                    AdvCatImportID = String.Empty
-                                };
-                                db.AdvCats.Add(advCatCounty);
-                                SaveChanges5(db);
-
-                                Common.AddAdvCatDefaultPermissions(db, advCatCounty.AdvCatID);
-                            }
-                            parentID = advCatCounty.AdvCatID;
-                            catCountyID = advCatCounty.AdvCatID;
-                            level++;
-                        }
-
-                        if (!String.IsNullOrEmpty(product1.City))
-                        {
-                            var advCatCity =
-                                db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == portalId && ac.AdvCatName == hotelCity && ac.Level == level);
-                            if (advCatCity == null)
-                            {
-                                if (db.AdvCats.Count() > 0)
-                                {
-                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
-                                }
-                                advCatCity = new AdvCat
-                                {
-                                    AdvCatOrder = maxOrder + 1,
-                                    PortalID = portalId,
-                                    AdvCatName = hotelCity,
-                                    IsVisible = true,
-                                    ParentId = parentID.Value,
-                                    DisableLink = false,
-                                    Url = String.Empty,
-                                    Title = String.Empty,
-                                    Description = String.Empty,
-                                    KeyWords = String.Empty,
-                                    IsDeleted = false,
-                                    IconFile = String.Empty,
-                                    Level = level,
-                                    AdvCatImportID = String.Empty
-                                };
-                                db.AdvCats.Add(advCatCity);
-                                SaveChanges6(db);
-
-                                Common.AddAdvCatDefaultPermissions(db, advCatCity.AdvCatID);
-                            }
-                            parentID = advCatCity.AdvCatID;
-                            catCityID = advCatCity.AdvCatID;
-                            level++;
-                        }
-
                         // create new product record
                         if (isVendorProductsEmpty)
                         {
@@ -790,7 +607,7 @@ namespace ImportProducts
                         else if (bw.WorkerReportsProgress && currentProduct % 100 == 0) bw.ReportProgress((int)(100 * currentProduct / countProducts));
                     }
 
-#if ADVCATS
+#if !ADVCATS
                    // Set step for backgroundWorker
                    Form1.activeStep = "Update advanced categories..";
                    bw.ReportProgress(0);           // start new step of background process
@@ -803,59 +620,228 @@ namespace ImportProducts
                        foreach (var product in products)
                        {
                            Console.WriteLine(product.Name); // debug print
+
+                           // create advanced categories
+                           var product1 = product;
+                           string hotelCity = product1.City;
+                           if (product1.City.Length > 50)
+                           {
+                               hotelCity = product1.City.Substring(0, 47).PadRight(50, '.');
+                           }
+                           int? parentID = null;
+                           int? catRootID = null;
+                           int? catCountryID = null;
+                           int? catCountyID = null;
+                           int? catCityID = null;
+                           int level = 0;
+                           int maxOrder = 0;
+
+                           if (!String.IsNullOrEmpty(advancedCategoryRoot))
+                           {
+                               var advCatRoot =
+                                   db.AdvCats.SingleOrDefault(
+                                       ac => ac.PortalID == portalId && ac.AdvCatName == advancedCategoryRoot && ac.Level == level);
+                               if (advCatRoot == null)
+                               {
+                                   if (db.AdvCats.Count() > 0)
+                                   {
+                                       maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                   }
+                                   advCatRoot = new AdvCat
+                                   {
+                                       AdvCatOrder = maxOrder + 1,
+                                       PortalID = portalId,
+                                       AdvCatName = advancedCategoryRoot,
+                                       IsVisible = true,
+                                       DisableLink = false,
+                                       Url = String.Empty,
+                                       Title = String.Empty,
+                                       Description = String.Empty,
+                                       KeyWords = String.Empty,
+                                       IsDeleted = false,
+                                       IconFile = String.Empty,
+                                       Level = level,
+                                       AdvCatImportID = String.Empty
+                                   };
+                                   db.AdvCats.Add(advCatRoot);
+                                   SaveChanges3(db);
+
+                                   Common.AddAdvCatDefaultPermissions(db, advCatRoot.AdvCatID);
+                               }
+                               parentID = advCatRoot.AdvCatID;
+                               catRootID = advCatRoot.AdvCatID;
+                               level++;
+                           }
+
+                           if (!String.IsNullOrEmpty(product1.Country))
+                           {
+                               AdvCat advCatCountry;
+                               if (parentID.HasValue)
+                               {
+                                   advCatCountry =
+                                       db.AdvCats.SingleOrDefault(
+                                           ac =>
+                                           ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
+                                           ac.Level == level && ac.ParentId == parentID.Value);
+                               }
+                               else
+                               {
+                                   advCatCountry =
+                                       db.AdvCats.SingleOrDefault(
+                                           ac =>
+                                           ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
+                                           ac.Level == level);
+                               }
+                               if (advCatCountry == null)
+                               {
+                                   if (db.AdvCats.Count() > 0)
+                                   {
+                                       maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                   }
+                                   advCatCountry = new AdvCat
+                                   {
+                                       AdvCatOrder = maxOrder + 1,
+                                       PortalID = portalId,
+                                       AdvCatName = product.Country,
+                                       IsVisible = true,
+                                       DisableLink = false,
+                                       Url = String.Empty,
+                                       Title = String.Empty,
+                                       Description = String.Empty,
+                                       KeyWords = String.Empty,
+                                       IsDeleted = false,
+                                       IconFile = String.Empty,
+                                       Level = level,
+                                       AdvCatImportID = String.Empty
+                                   };
+                                   if (parentID.HasValue)
+                                   {
+                                       advCatCountry.ParentId = parentID.Value;
+                                   }
+                                   db.AdvCats.Add(advCatCountry);
+                                   SaveChanges4(db);
+
+                                   Common.AddAdvCatDefaultPermissions(db, advCatCountry.AdvCatID);
+                               }
+                               parentID = advCatCountry.AdvCatID;
+                               catCountryID = advCatCountry.AdvCatID;
+                               level++;
+                           }
+
+                           if (!String.IsNullOrEmpty(product1.County))
+                           {
+                               var advCatCounty =
+                                   db.AdvCats.SingleOrDefault(
+                                       ac => ac.PortalID == portalId && ac.AdvCatName == product1.County && ac.Level == level);
+                               if (advCatCounty == null)
+                               {
+                                   if (db.AdvCats.Count() > 0)
+                                   {
+                                       maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                   }
+                                   advCatCounty = new AdvCat
+                                   {
+                                       AdvCatOrder = maxOrder + 1,
+                                       PortalID = portalId,
+                                       AdvCatName = product.County,
+                                       IsVisible = true,
+                                       ParentId = parentID.Value,
+                                       DisableLink = false,
+                                       Url = String.Empty,
+                                       Title = String.Empty,
+                                       Description = String.Empty,
+                                       KeyWords = String.Empty,
+                                       IsDeleted = false,
+                                       IconFile = String.Empty,
+                                       Level = level,
+                                       AdvCatImportID = String.Empty
+                                   };
+                                   db.AdvCats.Add(advCatCounty);
+                                   SaveChanges5(db);
+
+                                   Common.AddAdvCatDefaultPermissions(db, advCatCounty.AdvCatID);
+                               }
+                               parentID = advCatCounty.AdvCatID;
+                               catCountyID = advCatCounty.AdvCatID;
+                               level++;
+                           }
+
+                           if (!String.IsNullOrEmpty(product1.City))
+                           {
+                               var advCatCity =
+                                   db.AdvCats.SingleOrDefault(
+                                       ac => ac.PortalID == portalId && ac.AdvCatName == hotelCity && ac.Level == level);
+                               if (advCatCity == null)
+                               {
+                                   if (db.AdvCats.Count() > 0)
+                                   {
+                                       maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                   }
+                                   advCatCity = new AdvCat
+                                   {
+                                       AdvCatOrder = maxOrder + 1,
+                                       PortalID = portalId,
+                                       AdvCatName = hotelCity,
+                                       IsVisible = true,
+                                       ParentId = parentID.Value,
+                                       DisableLink = false,
+                                       Url = String.Empty,
+                                       Title = String.Empty,
+                                       Description = String.Empty,
+                                       KeyWords = String.Empty,
+                                       IsDeleted = false,
+                                       IconFile = String.Empty,
+                                       Level = level,
+                                       AdvCatImportID = String.Empty
+                                   };
+                                   db.AdvCats.Add(advCatCity);
+                                   SaveChanges6(db);
+
+                                   Common.AddAdvCatDefaultPermissions(db, advCatCity.AdvCatID);
+                               }
+                               parentID = advCatCity.AdvCatID;
+                               catCityID = advCatCity.AdvCatID;
+                               level++;
+                           }
+
                            // add product to advanced categories
+                           var productId = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber).ProductID;
                            if (catRootID.HasValue)
                            {
-                               SqlCommand commandAdd = new SqlCommand(
-                                   "exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
+                               SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
                                commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
                                commandAdd.Parameters["@AdvCatID"].Value = catRootID.Value;
                                commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
-                               commandAdd.Parameters["@ProductID"].Value = product.ProductID;
+                               commandAdd.Parameters["@ProductID"].Value = productId;
                                commandAdd.ExecuteNonQuery();
                            }
 
-                           if (catCountryID.HasValue &&
-                               db.AdvCatProducts.SingleOrDefault(
-                                   act => act.AdvCatID == catCountryID.Value && act.ProductID == product2.ProductID) ==
-                               null)
+                           if (catCountryID.HasValue)
                            {
-                               AdvCatProduct advCatProduct = new AdvCatProduct
-                                                                 {
-                                                                     AdvCatID = catCountryID.Value,
-                                                                     ProductID = product2.ProductID,
-                                                                     AddAdvCatToProductDisplay = false
-                                                                 };
-                               db.AdvCatProducts.Add(advCatProduct);
-                               SaveChanges10(db);
+                               SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
+                               commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
+                               commandAdd.Parameters["@AdvCatID"].Value = catCountryID.Value;
+                               commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
+                               commandAdd.Parameters["@ProductID"].Value = productId;
+                               commandAdd.ExecuteNonQuery();
                            }
-                           if (catCountyID.HasValue &&
-                               db.AdvCatProducts.SingleOrDefault(
-                                   act => act.AdvCatID == catCountyID.Value && act.ProductID == product2.ProductID) ==
-                               null)
+                           if (catCountyID.HasValue)
                            {
-                               AdvCatProduct advCatProduct = new AdvCatProduct
-                                                                 {
-                                                                     AdvCatID = catCountyID.Value,
-                                                                     ProductID = product2.ProductID,
-                                                                     AddAdvCatToProductDisplay = false
-                                                                 };
-                               db.AdvCatProducts.Add(advCatProduct);
-                               SaveChanges11(db);
+                               SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
+                               commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
+                               commandAdd.Parameters["@AdvCatID"].Value = catCountyID.Value;
+                               commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
+                               commandAdd.Parameters["@ProductID"].Value = productId;
+                               commandAdd.ExecuteNonQuery();
                            }
-                           if (catCityID.HasValue &&
-                               db.AdvCatProducts.SingleOrDefault(
-                                   act => act.AdvCatID == catCityID.Value && act.ProductID == product2.ProductID) ==
-                               null)
+                           if (catCityID.HasValue)
                            {
-                               AdvCatProduct advCatProduct = new AdvCatProduct
-                                                                 {
-                                                                     AdvCatID = catCityID.Value,
-                                                                     ProductID = product2.ProductID,
-                                                                     AddAdvCatToProductDisplay = false
-                                                                 };
-                               db.AdvCatProducts.Add(advCatProduct);
-                               SaveChanges12(db);
+                               SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
+                               commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
+                               commandAdd.Parameters["@AdvCatID"].Value = catCityID.Value;
+                               commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
+                               commandAdd.Parameters["@ProductID"].Value = productId;
+                               commandAdd.ExecuteNonQuery();
                            }
 
                            currentProduct++;

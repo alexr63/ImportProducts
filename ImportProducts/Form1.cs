@@ -471,10 +471,16 @@ namespace ImportProducts
                     using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
                     {
                         destinationConnection.Open();
-                        SqlCommand commandDelete = new SqlCommand("delete from CAT_Products where CreatedByUser = @CreatedByUser", destinationConnection);
-                        commandDelete.Parameters.Add("@CreatedByUser", SqlDbType.Int);
-                        commandDelete.Parameters["@CreatedByUser"].Value = vendorId;
-                        commandDelete.ExecuteNonQuery();
+                        while (db.Products.Count(p => p.CreatedByUser == vendorId) > 0)
+                        {
+                            SqlCommand commandDelete =
+                                new SqlCommand(
+                                    "delete top(500) from CAT_Products where CreatedByUser = @CreatedByUser",
+                                    destinationConnection);
+                            commandDelete.Parameters.Add("@CreatedByUser", SqlDbType.Int);
+                            commandDelete.Parameters["@CreatedByUser"].Value = vendorId;
+                            commandDelete.ExecuteNonQuery();
+                        }
                     }
 #endif
                 }
