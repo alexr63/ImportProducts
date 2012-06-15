@@ -34,6 +34,7 @@
             this.toolStripMenuItemFeed = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemProperties = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemRun = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemResume = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripDeleteProducts = new System.Windows.Forms.ToolStripMenuItem();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -64,6 +65,7 @@
             this.toolStripMenuItemFeed.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemProperties,
             this.toolStripMenuItemRun,
+            this.toolStripMenuItemResume,
             this.toolStripDeleteProducts});
             this.toolStripMenuItemFeed.Name = "toolStripMenuItemFeed";
             this.toolStripMenuItemFeed.Size = new System.Drawing.Size(44, 20);
@@ -83,6 +85,13 @@
             this.toolStripMenuItemRun.Size = new System.Drawing.Size(157, 22);
             this.toolStripMenuItemRun.Text = "Run";
             this.toolStripMenuItemRun.Click += new System.EventHandler(this.toolStripMenuItemRun_Click);
+            // 
+            // toolStripMenuItemResume
+            // 
+            this.toolStripMenuItemResume.Name = "toolStripMenuItemResume";
+            this.toolStripMenuItemResume.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemResume.Text = "Resume";
+            this.toolStripMenuItemResume.Click += new System.EventHandler(this.toolStripMenuItemResume_Click);
             // 
             // toolStripDeleteProducts
             // 
@@ -209,6 +218,7 @@
         private System.Windows.Forms.ToolStripStatusLabel tsslInfo;
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.ToolStripMenuItem toolStripDeleteProducts;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemResume;
     }
 }
 

@@ -48,12 +48,12 @@ namespace ImportProducts
         {
 
             // Create a web request to the URL
-            HttpWebRequest MyRequest = (HttpWebRequest) WebRequest.Create(url);
-            MyRequest.Timeout = timeoutInSeconds*1000;
+            HttpWebRequest MyRequest = (HttpWebRequest)WebRequest.Create(url);
+            MyRequest.Timeout = timeoutInSeconds * 1000;
             try
             {
                 // Get the web response
-                HttpWebResponse MyResponse = (HttpWebResponse) MyRequest.GetResponse();
+                HttpWebResponse MyResponse = (HttpWebResponse)MyRequest.GetResponse();
 
                 // Make sure the response is valid
                 if (HttpStatusCode.OK == MyResponse.StatusCode)
@@ -117,7 +117,7 @@ namespace ImportProducts
             //message = String.Empty;
             BackgroundWorker bw = sender as BackgroundWorker;
             // Parse list input parameters
-            BackgroundWorkParameters param = (BackgroundWorkParameters)e.Argument;
+            BackgroundWorkParameters param = (BackgroundWorkParameters) e.Argument;
             string _URL = param.Url;
             int categoryId = param.CategoryId;
             int portalId = param.PortalId;
@@ -125,6 +125,8 @@ namespace ImportProducts
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
+            string stage = param.Stage;
+            int? step = param.Step;
 
             if (!File.Exists(_URL))
             {
@@ -164,7 +166,8 @@ namespace ImportProducts
             // show progress & catch Cancel
             if (bw.CancellationPending)
             {
-                e.Cancel = true; return;
+                e.Cancel = true;
+                return;
             }
             else if (bw.WorkerReportsProgress) bw.ReportProgress(50);
 
@@ -173,18 +176,18 @@ namespace ImportProducts
             var products =
                 from el in StreamRootChildDoc(_URL)
                 select new
-                {
-                    Country = (string)el.Element("hotel_country"),
-                    County = (string)el.Element("hotel_county"),
-                    City = (string)el.Element("hotel_city"),
-                    ProductNumber = (string)el.Element("hotel_ref"),
-                    Name = (string)el.Element("hotel_name"),
-                    Images = el.Element("images"),
-                    UnitCost = (decimal)el.Element("PricesFrom"),
-                    Description = (string)el.Element("hotel_description"),
-                    DescriptionHTML = (string)el.Element("alternate_description"),
-                    URL = (string)el.Element("hotel_link")
-                };
+                           {
+                               Country = (string) el.Element("hotel_country"),
+                               County = (string) el.Element("hotel_county"),
+                               City = (string) el.Element("hotel_city"),
+                               ProductNumber = (string) el.Element("hotel_ref"),
+                               Name = (string) el.Element("hotel_name"),
+                               Images = el.Element("images"),
+                               UnitCost = (decimal) el.Element("PricesFrom"),
+                               Description = (string) el.Element("hotel_description"),
+                               DescriptionHTML = (string) el.Element("alternate_description"),
+                               URL = (string) el.Element("hotel_link")
+                           };
 
             if (!String.IsNullOrEmpty(countryFilter))
             {
@@ -199,68 +202,90 @@ namespace ImportProducts
             // show progress & catch Cancel
             if (bw.CancellationPending)
             {
-                e.Cancel = true; return;
+                e.Cancel = true;
+                return;
             }
             else if (bw.WorkerReportsProgress) bw.ReportProgress(100);
             Thread.Sleep(100); // a little bit slow working for visualisation Progress
 
-           // Set step for backgroundWorker
-           Form1.activeStep = "Import records..";
-           bw.ReportProgress(0);           // start new step of background process
-           long countProducts = products.Count();
-           long currentProduct = 0;
+            // Prepare dataTable
+            DataTable dataTable = new DataTable();
+            DataColumn dataColumn = new DataColumn("ProductName", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("CategoryID", typeof (System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Category2ID", typeof (System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Category3", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("ProductNumber", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("UnitCost", typeof (System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("UnitCost2", typeof (System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("UnitCost3", typeof (System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("UnitCost4", typeof (System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("UnitCost5", typeof (System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("UnitCost6", typeof (System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Description", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("DescriptionHTML", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("URL", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("ProductCost", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("ProductImage", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("OrderQuant", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("CreatedByUser", typeof (System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("DateCreated", typeof (System.DateTime));
+            dataTable.Columns.Add(dataColumn);
 
+            // Set step for backgroundWorker
+            Form1.activeStep = "Import records..";
+            bw.ReportProgress(0); // start new step of background process
+            int countProducts = products.Count();
             try
             {
-                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                int currentProduct = 0;
+                int currentStep = 0;
+                int updatedRows = 0;
+                bool isResume = false;
+                if (stage == "Import records.." && step.HasValue)
                 {
-                    bool isVendorProductsEmpty = db.Products.Count(p => p.CreatedByUser == vendorId) == 0;
+                    currentProduct = step.Value;
+                    isResume = true;
+                }
+                else if (stage == "Update advanced categories.." && step.HasValue)
+                {
+                    currentProduct = step.Value;
+                    isResume = true;
+                    goto UpdateAdvCats;
+                }
 
-                    DataTable dataTable = new DataTable();
-                    DataColumn dataColumn = new DataColumn("ProductName", typeof(System.String));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("CategoryID", typeof(System.Int32));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("Category2ID", typeof(System.Int32));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("Category3", typeof(System.String));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("ProductNumber", typeof(System.String));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("UnitCost", typeof(System.Decimal));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("UnitCost2", typeof(System.Decimal));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("UnitCost3", typeof(System.Decimal));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("UnitCost4", typeof(System.Decimal));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("UnitCost5", typeof(System.Decimal));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("UnitCost6", typeof(System.Decimal));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("Description", typeof(System.String));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("DescriptionHTML", typeof(System.String));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("URL", typeof(System.String));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("ProductCost", typeof(System.String));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("ProductImage", typeof(System.String));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("OrderQuant", typeof(System.String));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("CreatedByUser", typeof(System.Int32));
-                    dataTable.Columns.Add(dataColumn);
-                    dataColumn = new DataColumn("DateCreated", typeof(System.DateTime));
-                    dataTable.Columns.Add(dataColumn);
-
-                    foreach (var product in products)
+                foreach (var product in products)
+                {
+                    if (currentStep++ < currentProduct)
                     {
-                        Console.WriteLine(product.Name); // debug print
+                        continue;
+                    }
+
+                    using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                    {
+                        bool isVendorProductsEmpty = db.Products.Count(p => p.CreatedByUser == vendorId) == 0;
+
+                        Console.WriteLine(currentProduct.ToString() + " - " + product.Name); // debug print
 
                         // create new product record
+                        int batchLimit = 500;
                         if (isVendorProductsEmpty)
                         {
                             DataRow dataRow = dataTable.NewRow();
@@ -279,13 +304,13 @@ namespace ImportProducts
                             dataRow["DescriptionHTML"] = product.DescriptionHTML;
                             dataRow["URL"] = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
                             dataRow["ProductCost"] = product.UnitCost;
-                            dataRow["ProductImage"] = (string)product.Images.Element("url");
+                            dataRow["ProductImage"] = (string) product.Images.Element("url");
                             dataRow["OrderQuant"] = "0";
                             dataRow["CreatedByUser"] = vendorId;
                             dataRow["DateCreated"] = DateTime.Now;
                             dataTable.Rows.Add(dataRow);
 
-                            if (dataTable.Rows.Count >= 500)
+                            if (dataTable.Rows.Count >= batchLimit)
                             {
                                 using (
                                     SqlConnection destinationConnection =
@@ -342,40 +367,51 @@ namespace ImportProducts
                                     }
                                 }
                                 dataTable.Rows.Clear();
+                                updatedRows = +batchLimit;
+
+                                using (var context = new ImportProductsEntities())
+                                {
+                                    Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
+                                    feed.Stage = "Import records..";
+                                    feed.Step = currentProduct;
+                                    context.SaveChanges();
+                                }
                             }
                         }
                         else
                         {
-                            var product2 = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
+                            var product2 =
+                                db.Products.SingleOrDefault(
+                                    p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
                             if (product2 == null)
                             {
                                 product2 = new Product
-                                {
-                                    CategoryID = categoryId,
-                                    Category2ID = 0,
-                                    Category3 = String.Empty,
-                                    ProductName = product.Name,
-                                    ProductNumber = product.ProductNumber,
-                                    UnitCost = product.UnitCost,
-                                    UnitCost2 = product.UnitCost,
-                                    UnitCost3 = product.UnitCost,
-                                    UnitCost4 = product.UnitCost,
-                                    UnitCost5 = product.UnitCost,
-                                    UnitCost6 = product.UnitCost,
-                                    Description = product.Description,
-                                    DescriptionHTML = product.DescriptionHTML,
-                                    URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '),
-                                    ProductCost = product.UnitCost,
-                                    CreatedByUser = vendorId,
-                                    DateCreated = DateTime.Now
-                                };
+                                               {
+                                                   CategoryID = categoryId,
+                                                   Category2ID = 0,
+                                                   Category3 = String.Empty,
+                                                   ProductName = product.Name,
+                                                   ProductNumber = product.ProductNumber,
+                                                   UnitCost = product.UnitCost,
+                                                   UnitCost2 = product.UnitCost,
+                                                   UnitCost3 = product.UnitCost,
+                                                   UnitCost4 = product.UnitCost,
+                                                   UnitCost5 = product.UnitCost,
+                                                   UnitCost6 = product.UnitCost,
+                                                   Description = product.Description,
+                                                   DescriptionHTML = product.DescriptionHTML,
+                                                   URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '),
+                                                   ProductCost = product.UnitCost,
+                                                   CreatedByUser = vendorId,
+                                                   DateCreated = DateTime.Now
+                                               };
 
-                                product2.ProductImage = (string)product.Images.Element("url");
+                                product2.ProductImage = (string) product.Images.Element("url");
                                 // trick to hide Add To Cart button
                                 product2.OrderQuant = "0";
 
 #if ADDIMAGES
-                            // add additional product images
+    // add additional product images
                             foreach (var image in product.Images.Elements("url"))
                             {
                                 if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
@@ -408,13 +444,13 @@ namespace ImportProducts
                                 dataRow["DescriptionHTML"] = product.DescriptionHTML;
                                 dataRow["URL"] = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
                                 dataRow["ProductCost"] = product.UnitCost;
-                                dataRow["ProductImage"] = (string)product.Images.Element("url");
+                                dataRow["ProductImage"] = (string) product.Images.Element("url");
                                 dataRow["OrderQuant"] = "0";
                                 dataRow["CreatedByUser"] = vendorId;
                                 dataRow["DateCreated"] = DateTime.Now;
                                 dataTable.Rows.Add(dataRow);
 
-                                if (dataTable.Rows.Count >= 500)
+                                if (dataTable.Rows.Count >= batchLimit)
                                 {
                                     using (
                                         SqlConnection destinationConnection =
@@ -471,6 +507,15 @@ namespace ImportProducts
                                         }
                                     }
                                     dataTable.Rows.Clear();
+                                    updatedRows += batchLimit;
+
+                                    using (var context = new ImportProductsEntities())
+                                    {
+                                        Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
+                                        feed.Stage = "Import records..";
+                                        feed.Step = currentProduct;
+                                        context.SaveChanges();
+                                    }
                                 }
                             }
                             else
@@ -551,9 +596,9 @@ namespace ImportProducts
                                     product2.ProductCost = product.UnitCost;
                                     isChanged = true;
                                 }
-                                if (product2.ProductImage != (string)product.Images.Element("url"))
+                                if (product2.ProductImage != (string) product.Images.Element("url"))
                                 {
-                                    product2.ProductImage = (string)product.Images.Element("url");
+                                    product2.ProductImage = (string) product.Images.Element("url");
                                     isChanged = true;
                                 }
                                 if (product2.OrderQuant != "0")
@@ -565,6 +610,18 @@ namespace ImportProducts
                                 if (isChanged)
                                 {
                                     SaveChanges8(db);
+                                }
+
+                                updatedRows++;
+                                if (updatedRows >= batchLimit)
+                                {
+                                    using (var context = new ImportProductsEntities())
+                                    {
+                                        Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
+                                        feed.Stage = "Import records..";
+                                        feed.Step = currentProduct;
+                                        context.SaveChanges();
+                                    }
                                 }
 
 #if ADDIMAGES
@@ -604,263 +661,292 @@ namespace ImportProducts
                             e.Cancel = true;
                             break;
                         }
-                        else if (bw.WorkerReportsProgress && currentProduct % 100 == 0) bw.ReportProgress((int)(100 * currentProduct / countProducts));
+                        else if (bw.WorkerReportsProgress && currentProduct%100 == 0)
+                            bw.ReportProgress((int) (100*currentProduct/countProducts));
+
                     }
+                }
 
 #if !ADVCATS
-                   // Set step for backgroundWorker
-                   Form1.activeStep = "Update advanced categories..";
-                   bw.ReportProgress(0);           // start new step of background process
-                   currentProduct = 0;
+UpdateAdvCats:
+                // Set step for backgroundWorker
+                Form1.activeStep = "Update advanced categories..";
+                bw.ReportProgress(0); // start new step of background process
+                if (!isResume)
+                {
+                    currentProduct = 0;
+                }
 
-                   using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
-                   {
-                       destinationConnection.Open();
+                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
+                {
+                    destinationConnection.Open();
 
-                       foreach (var product in products)
-                       {
-                           Console.WriteLine(product.Name); // debug print
+                    foreach (var product in products)
+                    {
+                        if (currentStep++ < currentProduct)
+                        {
+                            continue;
+                        }
 
-                           // create advanced categories
-                           var product1 = product;
-                           string hotelCity = product1.City;
-                           if (product1.City.Length > 50)
-                           {
-                               hotelCity = product1.City.Substring(0, 47).PadRight(50, '.');
-                           }
-                           int? parentID = null;
-                           int? catRootID = null;
-                           int? catCountryID = null;
-                           int? catCountyID = null;
-                           int? catCityID = null;
-                           int level = 0;
-                           int maxOrder = 0;
+                        Console.WriteLine(currentProduct.ToString() + " - " + product.Name); // debug print
 
-                           if (!String.IsNullOrEmpty(advancedCategoryRoot))
-                           {
-                               var advCatRoot =
-                                   db.AdvCats.SingleOrDefault(
-                                       ac => ac.PortalID == portalId && ac.AdvCatName == advancedCategoryRoot && ac.Level == level);
-                               if (advCatRoot == null)
-                               {
-                                   if (db.AdvCats.Count() > 0)
-                                   {
-                                       maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
-                                   }
-                                   advCatRoot = new AdvCat
-                                   {
-                                       AdvCatOrder = maxOrder + 1,
-                                       PortalID = portalId,
-                                       AdvCatName = advancedCategoryRoot,
-                                       IsVisible = true,
-                                       DisableLink = false,
-                                       Url = String.Empty,
-                                       Title = String.Empty,
-                                       Description = String.Empty,
-                                       KeyWords = String.Empty,
-                                       IsDeleted = false,
-                                       IconFile = String.Empty,
-                                       Level = level,
-                                       AdvCatImportID = String.Empty
-                                   };
-                                   db.AdvCats.Add(advCatRoot);
-                                   SaveChanges3(db);
+                        // create advanced categories
+                        var product1 = product;
+                        string hotelCity = product1.City;
+                        if (product1.City.Length > 50)
+                        {
+                            hotelCity = product1.City.Substring(0, 47).PadRight(50, '.');
+                        }
+                        int? parentID = null;
+                        int? catRootID = null;
+                        int? catCountryID = null;
+                        int? catCountyID = null;
+                        int? catCityID = null;
+                        int level = 0;
+                        int maxOrder = 0;
 
-                                   Common.AddAdvCatDefaultPermissions(db, advCatRoot.AdvCatID);
-                               }
-                               parentID = advCatRoot.AdvCatID;
-                               catRootID = advCatRoot.AdvCatID;
-                               level++;
-                           }
+                        if (!String.IsNullOrEmpty(advancedCategoryRoot))
+                        {
+                            var advCatRoot =
+                                db.AdvCats.SingleOrDefault(
+                                    ac =>
+                                    ac.PortalID == portalId && ac.AdvCatName == advancedCategoryRoot &&
+                                    ac.Level == level);
+                            if (advCatRoot == null)
+                            {
+                                if (db.AdvCats.Count() > 0)
+                                {
+                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                }
+                                advCatRoot = new AdvCat
+                                                 {
+                                                     AdvCatOrder = maxOrder + 1,
+                                                     PortalID = portalId,
+                                                     AdvCatName = advancedCategoryRoot,
+                                                     IsVisible = true,
+                                                     DisableLink = false,
+                                                     Url = String.Empty,
+                                                     Title = String.Empty,
+                                                     Description = String.Empty,
+                                                     KeyWords = String.Empty,
+                                                     IsDeleted = false,
+                                                     IconFile = String.Empty,
+                                                     Level = level,
+                                                     AdvCatImportID = String.Empty
+                                                 };
+                                db.AdvCats.Add(advCatRoot);
+                                SaveChanges3(db);
 
-                           if (!String.IsNullOrEmpty(product1.Country))
-                           {
-                               AdvCat advCatCountry;
-                               if (parentID.HasValue)
-                               {
-                                   advCatCountry =
-                                       db.AdvCats.SingleOrDefault(
-                                           ac =>
-                                           ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
-                                           ac.Level == level && ac.ParentId == parentID.Value);
-                               }
-                               else
-                               {
-                                   advCatCountry =
-                                       db.AdvCats.SingleOrDefault(
-                                           ac =>
-                                           ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
-                                           ac.Level == level);
-                               }
-                               if (advCatCountry == null)
-                               {
-                                   if (db.AdvCats.Count() > 0)
-                                   {
-                                       maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
-                                   }
-                                   advCatCountry = new AdvCat
-                                   {
-                                       AdvCatOrder = maxOrder + 1,
-                                       PortalID = portalId,
-                                       AdvCatName = product.Country,
-                                       IsVisible = true,
-                                       DisableLink = false,
-                                       Url = String.Empty,
-                                       Title = String.Empty,
-                                       Description = String.Empty,
-                                       KeyWords = String.Empty,
-                                       IsDeleted = false,
-                                       IconFile = String.Empty,
-                                       Level = level,
-                                       AdvCatImportID = String.Empty
-                                   };
-                                   if (parentID.HasValue)
-                                   {
-                                       advCatCountry.ParentId = parentID.Value;
-                                   }
-                                   db.AdvCats.Add(advCatCountry);
-                                   SaveChanges4(db);
+                                Common.AddAdvCatDefaultPermissions(db, advCatRoot.AdvCatID);
+                            }
+                            parentID = advCatRoot.AdvCatID;
+                            catRootID = advCatRoot.AdvCatID;
+                            level++;
+                        }
 
-                                   Common.AddAdvCatDefaultPermissions(db, advCatCountry.AdvCatID);
-                               }
-                               parentID = advCatCountry.AdvCatID;
-                               catCountryID = advCatCountry.AdvCatID;
-                               level++;
-                           }
+                        if (!String.IsNullOrEmpty(product1.Country))
+                        {
+                            AdvCat advCatCountry;
+                            if (parentID.HasValue)
+                            {
+                                advCatCountry =
+                                    db.AdvCats.SingleOrDefault(
+                                        ac =>
+                                        ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
+                                        ac.Level == level && ac.ParentId == parentID.Value);
+                            }
+                            else
+                            {
+                                advCatCountry =
+                                    db.AdvCats.SingleOrDefault(
+                                        ac =>
+                                        ac.PortalID == portalId && ac.AdvCatName == product1.Country &&
+                                        ac.Level == level);
+                            }
+                            if (advCatCountry == null)
+                            {
+                                if (db.AdvCats.Count() > 0)
+                                {
+                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                }
+                                advCatCountry = new AdvCat
+                                                    {
+                                                        AdvCatOrder = maxOrder + 1,
+                                                        PortalID = portalId,
+                                                        AdvCatName = product.Country,
+                                                        IsVisible = true,
+                                                        DisableLink = false,
+                                                        Url = String.Empty,
+                                                        Title = String.Empty,
+                                                        Description = String.Empty,
+                                                        KeyWords = String.Empty,
+                                                        IsDeleted = false,
+                                                        IconFile = String.Empty,
+                                                        Level = level,
+                                                        AdvCatImportID = String.Empty
+                                                    };
+                                if (parentID.HasValue)
+                                {
+                                    advCatCountry.ParentId = parentID.Value;
+                                }
+                                db.AdvCats.Add(advCatCountry);
+                                SaveChanges4(db);
 
-                           if (!String.IsNullOrEmpty(product1.County))
-                           {
-                               var advCatCounty =
-                                   db.AdvCats.SingleOrDefault(
-                                       ac => ac.PortalID == portalId && ac.AdvCatName == product1.County && ac.Level == level);
-                               if (advCatCounty == null)
-                               {
-                                   if (db.AdvCats.Count() > 0)
-                                   {
-                                       maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
-                                   }
-                                   advCatCounty = new AdvCat
-                                   {
-                                       AdvCatOrder = maxOrder + 1,
-                                       PortalID = portalId,
-                                       AdvCatName = product.County,
-                                       IsVisible = true,
-                                       ParentId = parentID.Value,
-                                       DisableLink = false,
-                                       Url = String.Empty,
-                                       Title = String.Empty,
-                                       Description = String.Empty,
-                                       KeyWords = String.Empty,
-                                       IsDeleted = false,
-                                       IconFile = String.Empty,
-                                       Level = level,
-                                       AdvCatImportID = String.Empty
-                                   };
-                                   db.AdvCats.Add(advCatCounty);
-                                   SaveChanges5(db);
+                                Common.AddAdvCatDefaultPermissions(db, advCatCountry.AdvCatID);
+                            }
+                            parentID = advCatCountry.AdvCatID;
+                            catCountryID = advCatCountry.AdvCatID;
+                            level++;
+                        }
 
-                                   Common.AddAdvCatDefaultPermissions(db, advCatCounty.AdvCatID);
-                               }
-                               parentID = advCatCounty.AdvCatID;
-                               catCountyID = advCatCounty.AdvCatID;
-                               level++;
-                           }
+                        if (!String.IsNullOrEmpty(product1.County))
+                        {
+                            var advCatCounty =
+                                db.AdvCats.SingleOrDefault(
+                                    ac =>
+                                    ac.PortalID == portalId && ac.AdvCatName == product1.County && ac.Level == level);
+                            if (advCatCounty == null)
+                            {
+                                if (db.AdvCats.Count() > 0)
+                                {
+                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                }
+                                advCatCounty = new AdvCat
+                                                   {
+                                                       AdvCatOrder = maxOrder + 1,
+                                                       PortalID = portalId,
+                                                       AdvCatName = product.County,
+                                                       IsVisible = true,
+                                                       ParentId = parentID.Value,
+                                                       DisableLink = false,
+                                                       Url = String.Empty,
+                                                       Title = String.Empty,
+                                                       Description = String.Empty,
+                                                       KeyWords = String.Empty,
+                                                       IsDeleted = false,
+                                                       IconFile = String.Empty,
+                                                       Level = level,
+                                                       AdvCatImportID = String.Empty
+                                                   };
+                                db.AdvCats.Add(advCatCounty);
+                                SaveChanges5(db);
 
-                           if (!String.IsNullOrEmpty(product1.City))
-                           {
-                               var advCatCity =
-                                   db.AdvCats.SingleOrDefault(
-                                       ac => ac.PortalID == portalId && ac.AdvCatName == hotelCity && ac.Level == level);
-                               if (advCatCity == null)
-                               {
-                                   if (db.AdvCats.Count() > 0)
-                                   {
-                                       maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
-                                   }
-                                   advCatCity = new AdvCat
-                                   {
-                                       AdvCatOrder = maxOrder + 1,
-                                       PortalID = portalId,
-                                       AdvCatName = hotelCity,
-                                       IsVisible = true,
-                                       ParentId = parentID.Value,
-                                       DisableLink = false,
-                                       Url = String.Empty,
-                                       Title = String.Empty,
-                                       Description = String.Empty,
-                                       KeyWords = String.Empty,
-                                       IsDeleted = false,
-                                       IconFile = String.Empty,
-                                       Level = level,
-                                       AdvCatImportID = String.Empty
-                                   };
-                                   db.AdvCats.Add(advCatCity);
-                                   SaveChanges6(db);
+                                Common.AddAdvCatDefaultPermissions(db, advCatCounty.AdvCatID);
+                            }
+                            parentID = advCatCounty.AdvCatID;
+                            catCountyID = advCatCounty.AdvCatID;
+                            level++;
+                        }
 
-                                   Common.AddAdvCatDefaultPermissions(db, advCatCity.AdvCatID);
-                               }
-                               parentID = advCatCity.AdvCatID;
-                               catCityID = advCatCity.AdvCatID;
-                               level++;
-                           }
+                        if (!String.IsNullOrEmpty(product1.City))
+                        {
+                            var advCatCity =
+                                db.AdvCats.SingleOrDefault(
+                                    ac => ac.PortalID == portalId && ac.AdvCatName == hotelCity && ac.Level == level);
+                            if (advCatCity == null)
+                            {
+                                if (db.AdvCats.Count() > 0)
+                                {
+                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                }
+                                advCatCity = new AdvCat
+                                                 {
+                                                     AdvCatOrder = maxOrder + 1,
+                                                     PortalID = portalId,
+                                                     AdvCatName = hotelCity,
+                                                     IsVisible = true,
+                                                     ParentId = parentID.Value,
+                                                     DisableLink = false,
+                                                     Url = String.Empty,
+                                                     Title = String.Empty,
+                                                     Description = String.Empty,
+                                                     KeyWords = String.Empty,
+                                                     IsDeleted = false,
+                                                     IconFile = String.Empty,
+                                                     Level = level,
+                                                     AdvCatImportID = String.Empty
+                                                 };
+                                db.AdvCats.Add(advCatCity);
+                                SaveChanges6(db);
 
-                           // add product to advanced categories
-                           var productId = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber).ProductID;
-                           if (catRootID.HasValue)
-                           {
-                               SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
-                               commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
-                               commandAdd.Parameters["@AdvCatID"].Value = catRootID.Value;
-                               commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
-                               commandAdd.Parameters["@ProductID"].Value = productId;
-                               commandAdd.ExecuteNonQuery();
-                           }
+                                Common.AddAdvCatDefaultPermissions(db, advCatCity.AdvCatID);
+                            }
+                            parentID = advCatCity.AdvCatID;
+                            catCityID = advCatCity.AdvCatID;
+                            level++;
+                        }
 
-                           if (catCountryID.HasValue)
-                           {
-                               SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
-                               commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
-                               commandAdd.Parameters["@AdvCatID"].Value = catCountryID.Value;
-                               commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
-                               commandAdd.Parameters["@ProductID"].Value = productId;
-                               commandAdd.ExecuteNonQuery();
-                           }
-                           if (catCountyID.HasValue)
-                           {
-                               SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
-                               commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
-                               commandAdd.Parameters["@AdvCatID"].Value = catCountyID.Value;
-                               commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
-                               commandAdd.Parameters["@ProductID"].Value = productId;
-                               commandAdd.ExecuteNonQuery();
-                           }
-                           if (catCityID.HasValue)
-                           {
-                               SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID", destinationConnection);
-                               commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
-                               commandAdd.Parameters["@AdvCatID"].Value = catCityID.Value;
-                               commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
-                               commandAdd.Parameters["@ProductID"].Value = productId;
-                               commandAdd.ExecuteNonQuery();
-                           }
+                        // add product to advanced categories
+                        var productId =
+                            db.Products.SingleOrDefault(
+                                p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber).ProductID;
+                        if (catRootID.HasValue)
+                        {
+                            SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID",
+                                                                   destinationConnection);
+                            commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
+                            commandAdd.Parameters["@AdvCatID"].Value = catRootID.Value;
+                            commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
+                            commandAdd.Parameters["@ProductID"].Value = productId;
+                            commandAdd.ExecuteNonQuery();
+                        }
 
-                           currentProduct++;
-                           if (bw.CancellationPending)
-                           {
-                               e.Cancel = true;
-                               break;
-                           }
-                           else if (bw.WorkerReportsProgress && currentProduct%100 == 0)
-                               bw.ReportProgress((int) (100*currentProduct/countProducts));
-                       }
-                   }
-#endif
-                    //    rc = true;
+                        if (catCountryID.HasValue)
+                        {
+                            SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID",
+                                                                   destinationConnection);
+                            commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
+                            commandAdd.Parameters["@AdvCatID"].Value = catCountryID.Value;
+                            commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
+                            commandAdd.Parameters["@ProductID"].Value = productId;
+                            commandAdd.ExecuteNonQuery();
+                        }
+                        if (catCountyID.HasValue)
+                        {
+                            SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID",
+                                                                   destinationConnection);
+                            commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
+                            commandAdd.Parameters["@AdvCatID"].Value = catCountyID.Value;
+                            commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
+                            commandAdd.Parameters["@ProductID"].Value = productId;
+                            commandAdd.ExecuteNonQuery();
+                        }
+                        if (catCityID.HasValue)
+                        {
+                            SqlCommand commandAdd = new SqlCommand("exec CAT_AddAdvCatProduct @AdvCatID, @ProductID",
+                                                                   destinationConnection);
+                            commandAdd.Parameters.Add("@AdvCatID", SqlDbType.Int);
+                            commandAdd.Parameters["@AdvCatID"].Value = catCityID.Value;
+                            commandAdd.Parameters.Add("@ProductID", SqlDbType.Int);
+                            commandAdd.Parameters["@ProductID"].Value = productId;
+                            commandAdd.ExecuteNonQuery();
+                        }
+
+                        currentProduct++;
+                        if (bw.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
+                        else if (bw.WorkerReportsProgress && currentProduct%100 == 0)
+                            bw.ReportProgress((int) (100*currentProduct/countProducts));
+                    }
+                }
+
+                using (var context = new ImportProductsEntities())
+                {
+                    Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
+                    feed.Stage = null;
+                    feed.Step = null;
+                    context.SaveChanges();
                 }
             }
+#endif
+                //    rc = true;
             catch (Exception ex)
             {
-                e.Result =  "ERROR:" + ex.Message;
+                e.Result = "ERROR:" + ex.Message;
                 //message = ex.Message;
                 log.Error("Error error logging", ex);
             }

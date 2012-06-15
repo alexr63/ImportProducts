@@ -45,6 +45,8 @@
           <Property Name="AdvancedCategoryRoot" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="CountryFilter" Type="nvarchar" MaxLength="50" />
           <Property Name="CityFilter" Type="nvarchar" MaxLength="50" />
+          <Property Name="Stage" Type="nvarchar" MaxLength="50" />
+          <Property Name="Step" Type="int" />
         </EntityType>
         <Association Name="FK_Cities_Countries">
           <End Role="Countries" Type="ImportProductsModel.Store.Countries" Multiplicity="1" />
@@ -87,6 +89,8 @@
           <Property Type="String" Name="Description" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CountryFilter" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CityFilter" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Stage" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="Step" />
         </EntityType>
         <EntityType Name="City">
           <Key>
@@ -124,7 +128,9 @@
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ImportProductsModelStoreContainer" CdmEntityContainer="ImportProductsEntities">
           <EntitySetMapping Name="Feeds"><EntityTypeMapping TypeName="ImportProductsModel.Feed"><MappingFragment StoreEntitySet="Feeds">
-            <ScalarProperty Name="CityFilter" ColumnName="CityFilter" />
+            <ScalarProperty Name="Step" ColumnName="Step" />
+                <ScalarProperty Name="Stage" ColumnName="Stage" />
+                <ScalarProperty Name="CityFilter" ColumnName="CityFilter" />
                 <ScalarProperty Name="CountryFilter" ColumnName="CountryFilter" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="AdvancedCategoryRoot" ColumnName="AdvancedCategoryRoot" />

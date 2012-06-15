@@ -25,6 +25,8 @@ namespace ImportProducts
         public string AdvancedCategoryRoot;
         public string CountryFilter;
         public string CityFilter;
+        public string Stage;
+        public int? Step;
     }
 
     public partial class Form1 : Form
@@ -83,11 +85,16 @@ namespace ImportProducts
 
         private void toolStripMenuItemRun_Click(object sender, EventArgs e)
         {
+            StartWorkerProcess();
+        }
+
+        private void StartWorkerProcess(string stage = null, int? step = null)
+        {
             string keyDownload;
             foreach (DataGridViewRow selectedRow in dataGridView1.SelectedRows)
             {
-               var selectedFeed = selectedRow.DataBoundItem as Feed;
-               keyDownload = selectedFeed.Name; 
+                var selectedFeed = selectedRow.DataBoundItem as Feed;
+                keyDownload = selectedFeed.Name; 
                 if (!bgw.Keys.Contains(keyDownload))
                 {
                     context = new ImportProductsEntities();
@@ -129,6 +136,11 @@ namespace ImportProducts
                     bgParams.AdvancedCategoryRoot = selectedFeed.AdvancedCategoryRoot;
                     bgParams.CountryFilter = selectedFeed.CountryFilter;
                     bgParams.CityFilter = selectedFeed.CityFilter;
+                    if (!String.IsNullOrEmpty(stage) && step != null)
+                    {
+                        bgParams.Stage = stage;
+                        bgParams.Step = step;
+                    }
 
                     switch (keyDownload)
                     {
@@ -207,6 +219,19 @@ namespace ImportProducts
             toolStripMenuItemRun.Enabled = dataGridView1.SelectedRows.Count > 0;
             toolStripMenuItemProperties.Enabled = dataGridView1.SelectedRows.Count == 1;
             toolStripDeleteProducts.Enabled = dataGridView1.SelectedRows.Count == 1;
+
+            DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
+            var selectedFeed = selectedRow.DataBoundItem as Feed;
+            context = new ImportProductsEntities();
+            feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
+            if (feed.Name == "Laterooms" && !String.IsNullOrEmpty(feed.Stage) && feed.Step != null)
+            {
+                toolStripMenuItemResume.Enabled = dataGridView1.SelectedRows.Count == 1;
+            }
+            else
+            {
+                toolStripMenuItemResume.Enabled = false;
+            }
         }
 
         // SergePSV - check unfinished downloads
@@ -446,6 +471,14 @@ namespace ImportProducts
             {
                 bw.ReportProgress(0);           // start new step of background process
 
+                using (var context = new ImportProductsEntities())
+                {
+                    Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
+                    feed.Stage = null;
+                    feed.Step = null;
+                    context.SaveChanges();
+                }
+
                 var vendorProducts = from p in db.Products
                                         where p.CreatedByUser == vendorId
                                         select p;
@@ -491,5 +524,13 @@ namespace ImportProducts
             }
         }
 
+        private void toolStripMenuItemResume_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
+            var selectedFeed = selectedRow.DataBoundItem as Feed;
+            context = new ImportProductsEntities();
+            feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
+            StartWorkerProcess(feed.Stage, feed.Step);
+        }
     }
 }

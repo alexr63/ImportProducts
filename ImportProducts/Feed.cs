@@ -26,5 +26,7 @@ namespace ImportProducts
         public string Description { get; set; }
         public string CountryFilter { get; set; }
         public string CityFilter { get; set; }
+        public string Stage { get; set; }
+        public Nullable<int> Step { get; set; }
     }
 }
