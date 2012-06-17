@@ -125,8 +125,8 @@ namespace ImportProducts
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
-            string stage = param.Stage;
-            int? step = param.Step;
+            int? stepImport = param.StepImport;
+            int? stepAddToCategories = param.StepAddToCategories;
 
             if (!File.Exists(_URL))
             {
@@ -256,21 +256,18 @@ namespace ImportProducts
             try
             {
                 int currentProduct = 0;
-                int currentStep = 0;
                 int updatedRows = 0;
-                bool isResume = false;
-                if (stage == "Import records.." && step.HasValue)
+                if (stepImport.HasValue)
                 {
-                    currentProduct = step.Value;
-                    isResume = true;
+                    currentProduct = stepImport.Value;
                 }
-                else if (stage == "Update advanced categories.." && step.HasValue)
+                else if (stepAddToCategories.HasValue)
                 {
-                    currentProduct = step.Value;
-                    isResume = true;
+                    currentProduct = stepAddToCategories.Value;
                     goto UpdateAdvCats;
                 }
 
+                int currentStep = 0;
                 foreach (var product in products)
                 {
                     if (currentStep++ < currentProduct)
@@ -372,8 +369,8 @@ namespace ImportProducts
                                 using (var context = new ImportProductsEntities())
                                 {
                                     Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                                    feed.Stage = "Import records..";
-                                    feed.Step = currentProduct;
+                                    feed.StepImport = currentProduct;
+                                    feed.StepAddToCategories = null;
                                     context.SaveChanges();
                                 }
                             }
@@ -512,8 +509,8 @@ namespace ImportProducts
                                     using (var context = new ImportProductsEntities())
                                     {
                                         Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                                        feed.Stage = "Import records..";
-                                        feed.Step = currentProduct;
+                                        feed.StepImport = currentProduct;
+                                        feed.StepAddToCategories = null;
                                         context.SaveChanges();
                                     }
                                 }
@@ -609,7 +606,7 @@ namespace ImportProducts
 
                                 if (isChanged)
                                 {
-                                    SaveChanges8(db);
+                                    db.SaveChanges();
                                 }
 
                                 updatedRows++;
@@ -618,8 +615,8 @@ namespace ImportProducts
                                     using (var context = new ImportProductsEntities())
                                     {
                                         Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                                        feed.Stage = "Import records..";
-                                        feed.Step = currentProduct;
+                                        feed.StepImport = currentProduct;
+                                        feed.StepAddToCategories = null;
                                         context.SaveChanges();
                                     }
                                 }
@@ -667,21 +664,20 @@ namespace ImportProducts
                     }
                 }
 
+                currentProduct = 0;
+
 #if !ADVCATS
 UpdateAdvCats:
                 // Set step for backgroundWorker
                 Form1.activeStep = "Update advanced categories..";
                 bw.ReportProgress(0); // start new step of background process
-                if (!isResume)
-                {
-                    currentProduct = 0;
-                }
 
                 using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                 using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
                 {
                     destinationConnection.Open();
 
+                    currentStep = 0;
                     foreach (var product in products)
                     {
                         if (currentStep++ < currentProduct)
@@ -736,7 +732,7 @@ UpdateAdvCats:
                                                      AdvCatImportID = String.Empty
                                                  };
                                 db.AdvCats.Add(advCatRoot);
-                                SaveChanges3(db);
+                                db.SaveChanges();
 
                                 Common.AddAdvCatDefaultPermissions(db, advCatRoot.AdvCatID);
                             }
@@ -791,7 +787,7 @@ UpdateAdvCats:
                                     advCatCountry.ParentId = parentID.Value;
                                 }
                                 db.AdvCats.Add(advCatCountry);
-                                SaveChanges4(db);
+                                db.SaveChanges();
 
                                 Common.AddAdvCatDefaultPermissions(db, advCatCountry.AdvCatID);
                             }
@@ -830,7 +826,7 @@ UpdateAdvCats:
                                                        AdvCatImportID = String.Empty
                                                    };
                                 db.AdvCats.Add(advCatCounty);
-                                SaveChanges5(db);
+                                db.SaveChanges();
 
                                 Common.AddAdvCatDefaultPermissions(db, advCatCounty.AdvCatID);
                             }
@@ -868,7 +864,7 @@ UpdateAdvCats:
                                                      AdvCatImportID = String.Empty
                                                  };
                                 db.AdvCats.Add(advCatCity);
-                                SaveChanges6(db);
+                                db.SaveChanges();
 
                                 Common.AddAdvCatDefaultPermissions(db, advCatCity.AdvCatID);
                             }
@@ -923,6 +919,14 @@ UpdateAdvCats:
                             commandAdd.ExecuteNonQuery();
                         }
 
+                        using (var context = new ImportProductsEntities())
+                        {
+                            Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
+                            feed.StepImport = null;
+                            feed.StepAddToCategories = currentProduct;
+                            context.SaveChanges();
+                        }
+
                         currentProduct++;
                         if (bw.CancellationPending)
                         {
@@ -932,14 +936,6 @@ UpdateAdvCats:
                         else if (bw.WorkerReportsProgress && currentProduct%100 == 0)
                             bw.ReportProgress((int) (100*currentProduct/countProducts));
                     }
-                }
-
-                using (var context = new ImportProductsEntities())
-                {
-                    Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                    feed.Stage = null;
-                    feed.Step = null;
-                    context.SaveChanges();
                 }
             }
 #endif
@@ -951,59 +947,6 @@ UpdateAdvCats:
                 log.Error("Error error logging", ex);
             }
             //return rc;
-        }
-
-        private static void SaveChanges1(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges2(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges3(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges4(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges5(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges6(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges7(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges8(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges81(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges9(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges10(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges11(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
-        }
-        private static void SaveChanges12(SelectedHotelsEntities db)
-        {
-            db.SaveChanges();
         }
     }
 }

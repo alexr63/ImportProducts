@@ -25,8 +25,8 @@ namespace ImportProducts
         public string AdvancedCategoryRoot;
         public string CountryFilter;
         public string CityFilter;
-        public string Stage;
-        public int? Step;
+        public int? StepImport;
+        public int? StepAddToCategories;
     }
 
     public partial class Form1 : Form
@@ -88,7 +88,7 @@ namespace ImportProducts
             StartWorkerProcess();
         }
 
-        private void StartWorkerProcess(string stage = null, int? step = null)
+        private void StartWorkerProcess(int? stepImport = null, int? stepAddToCategories = null)
         {
             string keyDownload;
             foreach (DataGridViewRow selectedRow in dataGridView1.SelectedRows)
@@ -136,11 +136,8 @@ namespace ImportProducts
                     bgParams.AdvancedCategoryRoot = selectedFeed.AdvancedCategoryRoot;
                     bgParams.CountryFilter = selectedFeed.CountryFilter;
                     bgParams.CityFilter = selectedFeed.CityFilter;
-                    if (!String.IsNullOrEmpty(stage) && step != null)
-                    {
-                        bgParams.Stage = stage;
-                        bgParams.Step = step;
-                    }
+                    bgParams.StepImport = stepImport;
+                    bgParams.StepAddToCategories = stepAddToCategories;
 
                     switch (keyDownload)
                     {
@@ -208,6 +205,8 @@ namespace ImportProducts
                 feed.AdvancedCategoryRoot = editProperties.textBoxAdvancedCategoryRoot.Text;
                 feed.CountryFilter = editProperties.comboBoxCountry.Text;
                 feed.CityFilter = editProperties.comboBoxCity.Text;
+                feed.StepImport = null;
+                feed.StepAddToCategories = null;
                 context.SaveChanges();
                 BindData();
             }
@@ -224,7 +223,7 @@ namespace ImportProducts
             var selectedFeed = selectedRow.DataBoundItem as Feed;
             context = new ImportProductsEntities();
             feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
-            if (feed.Name == "Laterooms" && !String.IsNullOrEmpty(feed.Stage) && feed.Step != null)
+            if (feed.Name == "Laterooms" && (feed.StepImport != null || feed.StepAddToCategories != null))
             {
                 toolStripMenuItemResume.Enabled = dataGridView1.SelectedRows.Count == 1;
             }
@@ -474,16 +473,11 @@ namespace ImportProducts
                 using (var context = new ImportProductsEntities())
                 {
                     Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                    feed.Stage = null;
-                    feed.Step = null;
+                    feed.StepImport = null;
+                    feed.StepAddToCategories = null;
                     context.SaveChanges();
                 }
 
-                var vendorProducts = from p in db.Products
-                                        where p.CreatedByUser == vendorId
-                                        select p;
-                long countDeletedProducts = vendorProducts.Count();
-                long currentDeletedProduct = 0;
                 try
                 {
 #if LINQDELETION
@@ -530,7 +524,7 @@ namespace ImportProducts
             var selectedFeed = selectedRow.DataBoundItem as Feed;
             context = new ImportProductsEntities();
             feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
-            StartWorkerProcess(feed.Stage, feed.Step);
+            StartWorkerProcess(feed.StepImport, feed.StepAddToCategories);
         }
     }
 }
