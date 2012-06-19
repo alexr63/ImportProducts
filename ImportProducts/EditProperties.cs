@@ -62,7 +62,7 @@ namespace ImportProducts
         private void comboBoxCountry_SelectedIndexChanged(object sender, EventArgs e)
         {
             int result;
-            if (int.TryParse(comboBoxCountry.SelectedValue.ToString(), out result))
+            if (comboBoxCountry.SelectedValue != null && int.TryParse(comboBoxCountry.SelectedValue.ToString(), out result))
             {
                 int countryId = int.Parse(comboBoxCountry.SelectedValue.ToString());
                 ImportProductsEntities db = new ImportProductsEntities();
