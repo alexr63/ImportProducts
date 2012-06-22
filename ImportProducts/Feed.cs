@@ -28,5 +28,6 @@ namespace ImportProducts
         public string CityFilter { get; set; }
         public Nullable<int> StepImport { get; set; }
         public Nullable<int> StepAddToCategories { get; set; }
+        public Nullable<int> StepAddImages { get; set; }
     }
 }

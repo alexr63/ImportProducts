@@ -27,6 +27,7 @@ namespace ImportProducts
         public string CityFilter;
         public int? StepImport;
         public int? StepAddToCategories;
+        public int? StepAddImages;
     }
 
     public partial class Form1 : Form
@@ -88,7 +89,7 @@ namespace ImportProducts
             StartWorkerProcess();
         }
 
-        private void StartWorkerProcess(int? stepImport = null, int? stepAddToCategories = null)
+        private void StartWorkerProcess(int? stepImport = null, int? stepAddToCategories = null, int? stepAddImages = null)
         {
             string keyDownload;
             foreach (DataGridViewRow selectedRow in dataGridView1.SelectedRows)
@@ -138,6 +139,7 @@ namespace ImportProducts
                     bgParams.CityFilter = selectedFeed.CityFilter;
                     bgParams.StepImport = stepImport;
                     bgParams.StepAddToCategories = stepAddToCategories;
+                    bgParams.StepAddImages = stepAddImages;
 
                     switch (keyDownload)
                     {
@@ -207,6 +209,7 @@ namespace ImportProducts
                 feed.CityFilter = editProperties.comboBoxCity.Text;
                 feed.StepImport = null;
                 feed.StepAddToCategories = null;
+                feed.StepAddImages = null;
                 context.SaveChanges();
                 BindData();
             }
@@ -223,7 +226,7 @@ namespace ImportProducts
             var selectedFeed = selectedRow.DataBoundItem as Feed;
             context = new ImportProductsEntities();
             feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
-            if (feed.Name == "Laterooms" && (feed.StepImport != null || feed.StepAddToCategories != null))
+            if (feed.Name == "Laterooms" && (feed.StepImport != null || feed.StepAddToCategories != null || feed.StepAddImages != null))
             {
                 toolStripMenuItemResume.Enabled = dataGridView1.SelectedRows.Count == 1;
             }
@@ -475,6 +478,7 @@ namespace ImportProducts
                     Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
                     feed.StepImport = null;
                     feed.StepAddToCategories = null;
+                    feed.StepAddImages = null;
                     context.SaveChanges();
                 }
 
@@ -524,7 +528,7 @@ namespace ImportProducts
             var selectedFeed = selectedRow.DataBoundItem as Feed;
             context = new ImportProductsEntities();
             feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
-            StartWorkerProcess(feed.StepImport, feed.StepAddToCategories);
+            StartWorkerProcess(feed.StepImport, feed.StepAddToCategories, feed.StepAddImages);
         }
     }
 }

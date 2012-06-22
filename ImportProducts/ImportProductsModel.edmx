@@ -45,9 +45,9 @@
           <Property Name="AdvancedCategoryRoot" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="CountryFilter" Type="nvarchar" MaxLength="50" />
           <Property Name="CityFilter" Type="nvarchar" MaxLength="50" />
-          <Property Name="Stage" Type="nvarchar" MaxLength="50" />
           <Property Name="StepImport" Type="int" />
           <Property Name="StepAddToCategories" Type="int" />
+          <Property Name="StepAddImages" Type="int" />
         </EntityType>
         <Association Name="FK_Cities_Countries">
           <End Role="Countries" Type="ImportProductsModel.Store.Countries" Multiplicity="1" />
@@ -92,6 +92,7 @@
           <Property Type="String" Name="CityFilter" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="StepImport" />
           <Property Type="Int32" Name="StepAddToCategories" />
+          <Property Type="Int32" Name="StepAddImages" />
         </EntityType>
         <EntityType Name="City">
           <Key>
@@ -129,6 +130,7 @@
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ImportProductsModelStoreContainer" CdmEntityContainer="ImportProductsEntities">
           <EntitySetMapping Name="Feeds"><EntityTypeMapping TypeName="ImportProductsModel.Feed"><MappingFragment StoreEntitySet="Feeds">
+                <ScalarProperty Name="StepAddImages" ColumnName="StepAddImages" />
                 <ScalarProperty Name="StepAddToCategories" ColumnName="StepAddToCategories" />
                 <ScalarProperty Name="StepImport" ColumnName="StepImport" />
                 <ScalarProperty Name="CityFilter" ColumnName="CityFilter" />
