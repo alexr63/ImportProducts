@@ -107,7 +107,7 @@ namespace ImportProducts
             catch (Exception err)
             {
                 e.Result = "ERROR:" + err.Message;
-                //throw new Exception("Error saving file from URL:" + err.Message, err);
+                log.Error("Error error logging", err);
             }
         }
 
@@ -252,6 +252,100 @@ namespace ImportProducts
             dataColumn = new DataColumn("DateCreated", typeof (System.DateTime));
             dataTable.Columns.Add(dataColumn);
 
+            // default columns
+            dataColumn = new DataColumn("EAN", typeof (System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("ISBN", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Free1", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Free2", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Free3", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("KeyWords", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Stock", typeof(System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Weight", typeof(System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Volume", typeof(System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Length", typeof(System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Width", typeof(System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Height", typeof(System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("FreightCosts1", typeof(System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("FreightCosts2", typeof(System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Featured", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("SalePrice", typeof(System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("SaleStart", typeof(System.DateTime));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("SaleEnd", typeof(System.DateTime));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("DownLoad", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("ZIPPassWord", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("DownLoadFile", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Archive", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("BulkPriceLimit1", typeof(System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("BulkPriceLimit2", typeof(System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("BulkPriceLimit3", typeof(System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("BulkPriceLimit4", typeof(System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("BulkPriceLimit5", typeof(System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("RoleID", typeof(System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("SubscriptionPeriod", typeof(System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("RecurringBilling", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("TaxExempt", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("ShipExempt", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("InsuredValue", typeof(System.Decimal));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("PublicationStart", typeof(System.DateTime));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("PublicationEnd", typeof(System.DateTime));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("Status", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("DonationItem", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("PayPalSubscription", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("UseRoleFees", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("RoleExpiryType", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("ItemDeliveryType", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("ReorderPoint", typeof(System.Int32));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("OrderQuantValidExpr", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("ShippingAddress", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("AuctionFinished", typeof(System.Boolean));
+            dataTable.Columns.Add(dataColumn);
+            dataColumn = new DataColumn("TaxCode", typeof(System.String));
+            dataTable.Columns.Add(dataColumn);
+
             // Set step for backgroundWorker
             Form1.activeStep = "Import records..";
             bw.ReportProgress(0); // start new step of background process
@@ -314,6 +408,55 @@ namespace ImportProducts
                             dataRow["OrderQuant"] = "0";
                             dataRow["CreatedByUser"] = vendorId;
                             dataRow["DateCreated"] = DateTime.Now;
+
+                            // default columns
+                            dataRow["EAN"] = "";
+                            dataRow["ISBN"] = "";
+                            dataRow["Free1"] = "";
+                            dataRow["Free2"] = "";
+                            dataRow["Free3"] = "";
+                            dataRow["KeyWords"] = "";
+                            dataRow["Stock"] = 0;
+                            dataRow["Weight"] = 0.0000m;
+                            dataRow["Volume"] = 0.00m;
+                            dataRow["Length"] = 0.00m;
+                            dataRow["Width"] = 0.00m;
+                            dataRow["Height"] = 0.00m;
+                            dataRow["FreightCosts1"] = 0.0000m;
+                            dataRow["FreightCosts2"] = 0.0000m;
+                            dataRow["Featured"] = false;
+                            dataRow["SalePrice"] = 0.0000m;
+                            dataRow["SaleStart"] = new DateTime(646602048000000000, DateTimeKind.Unspecified);
+                            dataRow["SaleEnd"] = new DateTime(599266080000000000, DateTimeKind.Unspecified);
+                            dataRow["DownLoad"] = false;
+                            dataRow["ZIPPassWord"] = "";
+                            dataRow["DownLoadFile"] = "";
+                            dataRow["Archive"] = false;
+                            dataRow["BulkPriceLimit1"] = 0;
+                            dataRow["BulkPriceLimit2"] = 0;
+                            dataRow["BulkPriceLimit3"] = 0;
+                            dataRow["BulkPriceLimit4"] = 0;
+                            dataRow["BulkPriceLimit5"] = 0;
+                            dataRow["RoleID"] = -1;
+                            dataRow["SubscriptionPeriod"] = 0;
+                            dataRow["RecurringBilling"] = false;
+                            dataRow["TaxExempt"] = false;
+                            dataRow["ShipExempt"] = false;
+                            dataRow["InsuredValue"] = 0.0000m;
+                            dataRow["PublicationStart"] = new DateTime(634538880000000000, DateTimeKind.Unspecified);
+                            dataRow["PublicationEnd"] = new DateTime(650318976000000000, DateTimeKind.Unspecified);
+                            dataRow["Status"] = "0";
+                            dataRow["DonationItem"] = false;
+                            dataRow["PayPalSubscription"] = false;
+                            dataRow["UseRoleFees"] = false;
+                            dataRow["RoleExpiryType"] = "0";
+                            dataRow["ItemDeliveryType"] = "0";
+                            dataRow["ReorderPoint"] = 0;
+                            dataRow["OrderQuantValidExpr"] = "";
+                            dataRow["ShippingAddress"] = "0";
+                            dataRow["AuctionFinished"] = false;
+                            dataRow["TaxCode"] = "";
+
                             dataTable.Rows.Add(dataRow);
 
                             if (dataTable.Rows.Count >= batchLimit)
@@ -354,6 +497,54 @@ namespace ImportProducts
                                         bulkCopy.ColumnMappings.Add("CreatedByUser", "CreatedByUser");
                                         bulkCopy.ColumnMappings.Add("DateCreated", "DateCreated");
 
+                                        // default columns
+                                        bulkCopy.ColumnMappings.Add("EAN", "EAN");
+                                        bulkCopy.ColumnMappings.Add("ISBN", "ISBN");
+                                        bulkCopy.ColumnMappings.Add("Free1", "Free1");
+                                        bulkCopy.ColumnMappings.Add("Free2", "Free2");
+                                        bulkCopy.ColumnMappings.Add("Free3", "Free3");
+                                        bulkCopy.ColumnMappings.Add("KeyWords", "KeyWords");
+                                        bulkCopy.ColumnMappings.Add("Stock", "Stock");
+                                        bulkCopy.ColumnMappings.Add("Weight", "Weight");
+                                        bulkCopy.ColumnMappings.Add("Volume", "Volume");
+                                        bulkCopy.ColumnMappings.Add("Length", "Length");
+                                        bulkCopy.ColumnMappings.Add("Width", "Width");
+                                        bulkCopy.ColumnMappings.Add("Height", "Height");
+                                        bulkCopy.ColumnMappings.Add("FreightCosts1", "FreightCosts1");
+                                        bulkCopy.ColumnMappings.Add("FreightCosts2", "FreightCosts2");
+                                        bulkCopy.ColumnMappings.Add("Featured", "Featured");
+                                        bulkCopy.ColumnMappings.Add("SalePrice", "SalePrice");
+                                        bulkCopy.ColumnMappings.Add("SaleStart", "SaleStart");
+                                        bulkCopy.ColumnMappings.Add("SaleEnd", "SaleEnd");
+                                        bulkCopy.ColumnMappings.Add("DownLoad", "DownLoad");
+                                        bulkCopy.ColumnMappings.Add("ZIPPassWord", "ZIPPassWord");
+                                        bulkCopy.ColumnMappings.Add("DownLoadFile", "DownLoadFile");
+                                        bulkCopy.ColumnMappings.Add("Archive", "Archive");
+                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit1", "BulkPriceLimit1");
+                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit2", "BulkPriceLimit2");
+                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit3", "BulkPriceLimit3");
+                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit4", "BulkPriceLimit4");
+                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit5", "BulkPriceLimit5");
+                                        bulkCopy.ColumnMappings.Add("RoleID", "RoleID");
+                                        bulkCopy.ColumnMappings.Add("SubscriptionPeriod", "SubscriptionPeriod");
+                                        bulkCopy.ColumnMappings.Add("RecurringBilling", "RecurringBilling");
+                                        bulkCopy.ColumnMappings.Add("TaxExempt", "TaxExempt");
+                                        bulkCopy.ColumnMappings.Add("ShipExempt", "ShipExempt");
+                                        bulkCopy.ColumnMappings.Add("InsuredValue", "InsuredValue");
+                                        bulkCopy.ColumnMappings.Add("PublicationStart", "PublicationStart");
+                                        bulkCopy.ColumnMappings.Add("PublicationEnd", "PublicationEnd");
+                                        bulkCopy.ColumnMappings.Add("Status", "Status");
+                                        bulkCopy.ColumnMappings.Add("DonationItem", "DonationItem");
+                                        bulkCopy.ColumnMappings.Add("PayPalSubscription", "PayPalSubscription");
+                                        bulkCopy.ColumnMappings.Add("UseRoleFees", "UseRoleFees");
+                                        bulkCopy.ColumnMappings.Add("RoleExpiryType", "RoleExpiryType");
+                                        bulkCopy.ColumnMappings.Add("ItemDeliveryType", "ItemDeliveryType");
+                                        bulkCopy.ColumnMappings.Add("ReorderPoint", "ReorderPoint");
+                                        bulkCopy.ColumnMappings.Add("OrderQuantValidExpr", "OrderQuantValidExpr");
+                                        bulkCopy.ColumnMappings.Add("ShippingAddress", "ShippingAddress");
+                                        bulkCopy.ColumnMappings.Add("AuctionFinished", "AuctionFinished");
+                                        bulkCopy.ColumnMappings.Add("TaxCode", "TaxCode");
+
                                         try
                                         {
                                             // Write from the source to the destination.
@@ -361,7 +552,7 @@ namespace ImportProducts
                                         }
                                         catch (Exception ex)
                                         {
-                                            Console.WriteLine(ex.Message);
+                                            log.Error("Error error logging", ex);
                                         }
                                         finally
                                         {
@@ -455,6 +646,55 @@ namespace ImportProducts
                                 dataRow["OrderQuant"] = "0";
                                 dataRow["CreatedByUser"] = vendorId;
                                 dataRow["DateCreated"] = DateTime.Now;
+
+                                // default columns
+                                dataRow["EAN"] = "";
+                                dataRow["ISBN"] = "";
+                                dataRow["Free1"] = "";
+                                dataRow["Free2"] = "";
+                                dataRow["Free3"] = "";
+                                dataRow["KeyWords"] = "";
+                                dataRow["Stock"] = 0;
+                                dataRow["Weight"] = 0.0000m;
+                                dataRow["Volume"] = 0.00m;
+                                dataRow["Length"] = 0.00m;
+                                dataRow["Width"] = 0.00m;
+                                dataRow["Height"] = 0.00m;
+                                dataRow["FreightCosts1"] = 0.0000m;
+                                dataRow["FreightCosts2"] = 0.0000m;
+                                dataRow["Featured"] = false;
+                                dataRow["SalePrice"] = 0.0000m;
+                                dataRow["SaleStart"] = new DateTime(646602048000000000, DateTimeKind.Unspecified);
+                                dataRow["SaleEnd"] = new DateTime(599266080000000000, DateTimeKind.Unspecified);
+                                dataRow["DownLoad"] = false;
+                                dataRow["ZIPPassWord"] = "";
+                                dataRow["DownLoadFile"] = "";
+                                dataRow["Archive"] = false;
+                                dataRow["BulkPriceLimit1"] = 0;
+                                dataRow["BulkPriceLimit2"] = 0;
+                                dataRow["BulkPriceLimit3"] = 0;
+                                dataRow["BulkPriceLimit4"] = 0;
+                                dataRow["BulkPriceLimit5"] = 0;
+                                dataRow["RoleID"] = -1;
+                                dataRow["SubscriptionPeriod"] = 0;
+                                dataRow["RecurringBilling"] = false;
+                                dataRow["TaxExempt"] = false;
+                                dataRow["ShipExempt"] = false;
+                                dataRow["InsuredValue"] = 0.0000m;
+                                dataRow["PublicationStart"] = new DateTime(634538880000000000, DateTimeKind.Unspecified);
+                                dataRow["PublicationEnd"] = new DateTime(650318976000000000, DateTimeKind.Unspecified);
+                                dataRow["Status"] = "0";
+                                dataRow["DonationItem"] = false;
+                                dataRow["PayPalSubscription"] = false;
+                                dataRow["UseRoleFees"] = false;
+                                dataRow["RoleExpiryType"] = "0";
+                                dataRow["ItemDeliveryType"] = "0";
+                                dataRow["ReorderPoint"] = 0;
+                                dataRow["OrderQuantValidExpr"] = "";
+                                dataRow["ShippingAddress"] = "0";
+                                dataRow["AuctionFinished"] = false;
+                                dataRow["TaxCode"] = "";
+
                                 dataTable.Rows.Add(dataRow);
 
                                 if (dataTable.Rows.Count >= batchLimit)
@@ -495,6 +735,54 @@ namespace ImportProducts
                                             bulkCopy.ColumnMappings.Add("CreatedByUser", "CreatedByUser");
                                             bulkCopy.ColumnMappings.Add("DateCreated", "DateCreated");
 
+                                            // default columns
+                                            bulkCopy.ColumnMappings.Add("EAN", "EAN");
+                                            bulkCopy.ColumnMappings.Add("ISBN", "ISBN");
+                                            bulkCopy.ColumnMappings.Add("Free1", "Free1");
+                                            bulkCopy.ColumnMappings.Add("Free2", "Free2");
+                                            bulkCopy.ColumnMappings.Add("Free3", "Free3");
+                                            bulkCopy.ColumnMappings.Add("KeyWords", "KeyWords");
+                                            bulkCopy.ColumnMappings.Add("Stock", "Stock");
+                                            bulkCopy.ColumnMappings.Add("Weight", "Weight");
+                                            bulkCopy.ColumnMappings.Add("Volume", "Volume");
+                                            bulkCopy.ColumnMappings.Add("Length", "Length");
+                                            bulkCopy.ColumnMappings.Add("Width", "Width");
+                                            bulkCopy.ColumnMappings.Add("Height", "Height");
+                                            bulkCopy.ColumnMappings.Add("FreightCosts1", "FreightCosts1");
+                                            bulkCopy.ColumnMappings.Add("FreightCosts2", "FreightCosts2");
+                                            bulkCopy.ColumnMappings.Add("Featured", "Featured");
+                                            bulkCopy.ColumnMappings.Add("SalePrice", "SalePrice");
+                                            bulkCopy.ColumnMappings.Add("SaleStart", "SaleStart");
+                                            bulkCopy.ColumnMappings.Add("SaleEnd", "SaleEnd");
+                                            bulkCopy.ColumnMappings.Add("DownLoad", "DownLoad");
+                                            bulkCopy.ColumnMappings.Add("ZIPPassWord", "ZIPPassWord");
+                                            bulkCopy.ColumnMappings.Add("DownLoadFile", "DownLoadFile");
+                                            bulkCopy.ColumnMappings.Add("Archive", "Archive");
+                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit1", "BulkPriceLimit1");
+                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit2", "BulkPriceLimit2");
+                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit3", "BulkPriceLimit3");
+                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit4", "BulkPriceLimit4");
+                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit5", "BulkPriceLimit5");
+                                            bulkCopy.ColumnMappings.Add("RoleID", "RoleID");
+                                            bulkCopy.ColumnMappings.Add("SubscriptionPeriod", "SubscriptionPeriod");
+                                            bulkCopy.ColumnMappings.Add("RecurringBilling", "RecurringBilling");
+                                            bulkCopy.ColumnMappings.Add("TaxExempt", "TaxExempt");
+                                            bulkCopy.ColumnMappings.Add("ShipExempt", "ShipExempt");
+                                            bulkCopy.ColumnMappings.Add("InsuredValue", "InsuredValue");
+                                            bulkCopy.ColumnMappings.Add("PublicationStart", "PublicationStart");
+                                            bulkCopy.ColumnMappings.Add("PublicationEnd", "PublicationEnd");
+                                            bulkCopy.ColumnMappings.Add("Status", "Status");
+                                            bulkCopy.ColumnMappings.Add("DonationItem", "DonationItem");
+                                            bulkCopy.ColumnMappings.Add("PayPalSubscription", "PayPalSubscription");
+                                            bulkCopy.ColumnMappings.Add("UseRoleFees", "UseRoleFees");
+                                            bulkCopy.ColumnMappings.Add("RoleExpiryType", "RoleExpiryType");
+                                            bulkCopy.ColumnMappings.Add("ItemDeliveryType", "ItemDeliveryType");
+                                            bulkCopy.ColumnMappings.Add("ReorderPoint", "ReorderPoint");
+                                            bulkCopy.ColumnMappings.Add("OrderQuantValidExpr", "OrderQuantValidExpr");
+                                            bulkCopy.ColumnMappings.Add("ShippingAddress", "ShippingAddress");
+                                            bulkCopy.ColumnMappings.Add("AuctionFinished", "AuctionFinished");
+                                            bulkCopy.ColumnMappings.Add("TaxCode", "TaxCode");
+
                                             try
                                             {
                                                 // Write from the source to the destination.
@@ -502,7 +790,7 @@ namespace ImportProducts
                                             }
                                             catch (Exception ex)
                                             {
-                                                Console.WriteLine(ex.Message);
+                                                log.Error("Error error logging", ex);
                                             }
                                             finally
                                             {
@@ -1016,8 +1304,11 @@ UpdateAdvCats:
                                 commandAdd.Parameters.Add("@ImageFile", SqlDbType.NVarChar, 255);
                                 commandAdd.Parameters["@ImageFile"].Value = image.Value;
                                 commandAdd.Parameters.Add("@Description", SqlDbType.NVarChar, 50);
+                                commandAdd.Parameters["@Description"].Value = String.Empty;
                                 commandAdd.Parameters.Add("@ImageType", SqlDbType.Char, 1);
+                                commandAdd.Parameters["@ImageType"].Value = "0";
                                 commandAdd.Parameters.Add("@ViewOrder", SqlDbType.Int);
+                                commandAdd.Parameters["@ViewOrder"].Value = 0;
                                 commandAdd.ExecuteNonQuery();
                             }
                         }
@@ -1047,7 +1338,6 @@ UpdateAdvCats:
             catch (Exception ex)
             {
                 e.Result = "ERROR:" + ex.Message;
-                //message = ex.Message;
                 log.Error("Error error logging", ex);
             }
             //return rc;
