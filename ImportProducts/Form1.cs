@@ -32,6 +32,8 @@ namespace ImportProducts
 
     public partial class Form1 : Form
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private ImportProductsEntities context;
         
         private Feed feed;
@@ -518,6 +520,7 @@ namespace ImportProducts
                 catch (Exception ex)
                 {
                     e.Result = "ERROR:" + ex.Message;
+                    log.Error("Error error logging", ex);
                 }
             }
         }
@@ -529,6 +532,27 @@ namespace ImportProducts
             context = new ImportProductsEntities();
             feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
             StartWorkerProcess(feed.StepImport, feed.StepAddToCategories, feed.StepAddImages);
+        }
+
+        private void deleteCategoriesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
+                {
+                    destinationConnection.Open();
+                    SqlCommand commandDelete =
+                        new SqlCommand(
+                            "DELETE FROM CAT_AdvCats WHERE (AdvCatID NOT IN (SELECT AdvCatID FROM CAT_AdvCatProducts))",
+                            destinationConnection);
+                    commandDelete.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error error logging", ex);
+            }
         }
     }
 }

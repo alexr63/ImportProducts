@@ -45,6 +45,7 @@
             this.tsslCurrent = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.deleteCategoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip.SuspendLayout();
@@ -66,7 +67,8 @@
             this.toolStripMenuItemProperties,
             this.toolStripMenuItemRun,
             this.toolStripMenuItemResume,
-            this.toolStripDeleteProducts});
+            this.toolStripDeleteProducts,
+            this.deleteCategoriesToolStripMenuItem});
             this.toolStripMenuItemFeed.Name = "toolStripMenuItemFeed";
             this.toolStripMenuItemFeed.Size = new System.Drawing.Size(44, 20);
             this.toolStripMenuItemFeed.Text = "Feed";
@@ -75,28 +77,28 @@
             // toolStripMenuItemProperties
             // 
             this.toolStripMenuItemProperties.Name = "toolStripMenuItemProperties";
-            this.toolStripMenuItemProperties.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemProperties.Size = new System.Drawing.Size(166, 22);
             this.toolStripMenuItemProperties.Text = "Properties...";
             this.toolStripMenuItemProperties.Click += new System.EventHandler(this.toolStripMenuItemProperties_Click);
             // 
             // toolStripMenuItemRun
             // 
             this.toolStripMenuItemRun.Name = "toolStripMenuItemRun";
-            this.toolStripMenuItemRun.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemRun.Size = new System.Drawing.Size(166, 22);
             this.toolStripMenuItemRun.Text = "Run";
             this.toolStripMenuItemRun.Click += new System.EventHandler(this.toolStripMenuItemRun_Click);
             // 
             // toolStripMenuItemResume
             // 
             this.toolStripMenuItemResume.Name = "toolStripMenuItemResume";
-            this.toolStripMenuItemResume.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemResume.Size = new System.Drawing.Size(166, 22);
             this.toolStripMenuItemResume.Text = "Resume";
             this.toolStripMenuItemResume.Click += new System.EventHandler(this.toolStripMenuItemResume_Click);
             // 
             // toolStripDeleteProducts
             // 
             this.toolStripDeleteProducts.Name = "toolStripDeleteProducts";
-            this.toolStripDeleteProducts.Size = new System.Drawing.Size(157, 22);
+            this.toolStripDeleteProducts.Size = new System.Drawing.Size(166, 22);
             this.toolStripDeleteProducts.Text = "Delete Products";
             this.toolStripDeleteProducts.Click += new System.EventHandler(this.toolStripDeleteProducts_Click);
             // 
@@ -178,6 +180,13 @@
             this.notifyIcon.Visible = true;
             this.notifyIcon.BalloonTipClicked += new System.EventHandler(this.notifyIcon_BalloonTipClicked);
             // 
+            // deleteCategoriesToolStripMenuItem
+            // 
+            this.deleteCategoriesToolStripMenuItem.Name = "deleteCategoriesToolStripMenuItem";
+            this.deleteCategoriesToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.deleteCategoriesToolStripMenuItem.Text = "Delete Categories";
+            this.deleteCategoriesToolStripMenuItem.Click += new System.EventHandler(this.deleteCategoriesToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -219,6 +228,7 @@
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.ToolStripMenuItem toolStripDeleteProducts;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemResume;
+        private System.Windows.Forms.ToolStripMenuItem deleteCategoriesToolStripMenuItem;
     }
 }
 
