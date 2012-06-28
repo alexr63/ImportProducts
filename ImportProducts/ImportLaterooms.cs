@@ -391,7 +391,7 @@ namespace ImportProducts
                         int batchLimit = 500;
                         if (isVendorProductsEmpty ||
                             db.Products.SingleOrDefault(
-                                p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber) == null)
+                                p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber && p.CreatedByUser == vendorId) == null)
                         {
                             DataRow dataRow = dataTable.NewRow();
                             dataRow["CategoryID"] = categoryId;
@@ -578,7 +578,8 @@ namespace ImportProducts
                         {
                             var product2 =
                                 db.Products.SingleOrDefault(
-                                    p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
+                                    p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber && p.CreatedByUser == vendorId);
+                            // no need to check for null vallue because of previous if
                             bool isChanged = false;
                             if (product2.CategoryID != categoryId)
                             {
