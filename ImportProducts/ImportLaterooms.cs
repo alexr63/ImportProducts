@@ -255,95 +255,95 @@ namespace ImportProducts
             // default columns
             dataColumn = new DataColumn("EAN", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ISBN", typeof(System.String));
+            dataColumn = new DataColumn("ISBN", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Free1", typeof(System.String));
+            dataColumn = new DataColumn("Free1", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Free2", typeof(System.String));
+            dataColumn = new DataColumn("Free2", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Free3", typeof(System.String));
+            dataColumn = new DataColumn("Free3", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("KeyWords", typeof(System.String));
+            dataColumn = new DataColumn("KeyWords", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Stock", typeof(System.Int32));
+            dataColumn = new DataColumn("Stock", typeof (System.Int32));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Weight", typeof(System.Decimal));
+            dataColumn = new DataColumn("Weight", typeof (System.Decimal));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Volume", typeof(System.Decimal));
+            dataColumn = new DataColumn("Volume", typeof (System.Decimal));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Length", typeof(System.Decimal));
+            dataColumn = new DataColumn("Length", typeof (System.Decimal));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Width", typeof(System.Decimal));
+            dataColumn = new DataColumn("Width", typeof (System.Decimal));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Height", typeof(System.Decimal));
+            dataColumn = new DataColumn("Height", typeof (System.Decimal));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("FreightCosts1", typeof(System.Decimal));
+            dataColumn = new DataColumn("FreightCosts1", typeof (System.Decimal));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("FreightCosts2", typeof(System.Decimal));
+            dataColumn = new DataColumn("FreightCosts2", typeof (System.Decimal));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Featured", typeof(System.Boolean));
+            dataColumn = new DataColumn("Featured", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("SalePrice", typeof(System.Decimal));
+            dataColumn = new DataColumn("SalePrice", typeof (System.Decimal));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("SaleStart", typeof(System.DateTime));
+            dataColumn = new DataColumn("SaleStart", typeof (System.DateTime));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("SaleEnd", typeof(System.DateTime));
+            dataColumn = new DataColumn("SaleEnd", typeof (System.DateTime));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("DownLoad", typeof(System.Boolean));
+            dataColumn = new DataColumn("DownLoad", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ZIPPassWord", typeof(System.String));
+            dataColumn = new DataColumn("ZIPPassWord", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("DownLoadFile", typeof(System.String));
+            dataColumn = new DataColumn("DownLoadFile", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Archive", typeof(System.Boolean));
+            dataColumn = new DataColumn("Archive", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit1", typeof(System.Int32));
+            dataColumn = new DataColumn("BulkPriceLimit1", typeof (System.Int32));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit2", typeof(System.Int32));
+            dataColumn = new DataColumn("BulkPriceLimit2", typeof (System.Int32));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit3", typeof(System.Int32));
+            dataColumn = new DataColumn("BulkPriceLimit3", typeof (System.Int32));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit4", typeof(System.Int32));
+            dataColumn = new DataColumn("BulkPriceLimit4", typeof (System.Int32));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit5", typeof(System.Int32));
+            dataColumn = new DataColumn("BulkPriceLimit5", typeof (System.Int32));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("RoleID", typeof(System.Int32));
+            dataColumn = new DataColumn("RoleID", typeof (System.Int32));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("SubscriptionPeriod", typeof(System.Int32));
+            dataColumn = new DataColumn("SubscriptionPeriod", typeof (System.Int32));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("RecurringBilling", typeof(System.Boolean));
+            dataColumn = new DataColumn("RecurringBilling", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("TaxExempt", typeof(System.Boolean));
+            dataColumn = new DataColumn("TaxExempt", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ShipExempt", typeof(System.Boolean));
+            dataColumn = new DataColumn("ShipExempt", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("InsuredValue", typeof(System.Decimal));
+            dataColumn = new DataColumn("InsuredValue", typeof (System.Decimal));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("PublicationStart", typeof(System.DateTime));
+            dataColumn = new DataColumn("PublicationStart", typeof (System.DateTime));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("PublicationEnd", typeof(System.DateTime));
+            dataColumn = new DataColumn("PublicationEnd", typeof (System.DateTime));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Status", typeof(System.String));
+            dataColumn = new DataColumn("Status", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("DonationItem", typeof(System.Boolean));
+            dataColumn = new DataColumn("DonationItem", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("PayPalSubscription", typeof(System.Boolean));
+            dataColumn = new DataColumn("PayPalSubscription", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("UseRoleFees", typeof(System.Boolean));
+            dataColumn = new DataColumn("UseRoleFees", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("RoleExpiryType", typeof(System.String));
+            dataColumn = new DataColumn("RoleExpiryType", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ItemDeliveryType", typeof(System.String));
+            dataColumn = new DataColumn("ItemDeliveryType", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ReorderPoint", typeof(System.Int32));
+            dataColumn = new DataColumn("ReorderPoint", typeof (System.Int32));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("OrderQuantValidExpr", typeof(System.String));
+            dataColumn = new DataColumn("OrderQuantValidExpr", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ShippingAddress", typeof(System.String));
+            dataColumn = new DataColumn("ShippingAddress", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("AuctionFinished", typeof(System.Boolean));
+            dataColumn = new DataColumn("AuctionFinished", typeof (System.Boolean));
             dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("TaxCode", typeof(System.String));
+            dataColumn = new DataColumn("TaxCode", typeof (System.String));
             dataTable.Columns.Add(dataColumn);
 
             // Set step for backgroundWorker
@@ -369,24 +369,29 @@ namespace ImportProducts
                     goto UpdateImages;
                 }
 
-                int currentStep = 0;
-                foreach (var product in products)
+                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
                 {
-                    if (currentStep++ < currentProduct)
-                    {
-                        currentProduct++;
-                        continue;
-                    }
+                    destinationConnection.Open();
 
-                    using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                    bool isVendorProductsEmpty = db.Products.Count(p => p.CreatedByUser == vendorId) == 0;
+
+                    int currentStep = 0;
+                    foreach (var product in products)
                     {
-                        bool isVendorProductsEmpty = db.Products.Count(p => p.CreatedByUser == vendorId) == 0;
+                        if (currentStep++ < currentProduct)
+                        {
+                            currentProduct++;
+                            continue;
+                        }
 
                         Console.WriteLine(currentProduct.ToString() + " - " + product.Name); // debug print
 
                         // create new product record
                         int batchLimit = 500;
-                        if (isVendorProductsEmpty)
+                        if (isVendorProductsEmpty ||
+                            db.Products.SingleOrDefault(
+                                p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber) == null)
                         {
                             DataRow dataRow = dataTable.NewRow();
                             dataRow["CategoryID"] = categoryId;
@@ -461,111 +466,214 @@ namespace ImportProducts
 
                             if (dataTable.Rows.Count >= batchLimit)
                             {
-                                using (
-                                    SqlConnection destinationConnection =
-                                        new SqlConnection(db.Database.Connection.ConnectionString))
+                                // Set up the bulk copy object. 
+                                // Note that the column positions in the source
+                                // data reader match the column positions in 
+                                // the destination table so there is no need to
+                                // map columns.
+                                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(destinationConnection))
                                 {
-                                    destinationConnection.Open();
+                                    bulkCopy.BatchSize = 5000;
 
-                                    // Set up the bulk copy object. 
-                                    // Note that the column positions in the source
-                                    // data reader match the column positions in 
-                                    // the destination table so there is no need to
-                                    // map columns.
-                                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(destinationConnection))
+                                    bulkCopy.DestinationTableName = "dbo.CAT_Products";
+                                    bulkCopy.ColumnMappings.Add("CategoryID", "CategoryID");
+                                    bulkCopy.ColumnMappings.Add("Category2ID", "Category2ID");
+                                    bulkCopy.ColumnMappings.Add("Category3", "Category3");
+                                    bulkCopy.ColumnMappings.Add("ProductName", "ProductName");
+                                    bulkCopy.ColumnMappings.Add("ProductNumber", "ProductNumber");
+                                    bulkCopy.ColumnMappings.Add("UnitCost", "UnitCost");
+                                    bulkCopy.ColumnMappings.Add("UnitCost2", "UnitCost2");
+                                    bulkCopy.ColumnMappings.Add("UnitCost3", "UnitCost3");
+                                    bulkCopy.ColumnMappings.Add("UnitCost4", "UnitCost4");
+                                    bulkCopy.ColumnMappings.Add("UnitCost5", "UnitCost5");
+                                    bulkCopy.ColumnMappings.Add("UnitCost6", "UnitCost6");
+                                    bulkCopy.ColumnMappings.Add("Description", "Description");
+                                    bulkCopy.ColumnMappings.Add("DescriptionHTML", "DescriptionHTML");
+                                    bulkCopy.ColumnMappings.Add("URL", "URL");
+                                    bulkCopy.ColumnMappings.Add("ProductCost", "ProductCost");
+                                    bulkCopy.ColumnMappings.Add("ProductImage", "ProductImage");
+                                    bulkCopy.ColumnMappings.Add("OrderQuant", "OrderQuant");
+                                    bulkCopy.ColumnMappings.Add("CreatedByUser", "CreatedByUser");
+                                    bulkCopy.ColumnMappings.Add("DateCreated", "DateCreated");
+
+                                    // default columns
+                                    bulkCopy.ColumnMappings.Add("EAN", "EAN");
+                                    bulkCopy.ColumnMappings.Add("ISBN", "ISBN");
+                                    bulkCopy.ColumnMappings.Add("Free1", "Free1");
+                                    bulkCopy.ColumnMappings.Add("Free2", "Free2");
+                                    bulkCopy.ColumnMappings.Add("Free3", "Free3");
+                                    bulkCopy.ColumnMappings.Add("KeyWords", "KeyWords");
+                                    bulkCopy.ColumnMappings.Add("Stock", "Stock");
+                                    bulkCopy.ColumnMappings.Add("Weight", "Weight");
+                                    bulkCopy.ColumnMappings.Add("Volume", "Volume");
+                                    bulkCopy.ColumnMappings.Add("Length", "Length");
+                                    bulkCopy.ColumnMappings.Add("Width", "Width");
+                                    bulkCopy.ColumnMappings.Add("Height", "Height");
+                                    bulkCopy.ColumnMappings.Add("FreightCosts1", "FreightCosts1");
+                                    bulkCopy.ColumnMappings.Add("FreightCosts2", "FreightCosts2");
+                                    bulkCopy.ColumnMappings.Add("Featured", "Featured");
+                                    bulkCopy.ColumnMappings.Add("SalePrice", "SalePrice");
+                                    bulkCopy.ColumnMappings.Add("SaleStart", "SaleStart");
+                                    bulkCopy.ColumnMappings.Add("SaleEnd", "SaleEnd");
+                                    bulkCopy.ColumnMappings.Add("DownLoad", "DownLoad");
+                                    bulkCopy.ColumnMappings.Add("ZIPPassWord", "ZIPPassWord");
+                                    bulkCopy.ColumnMappings.Add("DownLoadFile", "DownLoadFile");
+                                    bulkCopy.ColumnMappings.Add("Archive", "Archive");
+                                    bulkCopy.ColumnMappings.Add("BulkPriceLimit1", "BulkPriceLimit1");
+                                    bulkCopy.ColumnMappings.Add("BulkPriceLimit2", "BulkPriceLimit2");
+                                    bulkCopy.ColumnMappings.Add("BulkPriceLimit3", "BulkPriceLimit3");
+                                    bulkCopy.ColumnMappings.Add("BulkPriceLimit4", "BulkPriceLimit4");
+                                    bulkCopy.ColumnMappings.Add("BulkPriceLimit5", "BulkPriceLimit5");
+                                    bulkCopy.ColumnMappings.Add("RoleID", "RoleID");
+                                    bulkCopy.ColumnMappings.Add("SubscriptionPeriod", "SubscriptionPeriod");
+                                    bulkCopy.ColumnMappings.Add("RecurringBilling", "RecurringBilling");
+                                    bulkCopy.ColumnMappings.Add("TaxExempt", "TaxExempt");
+                                    bulkCopy.ColumnMappings.Add("ShipExempt", "ShipExempt");
+                                    bulkCopy.ColumnMappings.Add("InsuredValue", "InsuredValue");
+                                    bulkCopy.ColumnMappings.Add("PublicationStart", "PublicationStart");
+                                    bulkCopy.ColumnMappings.Add("PublicationEnd", "PublicationEnd");
+                                    bulkCopy.ColumnMappings.Add("Status", "Status");
+                                    bulkCopy.ColumnMappings.Add("DonationItem", "DonationItem");
+                                    bulkCopy.ColumnMappings.Add("PayPalSubscription", "PayPalSubscription");
+                                    bulkCopy.ColumnMappings.Add("UseRoleFees", "UseRoleFees");
+                                    bulkCopy.ColumnMappings.Add("RoleExpiryType", "RoleExpiryType");
+                                    bulkCopy.ColumnMappings.Add("ItemDeliveryType", "ItemDeliveryType");
+                                    bulkCopy.ColumnMappings.Add("ReorderPoint", "ReorderPoint");
+                                    bulkCopy.ColumnMappings.Add("OrderQuantValidExpr", "OrderQuantValidExpr");
+                                    bulkCopy.ColumnMappings.Add("ShippingAddress", "ShippingAddress");
+                                    bulkCopy.ColumnMappings.Add("AuctionFinished", "AuctionFinished");
+                                    bulkCopy.ColumnMappings.Add("TaxCode", "TaxCode");
+
+                                    try
                                     {
-                                        bulkCopy.BatchSize = 5000;
-
-                                        bulkCopy.DestinationTableName = "dbo.CAT_Products";
-                                        bulkCopy.ColumnMappings.Add("CategoryID", "CategoryID");
-                                        bulkCopy.ColumnMappings.Add("Category2ID", "Category2ID");
-                                        bulkCopy.ColumnMappings.Add("Category3", "Category3");
-                                        bulkCopy.ColumnMappings.Add("ProductName", "ProductName");
-                                        bulkCopy.ColumnMappings.Add("ProductNumber", "ProductNumber");
-                                        bulkCopy.ColumnMappings.Add("UnitCost", "UnitCost");
-                                        bulkCopy.ColumnMappings.Add("UnitCost2", "UnitCost2");
-                                        bulkCopy.ColumnMappings.Add("UnitCost3", "UnitCost3");
-                                        bulkCopy.ColumnMappings.Add("UnitCost4", "UnitCost4");
-                                        bulkCopy.ColumnMappings.Add("UnitCost5", "UnitCost5");
-                                        bulkCopy.ColumnMappings.Add("UnitCost6", "UnitCost6");
-                                        bulkCopy.ColumnMappings.Add("Description", "Description");
-                                        bulkCopy.ColumnMappings.Add("DescriptionHTML", "DescriptionHTML");
-                                        bulkCopy.ColumnMappings.Add("URL", "URL");
-                                        bulkCopy.ColumnMappings.Add("ProductCost", "ProductCost");
-                                        bulkCopy.ColumnMappings.Add("ProductImage", "ProductImage");
-                                        bulkCopy.ColumnMappings.Add("OrderQuant", "OrderQuant");
-                                        bulkCopy.ColumnMappings.Add("CreatedByUser", "CreatedByUser");
-                                        bulkCopy.ColumnMappings.Add("DateCreated", "DateCreated");
-
-                                        // default columns
-                                        bulkCopy.ColumnMappings.Add("EAN", "EAN");
-                                        bulkCopy.ColumnMappings.Add("ISBN", "ISBN");
-                                        bulkCopy.ColumnMappings.Add("Free1", "Free1");
-                                        bulkCopy.ColumnMappings.Add("Free2", "Free2");
-                                        bulkCopy.ColumnMappings.Add("Free3", "Free3");
-                                        bulkCopy.ColumnMappings.Add("KeyWords", "KeyWords");
-                                        bulkCopy.ColumnMappings.Add("Stock", "Stock");
-                                        bulkCopy.ColumnMappings.Add("Weight", "Weight");
-                                        bulkCopy.ColumnMappings.Add("Volume", "Volume");
-                                        bulkCopy.ColumnMappings.Add("Length", "Length");
-                                        bulkCopy.ColumnMappings.Add("Width", "Width");
-                                        bulkCopy.ColumnMappings.Add("Height", "Height");
-                                        bulkCopy.ColumnMappings.Add("FreightCosts1", "FreightCosts1");
-                                        bulkCopy.ColumnMappings.Add("FreightCosts2", "FreightCosts2");
-                                        bulkCopy.ColumnMappings.Add("Featured", "Featured");
-                                        bulkCopy.ColumnMappings.Add("SalePrice", "SalePrice");
-                                        bulkCopy.ColumnMappings.Add("SaleStart", "SaleStart");
-                                        bulkCopy.ColumnMappings.Add("SaleEnd", "SaleEnd");
-                                        bulkCopy.ColumnMappings.Add("DownLoad", "DownLoad");
-                                        bulkCopy.ColumnMappings.Add("ZIPPassWord", "ZIPPassWord");
-                                        bulkCopy.ColumnMappings.Add("DownLoadFile", "DownLoadFile");
-                                        bulkCopy.ColumnMappings.Add("Archive", "Archive");
-                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit1", "BulkPriceLimit1");
-                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit2", "BulkPriceLimit2");
-                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit3", "BulkPriceLimit3");
-                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit4", "BulkPriceLimit4");
-                                        bulkCopy.ColumnMappings.Add("BulkPriceLimit5", "BulkPriceLimit5");
-                                        bulkCopy.ColumnMappings.Add("RoleID", "RoleID");
-                                        bulkCopy.ColumnMappings.Add("SubscriptionPeriod", "SubscriptionPeriod");
-                                        bulkCopy.ColumnMappings.Add("RecurringBilling", "RecurringBilling");
-                                        bulkCopy.ColumnMappings.Add("TaxExempt", "TaxExempt");
-                                        bulkCopy.ColumnMappings.Add("ShipExempt", "ShipExempt");
-                                        bulkCopy.ColumnMappings.Add("InsuredValue", "InsuredValue");
-                                        bulkCopy.ColumnMappings.Add("PublicationStart", "PublicationStart");
-                                        bulkCopy.ColumnMappings.Add("PublicationEnd", "PublicationEnd");
-                                        bulkCopy.ColumnMappings.Add("Status", "Status");
-                                        bulkCopy.ColumnMappings.Add("DonationItem", "DonationItem");
-                                        bulkCopy.ColumnMappings.Add("PayPalSubscription", "PayPalSubscription");
-                                        bulkCopy.ColumnMappings.Add("UseRoleFees", "UseRoleFees");
-                                        bulkCopy.ColumnMappings.Add("RoleExpiryType", "RoleExpiryType");
-                                        bulkCopy.ColumnMappings.Add("ItemDeliveryType", "ItemDeliveryType");
-                                        bulkCopy.ColumnMappings.Add("ReorderPoint", "ReorderPoint");
-                                        bulkCopy.ColumnMappings.Add("OrderQuantValidExpr", "OrderQuantValidExpr");
-                                        bulkCopy.ColumnMappings.Add("ShippingAddress", "ShippingAddress");
-                                        bulkCopy.ColumnMappings.Add("AuctionFinished", "AuctionFinished");
-                                        bulkCopy.ColumnMappings.Add("TaxCode", "TaxCode");
-
-                                        try
-                                        {
-                                            // Write from the source to the destination.
-                                            bulkCopy.WriteToServer(dataTable);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            log.Error("Error error logging", ex);
-                                        }
-                                        finally
-                                        {
-                                            // Close the SqlDataReader. The SqlBulkCopy
-                                            // object is automatically closed at the end
-                                            // of the using block.
-                                            //reader.Close();
-                                        }
+                                        // Write from the source to the destination.
+                                        bulkCopy.WriteToServer(dataTable);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        log.Error("Error error logging", ex);
+                                    }
+                                    finally
+                                    {
+                                        // Close the SqlDataReader. The SqlBulkCopy
+                                        // object is automatically closed at the end
+                                        // of the using block.
+                                        //reader.Close();
                                     }
                                 }
-                                dataTable.Rows.Clear();
-                                updatedRows = +batchLimit;
+                            }
+                            dataTable.Rows.Clear();
+                            updatedRows = +batchLimit;
 
+                            using (var context = new ImportProductsEntities())
+                            {
+                                Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
+                                feed.StepImport = currentProduct;
+                                feed.StepAddToCategories = null;
+                                feed.StepAddImages = null;
+                                context.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            var product2 =
+                                db.Products.SingleOrDefault(
+                                    p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
+                            bool isChanged = false;
+                            if (product2.CategoryID != categoryId)
+                            {
+                                product2.CategoryID = categoryId;
+                                isChanged = true;
+                            }
+                            if (product2.Category2ID != 0)
+                            {
+                                product2.Category2ID = 0;
+                                isChanged = true;
+                            }
+                            if (product2.Category3 != String.Empty)
+                            {
+                                product2.Category3 = String.Empty;
+                                isChanged = true;
+                            }
+                            if (product2.ProductName != product.Name)
+                            {
+                                product2.ProductName = product.Name;
+                                isChanged = true;
+                            }
+                            if (product2.ProductNumber != product.ProductNumber)
+                            {
+                                product2.ProductNumber = product.ProductNumber;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost != product.UnitCost)
+                            {
+                                product2.UnitCost = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost2 != product.UnitCost)
+                            {
+                                product2.UnitCost2 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost3 != product.UnitCost)
+                            {
+                                product2.UnitCost3 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost4 != product.UnitCost)
+                            {
+                                product2.UnitCost4 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost5 != product.UnitCost)
+                            {
+                                product2.UnitCost5 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.UnitCost6 != product.UnitCost)
+                            {
+                                product2.UnitCost6 = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.Description != product.Description)
+                            {
+                                product2.Description = product.Description;
+                                isChanged = true;
+                            }
+                            if (product2.DescriptionHTML != product.DescriptionHTML)
+                            {
+                                product2.DescriptionHTML = product.DescriptionHTML;
+                                isChanged = true;
+                            }
+                            if (product2.URL != product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
+                            {
+                                product2.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                                isChanged = true;
+                            }
+                            if (product2.ProductCost != product.UnitCost)
+                            {
+                                product2.ProductCost = product.UnitCost;
+                                isChanged = true;
+                            }
+                            if (product2.ProductImage != (string) product.Images.Element("url"))
+                            {
+                                product2.ProductImage = (string) product.Images.Element("url");
+                                isChanged = true;
+                            }
+                            if (product2.OrderQuant != "0")
+                            {
+                                product2.OrderQuant = "0";
+                                isChanged = true;
+                            }
+
+                            if (isChanged)
+                            {
+                                db.SaveChanges();
+                            }
+
+                            updatedRows++;
+                            if (updatedRows >= batchLimit)
+                            {
                                 using (var context = new ImportProductsEntities())
                                 {
                                     Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
@@ -574,381 +682,6 @@ namespace ImportProducts
                                     feed.StepAddImages = null;
                                     context.SaveChanges();
                                 }
-                            }
-                        }
-                        else
-                        {
-                            var product2 =
-                                db.Products.SingleOrDefault(
-                                    p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
-                            if (product2 == null)
-                            {
-                                product2 = new Product
-                                               {
-                                                   CategoryID = categoryId,
-                                                   Category2ID = 0,
-                                                   Category3 = String.Empty,
-                                                   ProductName = product.Name,
-                                                   ProductNumber = product.ProductNumber,
-                                                   UnitCost = product.UnitCost,
-                                                   UnitCost2 = product.UnitCost,
-                                                   UnitCost3 = product.UnitCost,
-                                                   UnitCost4 = product.UnitCost,
-                                                   UnitCost5 = product.UnitCost,
-                                                   UnitCost6 = product.UnitCost,
-                                                   Description = product.Description,
-                                                   DescriptionHTML = product.DescriptionHTML,
-                                                   URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '),
-                                                   ProductCost = product.UnitCost,
-                                                   CreatedByUser = vendorId,
-                                                   DateCreated = DateTime.Now
-                                               };
-
-                                product2.ProductImage = (string) product.Images.Element("url");
-                                // trick to hide Add To Cart button
-                                product2.OrderQuant = "0";
-
-#if ADDIMAGES
-    // add additional product images
-                            foreach (var image in product.Images.Elements("url"))
-                            {
-                                if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
-                                {
-                                    ProductImage productImage = new ProductImage();
-                                    productImage.ImageFile = image.Value;
-                                    product2.ProductImages.Add(productImage);
-                                }
-                            }
-#endif
-
-                                // add product to product set
-                                //db.Products.Add(product2);
-                                // store  changes
-                                //SaveChanges7(db);
-
-                                DataRow dataRow = dataTable.NewRow();
-                                dataRow["CategoryID"] = categoryId;
-                                dataRow["Category2ID"] = 0;
-                                dataRow["Category3"] = String.Empty;
-                                dataRow["ProductName"] = product.Name;
-                                dataRow["ProductNumber"] = product.ProductNumber;
-                                dataRow["UnitCost"] = product.UnitCost;
-                                dataRow["UnitCost2"] = product.UnitCost;
-                                dataRow["UnitCost3"] = product.UnitCost;
-                                dataRow["UnitCost4"] = product.UnitCost;
-                                dataRow["UnitCost5"] = product.UnitCost;
-                                dataRow["UnitCost6"] = product.UnitCost;
-                                dataRow["Description"] = product.Description;
-                                dataRow["DescriptionHTML"] = product.DescriptionHTML;
-                                dataRow["URL"] = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
-                                dataRow["ProductCost"] = product.UnitCost;
-                                dataRow["ProductImage"] = (string) product.Images.Element("url");
-                                dataRow["OrderQuant"] = "0";
-                                dataRow["CreatedByUser"] = vendorId;
-                                dataRow["DateCreated"] = DateTime.Now;
-
-                                // default columns
-                                dataRow["EAN"] = "";
-                                dataRow["ISBN"] = "";
-                                dataRow["Free1"] = "";
-                                dataRow["Free2"] = "";
-                                dataRow["Free3"] = "";
-                                dataRow["KeyWords"] = "";
-                                dataRow["Stock"] = 0;
-                                dataRow["Weight"] = 0.0000m;
-                                dataRow["Volume"] = 0.00m;
-                                dataRow["Length"] = 0.00m;
-                                dataRow["Width"] = 0.00m;
-                                dataRow["Height"] = 0.00m;
-                                dataRow["FreightCosts1"] = 0.0000m;
-                                dataRow["FreightCosts2"] = 0.0000m;
-                                dataRow["Featured"] = false;
-                                dataRow["SalePrice"] = 0.0000m;
-                                dataRow["SaleStart"] = new DateTime(646602048000000000, DateTimeKind.Unspecified);
-                                dataRow["SaleEnd"] = new DateTime(599266080000000000, DateTimeKind.Unspecified);
-                                dataRow["DownLoad"] = false;
-                                dataRow["ZIPPassWord"] = "";
-                                dataRow["DownLoadFile"] = "";
-                                dataRow["Archive"] = false;
-                                dataRow["BulkPriceLimit1"] = 0;
-                                dataRow["BulkPriceLimit2"] = 0;
-                                dataRow["BulkPriceLimit3"] = 0;
-                                dataRow["BulkPriceLimit4"] = 0;
-                                dataRow["BulkPriceLimit5"] = 0;
-                                dataRow["RoleID"] = -1;
-                                dataRow["SubscriptionPeriod"] = 0;
-                                dataRow["RecurringBilling"] = false;
-                                dataRow["TaxExempt"] = false;
-                                dataRow["ShipExempt"] = false;
-                                dataRow["InsuredValue"] = 0.0000m;
-                                dataRow["PublicationStart"] = new DateTime(634538880000000000, DateTimeKind.Unspecified);
-                                dataRow["PublicationEnd"] = new DateTime(650318976000000000, DateTimeKind.Unspecified);
-                                dataRow["Status"] = "0";
-                                dataRow["DonationItem"] = false;
-                                dataRow["PayPalSubscription"] = false;
-                                dataRow["UseRoleFees"] = false;
-                                dataRow["RoleExpiryType"] = "0";
-                                dataRow["ItemDeliveryType"] = "0";
-                                dataRow["ReorderPoint"] = 0;
-                                dataRow["OrderQuantValidExpr"] = "";
-                                dataRow["ShippingAddress"] = "0";
-                                dataRow["AuctionFinished"] = false;
-                                dataRow["TaxCode"] = "";
-
-                                dataTable.Rows.Add(dataRow);
-
-                                if (dataTable.Rows.Count >= batchLimit)
-                                {
-                                    using (
-                                        SqlConnection destinationConnection =
-                                            new SqlConnection(db.Database.Connection.ConnectionString))
-                                    {
-                                        destinationConnection.Open();
-
-                                        // Set up the bulk copy object. 
-                                        // Note that the column positions in the source
-                                        // data reader match the column positions in 
-                                        // the destination table so there is no need to
-                                        // map columns.
-                                        using (SqlBulkCopy bulkCopy = new SqlBulkCopy(destinationConnection))
-                                        {
-                                            bulkCopy.BatchSize = 5000;
-
-                                            bulkCopy.DestinationTableName = "dbo.CAT_Products";
-                                            bulkCopy.ColumnMappings.Add("CategoryID", "CategoryID");
-                                            bulkCopy.ColumnMappings.Add("Category2ID", "Category2ID");
-                                            bulkCopy.ColumnMappings.Add("Category3", "Category3");
-                                            bulkCopy.ColumnMappings.Add("ProductName", "ProductName");
-                                            bulkCopy.ColumnMappings.Add("ProductNumber", "ProductNumber");
-                                            bulkCopy.ColumnMappings.Add("UnitCost", "UnitCost");
-                                            bulkCopy.ColumnMappings.Add("UnitCost2", "UnitCost2");
-                                            bulkCopy.ColumnMappings.Add("UnitCost3", "UnitCost3");
-                                            bulkCopy.ColumnMappings.Add("UnitCost4", "UnitCost4");
-                                            bulkCopy.ColumnMappings.Add("UnitCost5", "UnitCost5");
-                                            bulkCopy.ColumnMappings.Add("UnitCost6", "UnitCost6");
-                                            bulkCopy.ColumnMappings.Add("Description", "Description");
-                                            bulkCopy.ColumnMappings.Add("DescriptionHTML", "DescriptionHTML");
-                                            bulkCopy.ColumnMappings.Add("URL", "URL");
-                                            bulkCopy.ColumnMappings.Add("ProductCost", "ProductCost");
-                                            bulkCopy.ColumnMappings.Add("ProductImage", "ProductImage");
-                                            bulkCopy.ColumnMappings.Add("OrderQuant", "OrderQuant");
-                                            bulkCopy.ColumnMappings.Add("CreatedByUser", "CreatedByUser");
-                                            bulkCopy.ColumnMappings.Add("DateCreated", "DateCreated");
-
-                                            // default columns
-                                            bulkCopy.ColumnMappings.Add("EAN", "EAN");
-                                            bulkCopy.ColumnMappings.Add("ISBN", "ISBN");
-                                            bulkCopy.ColumnMappings.Add("Free1", "Free1");
-                                            bulkCopy.ColumnMappings.Add("Free2", "Free2");
-                                            bulkCopy.ColumnMappings.Add("Free3", "Free3");
-                                            bulkCopy.ColumnMappings.Add("KeyWords", "KeyWords");
-                                            bulkCopy.ColumnMappings.Add("Stock", "Stock");
-                                            bulkCopy.ColumnMappings.Add("Weight", "Weight");
-                                            bulkCopy.ColumnMappings.Add("Volume", "Volume");
-                                            bulkCopy.ColumnMappings.Add("Length", "Length");
-                                            bulkCopy.ColumnMappings.Add("Width", "Width");
-                                            bulkCopy.ColumnMappings.Add("Height", "Height");
-                                            bulkCopy.ColumnMappings.Add("FreightCosts1", "FreightCosts1");
-                                            bulkCopy.ColumnMappings.Add("FreightCosts2", "FreightCosts2");
-                                            bulkCopy.ColumnMappings.Add("Featured", "Featured");
-                                            bulkCopy.ColumnMappings.Add("SalePrice", "SalePrice");
-                                            bulkCopy.ColumnMappings.Add("SaleStart", "SaleStart");
-                                            bulkCopy.ColumnMappings.Add("SaleEnd", "SaleEnd");
-                                            bulkCopy.ColumnMappings.Add("DownLoad", "DownLoad");
-                                            bulkCopy.ColumnMappings.Add("ZIPPassWord", "ZIPPassWord");
-                                            bulkCopy.ColumnMappings.Add("DownLoadFile", "DownLoadFile");
-                                            bulkCopy.ColumnMappings.Add("Archive", "Archive");
-                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit1", "BulkPriceLimit1");
-                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit2", "BulkPriceLimit2");
-                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit3", "BulkPriceLimit3");
-                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit4", "BulkPriceLimit4");
-                                            bulkCopy.ColumnMappings.Add("BulkPriceLimit5", "BulkPriceLimit5");
-                                            bulkCopy.ColumnMappings.Add("RoleID", "RoleID");
-                                            bulkCopy.ColumnMappings.Add("SubscriptionPeriod", "SubscriptionPeriod");
-                                            bulkCopy.ColumnMappings.Add("RecurringBilling", "RecurringBilling");
-                                            bulkCopy.ColumnMappings.Add("TaxExempt", "TaxExempt");
-                                            bulkCopy.ColumnMappings.Add("ShipExempt", "ShipExempt");
-                                            bulkCopy.ColumnMappings.Add("InsuredValue", "InsuredValue");
-                                            bulkCopy.ColumnMappings.Add("PublicationStart", "PublicationStart");
-                                            bulkCopy.ColumnMappings.Add("PublicationEnd", "PublicationEnd");
-                                            bulkCopy.ColumnMappings.Add("Status", "Status");
-                                            bulkCopy.ColumnMappings.Add("DonationItem", "DonationItem");
-                                            bulkCopy.ColumnMappings.Add("PayPalSubscription", "PayPalSubscription");
-                                            bulkCopy.ColumnMappings.Add("UseRoleFees", "UseRoleFees");
-                                            bulkCopy.ColumnMappings.Add("RoleExpiryType", "RoleExpiryType");
-                                            bulkCopy.ColumnMappings.Add("ItemDeliveryType", "ItemDeliveryType");
-                                            bulkCopy.ColumnMappings.Add("ReorderPoint", "ReorderPoint");
-                                            bulkCopy.ColumnMappings.Add("OrderQuantValidExpr", "OrderQuantValidExpr");
-                                            bulkCopy.ColumnMappings.Add("ShippingAddress", "ShippingAddress");
-                                            bulkCopy.ColumnMappings.Add("AuctionFinished", "AuctionFinished");
-                                            bulkCopy.ColumnMappings.Add("TaxCode", "TaxCode");
-
-                                            try
-                                            {
-                                                // Write from the source to the destination.
-                                                bulkCopy.WriteToServer(dataTable);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                log.Error("Error error logging", ex);
-                                            }
-                                            finally
-                                            {
-                                                // Close the SqlDataReader. The SqlBulkCopy
-                                                // object is automatically closed at the end
-                                                // of the using block.
-                                                //reader.Close();
-                                            }
-                                        }
-                                    }
-                                    dataTable.Rows.Clear();
-                                    updatedRows += batchLimit;
-
-                                    using (var context = new ImportProductsEntities())
-                                    {
-                                        Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                                        feed.StepImport = currentProduct;
-                                        feed.StepAddToCategories = null;
-                                        feed.StepAddImages = null;
-                                        context.SaveChanges();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                bool isChanged = false;
-                                if (product2.CategoryID != categoryId)
-                                {
-                                    product2.CategoryID = categoryId;
-                                    isChanged = true;
-                                }
-                                if (product2.Category2ID != 0)
-                                {
-                                    product2.Category2ID = 0;
-                                    isChanged = true;
-                                }
-                                if (product2.Category3 != String.Empty)
-                                {
-                                    product2.Category3 = String.Empty;
-                                    isChanged = true;
-                                }
-                                if (product2.ProductName != product.Name)
-                                {
-                                    product2.ProductName = product.Name;
-                                    isChanged = true;
-                                }
-                                if (product2.ProductNumber != product.ProductNumber)
-                                {
-                                    product2.ProductNumber = product.ProductNumber;
-                                    isChanged = true;
-                                }
-                                if (product2.UnitCost != product.UnitCost)
-                                {
-                                    product2.UnitCost = product.UnitCost;
-                                    isChanged = true;
-                                }
-                                if (product2.UnitCost2 != product.UnitCost)
-                                {
-                                    product2.UnitCost2 = product.UnitCost;
-                                    isChanged = true;
-                                }
-                                if (product2.UnitCost3 != product.UnitCost)
-                                {
-                                    product2.UnitCost3 = product.UnitCost;
-                                    isChanged = true;
-                                }
-                                if (product2.UnitCost4 != product.UnitCost)
-                                {
-                                    product2.UnitCost4 = product.UnitCost;
-                                    isChanged = true;
-                                }
-                                if (product2.UnitCost5 != product.UnitCost)
-                                {
-                                    product2.UnitCost5 = product.UnitCost;
-                                    isChanged = true;
-                                }
-                                if (product2.UnitCost6 != product.UnitCost)
-                                {
-                                    product2.UnitCost6 = product.UnitCost;
-                                    isChanged = true;
-                                }
-                                if (product2.Description != product.Description)
-                                {
-                                    product2.Description = product.Description;
-                                    isChanged = true;
-                                }
-                                if (product2.DescriptionHTML != product.DescriptionHTML)
-                                {
-                                    product2.DescriptionHTML = product.DescriptionHTML;
-                                    isChanged = true;
-                                }
-                                if (product2.URL != product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
-                                {
-                                    product2.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
-                                    isChanged = true;
-                                }
-                                if (product2.ProductCost != product.UnitCost)
-                                {
-                                    product2.ProductCost = product.UnitCost;
-                                    isChanged = true;
-                                }
-                                if (product2.ProductImage != (string) product.Images.Element("url"))
-                                {
-                                    product2.ProductImage = (string) product.Images.Element("url");
-                                    isChanged = true;
-                                }
-                                if (product2.OrderQuant != "0")
-                                {
-                                    product2.OrderQuant = "0";
-                                    isChanged = true;
-                                }
-
-                                if (isChanged)
-                                {
-                                    db.SaveChanges();
-                                }
-
-                                updatedRows++;
-                                if (updatedRows >= batchLimit)
-                                {
-                                    using (var context = new ImportProductsEntities())
-                                    {
-                                        Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                                        feed.StepImport = currentProduct;
-                                        feed.StepAddToCategories = null;
-                                        feed.StepAddImages = null;
-                                        context.SaveChanges();
-                                    }
-                                }
-
-#if ADDIMAGES
-                            foreach (var productImage in product2.ProductImages)
-                            {
-                                if (!product1.Images.Elements("url").Any(x => x.Value == productImage.ImageFile))
-                                {
-                                    productImage.ImageFile = String.Empty;
-                                }
-                            }
-                            var oldImages = product2.ProductImages.Where(pi => pi.ImageFile == String.Empty).ToList();
-                            foreach (var oldImage in oldImages)
-                            {
-                                db.ProductImages.Remove(oldImage);
-                            }
-                            foreach (var image in product1.Images.Elements("url"))
-                            {
-                                if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
-                                {
-                                    if (!product2.ProductImages.Any(pi => pi.ImageFile == image.Value))
-                                    {
-                                        ProductImage productImage = new ProductImage();
-                                        productImage.ImageFile = image.Value;
-                                        product2.ProductImages.Add(productImage);
-                                    }
-                                }
-                            }
-
-                            SaveChanges81(db);
-#endif
                             }
                         }
 
@@ -966,8 +699,7 @@ namespace ImportProducts
 
                 currentProduct = 0;
 
-#if !ADVCATS
-UpdateAdvCats:
+            UpdateAdvCats:
                 // Set step for backgroundWorker
                 Form1.activeStep = "Update advanced categories..";
                 bw.ReportProgress(0); // start new step of background process
@@ -977,7 +709,7 @@ UpdateAdvCats:
                 {
                     destinationConnection.Open();
 
-                    currentStep = 0;
+                    int currentStep = 0;
                     foreach (var product in products)
                     {
                         if (currentStep++ < currentProduct)
@@ -1239,8 +971,8 @@ UpdateAdvCats:
                             e.Cancel = true;
                             break;
                         }
-                        else if (bw.WorkerReportsProgress && currentProduct%100 == 0)
-                            bw.ReportProgress((int) (100*currentProduct/countProducts));
+                        else if (bw.WorkerReportsProgress && currentProduct % 100 == 0)
+                            bw.ReportProgress((int)(100 * currentProduct / countProducts));
                     }
                 }
 
@@ -1273,7 +1005,7 @@ UpdateAdvCats:
                         commandDelete.ExecuteNonQuery();
                     }
 
-                    currentStep = 0;
+                    int currentStep = 0;
                     foreach (var product in products)
                     {
                         if (currentStep++ < currentProduct)
@@ -1333,14 +1065,11 @@ UpdateAdvCats:
                     }
                 }
             }
-#endif
-                //    rc = true;
             catch (Exception ex)
             {
                 e.Result = "ERROR:" + ex.Message;
                 log.Error("Error error logging", ex);
             }
-            //return rc;
         }
     }
 }
