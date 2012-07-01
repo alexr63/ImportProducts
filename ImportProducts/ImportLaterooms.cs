@@ -384,31 +384,32 @@ namespace ImportProducts
                             continue;
                         }
 
-                        Console.WriteLine(i + " - " + product.Name); // debug print
+                        var product1 = product;
+                        Console.WriteLine(i + " - " + product1.Name); // debug print
 
                         // create new product record
                         int batchLimit = 500;
                         if (isVendorProductsEmpty ||
                             db.Products.SingleOrDefault(
-                                p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber && p.CreatedByUser == vendorId) == null)
+                                p => p.CategoryID == categoryId && p.ProductNumber == product1.ProductNumber && p.CreatedByUser == vendorId) == null)
                         {
                             DataRow dataRow = dataTable.NewRow();
                             dataRow["CategoryID"] = categoryId;
                             dataRow["Category2ID"] = 0;
                             dataRow["Category3"] = String.Empty;
-                            dataRow["ProductName"] = product.Name;
-                            dataRow["ProductNumber"] = product.ProductNumber;
-                            dataRow["UnitCost"] = product.UnitCost;
-                            dataRow["UnitCost2"] = product.UnitCost;
-                            dataRow["UnitCost3"] = product.UnitCost;
-                            dataRow["UnitCost4"] = product.UnitCost;
-                            dataRow["UnitCost5"] = product.UnitCost;
-                            dataRow["UnitCost6"] = product.UnitCost;
-                            dataRow["Description"] = product.Description;
-                            dataRow["DescriptionHTML"] = product.DescriptionHTML;
-                            dataRow["URL"] = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
-                            dataRow["ProductCost"] = product.UnitCost;
-                            dataRow["ProductImage"] = (string) product.Images.Element("url");
+                            dataRow["ProductName"] = product1.Name;
+                            dataRow["ProductNumber"] = product1.ProductNumber;
+                            dataRow["UnitCost"] = product1.UnitCost;
+                            dataRow["UnitCost2"] = product1.UnitCost;
+                            dataRow["UnitCost3"] = product1.UnitCost;
+                            dataRow["UnitCost4"] = product1.UnitCost;
+                            dataRow["UnitCost5"] = product1.UnitCost;
+                            dataRow["UnitCost6"] = product1.UnitCost;
+                            dataRow["Description"] = product1.Description;
+                            dataRow["DescriptionHTML"] = product1.DescriptionHTML;
+                            dataRow["URL"] = product1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                            dataRow["ProductCost"] = product1.UnitCost;
+                            dataRow["ProductImage"] = (string) product1.Images.Element("url");
                             dataRow["OrderQuant"] = "0";
                             dataRow["CreatedByUser"] = vendorId;
                             dataRow["DateCreated"] = DateTime.Now;
@@ -569,7 +570,7 @@ namespace ImportProducts
                         {
                             var product2 =
                                 db.Products.SingleOrDefault(
-                                    p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber && p.CreatedByUser == vendorId);
+                                    p => p.CategoryID == categoryId && p.ProductNumber == product1.ProductNumber && p.CreatedByUser == vendorId);
                             // no need to check for null vallue because of previous if
                             bool isChanged = false;
                             if (product2.CategoryID != categoryId)
@@ -587,69 +588,69 @@ namespace ImportProducts
                                 product2.Category3 = String.Empty;
                                 isChanged = true;
                             }
-                            if (product2.ProductName != product.Name)
+                            if (product2.ProductName != product1.Name)
                             {
-                                product2.ProductName = product.Name;
+                                product2.ProductName = product1.Name;
                                 isChanged = true;
                             }
-                            if (product2.ProductNumber != product.ProductNumber)
+                            if (product2.ProductNumber != product1.ProductNumber)
                             {
-                                product2.ProductNumber = product.ProductNumber;
+                                product2.ProductNumber = product1.ProductNumber;
                                 isChanged = true;
                             }
-                            if (product2.UnitCost != product.UnitCost)
+                            if (product2.UnitCost != product1.UnitCost)
                             {
-                                product2.UnitCost = product.UnitCost;
+                                product2.UnitCost = product1.UnitCost;
                                 isChanged = true;
                             }
-                            if (product2.UnitCost2 != product.UnitCost)
+                            if (product2.UnitCost2 != product1.UnitCost)
                             {
-                                product2.UnitCost2 = product.UnitCost;
+                                product2.UnitCost2 = product1.UnitCost;
                                 isChanged = true;
                             }
-                            if (product2.UnitCost3 != product.UnitCost)
+                            if (product2.UnitCost3 != product1.UnitCost)
                             {
-                                product2.UnitCost3 = product.UnitCost;
+                                product2.UnitCost3 = product1.UnitCost;
                                 isChanged = true;
                             }
-                            if (product2.UnitCost4 != product.UnitCost)
+                            if (product2.UnitCost4 != product1.UnitCost)
                             {
-                                product2.UnitCost4 = product.UnitCost;
+                                product2.UnitCost4 = product1.UnitCost;
                                 isChanged = true;
                             }
-                            if (product2.UnitCost5 != product.UnitCost)
+                            if (product2.UnitCost5 != product1.UnitCost)
                             {
-                                product2.UnitCost5 = product.UnitCost;
+                                product2.UnitCost5 = product1.UnitCost;
                                 isChanged = true;
                             }
-                            if (product2.UnitCost6 != product.UnitCost)
+                            if (product2.UnitCost6 != product1.UnitCost)
                             {
-                                product2.UnitCost6 = product.UnitCost;
+                                product2.UnitCost6 = product1.UnitCost;
                                 isChanged = true;
                             }
-                            if (product2.Description != product.Description)
+                            if (product2.Description != product1.Description)
                             {
-                                product2.Description = product.Description;
+                                product2.Description = product1.Description;
                                 isChanged = true;
                             }
-                            if (product2.DescriptionHTML != product.DescriptionHTML)
+                            if (product2.DescriptionHTML != product1.DescriptionHTML)
                             {
-                                product2.DescriptionHTML = product.DescriptionHTML;
+                                product2.DescriptionHTML = product1.DescriptionHTML;
                                 isChanged = true;
                             }
-                            if (product2.URL != product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
+                            if (product2.URL != product1.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
                             {
-                                product2.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                                product2.URL = product1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
                                 isChanged = true;
                             }
-                            if (product2.ProductCost != product.UnitCost)
+                            if (product2.ProductCost != product1.UnitCost)
                             {
-                                product2.ProductCost = product.UnitCost;
+                                product2.ProductCost = product1.UnitCost;
                                 isChanged = true;
                             }
-                            if (product2.ProductImage != (string) product.Images.Element("url"))
+                            if (product2.ProductImage != (string) product1.Images.Element("url"))
                             {
-                                product2.ProductImage = (string) product.Images.Element("url");
+                                product2.ProductImage = (string) product1.Images.Element("url");
                                 isChanged = true;
                             }
                             if (product2.OrderQuant != "0")
@@ -699,10 +700,10 @@ namespace ImportProducts
                             continue;
                         }
 
-                        Console.WriteLine(i + " - " + product.Name); // debug print
+                        var product1 = product;
+                        Console.WriteLine(i + " - " + product1.Name); // debug print
 
                         // create advanced categories
-                        var product1 = product;
                         string hotelCity = product1.City;
                         if (product1.City.Length > 50)
                         {
@@ -784,7 +785,7 @@ namespace ImportProducts
                                                     {
                                                         AdvCatOrder = maxOrder + 1,
                                                         PortalID = portalId,
-                                                        AdvCatName = product.Country,
+                                                        AdvCatName = product1.Country,
                                                         IsVisible = true,
                                                         DisableLink = false,
                                                         Url = String.Empty,
@@ -826,7 +827,7 @@ namespace ImportProducts
                                                    {
                                                        AdvCatOrder = maxOrder + 1,
                                                        PortalID = portalId,
-                                                       AdvCatName = product.County,
+                                                       AdvCatName = product1.County,
                                                        IsVisible = true,
                                                        ParentId = parentID.Value,
                                                        DisableLink = false,
@@ -890,7 +891,7 @@ namespace ImportProducts
                         // add product to advanced categories
                         var tempProduct =
                             db.Products.SingleOrDefault(
-                                p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
+                                p => p.CategoryID == categoryId && p.ProductNumber == product1.ProductNumber);
                         if (tempProduct == null)
                         {
                             continue;
@@ -973,11 +974,12 @@ namespace ImportProducts
                             continue;
                         }
 
-                        Console.WriteLine(i + " - " + product.Name);
+                        var product1 = product;
+                        Console.WriteLine(i + " - " + product1.Name);
 
                         var tempProduct =
                             db.Products.SingleOrDefault(
-                                p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
+                                p => p.CategoryID == categoryId && p.ProductNumber == product1.ProductNumber);
                         if (tempProduct == null)
                         {
                             i++;
@@ -997,7 +999,7 @@ namespace ImportProducts
                         commandDelete.Parameters["@ProductID"].Value = productId;
                         commandDelete.ExecuteNonQuery();
 
-                        foreach (var image in product.Images.Elements("url"))
+                        foreach (var image in product1.Images.Elements("url"))
                         {
                             if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
                             {
