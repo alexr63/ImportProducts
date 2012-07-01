@@ -349,23 +349,22 @@ namespace ImportProducts
             // Set step for backgroundWorker
             Form1.activeStep = "Import records..";
             bw.ReportProgress(0); // start new step of background process
-            int countProducts = products.Count();
+            int productCount = products.Count();
             try
             {
-                int currentProduct = 0;
-                int updatedRows = 0;
+                int initialStep = 0;
                 if (stepImport.HasValue)
                 {
-                    currentProduct = stepImport.Value;
+                    initialStep = stepImport.Value;
                 }
                 else if (stepAddToCategories.HasValue)
                 {
-                    currentProduct = stepAddToCategories.Value;
+                    initialStep = stepAddToCategories.Value;
                     goto UpdateAdvCats;
                 }
                 else if (stepAddImages.HasValue)
                 {
-                    currentProduct = stepAddImages.Value;
+                    initialStep = stepAddImages.Value;
                     goto UpdateImages;
                 }
 
@@ -376,16 +375,16 @@ namespace ImportProducts
 
                     bool isVendorProductsEmpty = db.Products.Count(p => p.CreatedByUser == vendorId) == 0;
 
-                    int currentStep = 0;
+                    int i = 0;
                     foreach (var product in products)
                     {
-                        if (currentStep++ < currentProduct)
+                        if (i < initialStep)
                         {
-                            currentProduct++;
+                            i++;
                             continue;
                         }
 
-                        Console.WriteLine(currentProduct.ToString() + " - " + product.Name); // debug print
+                        Console.WriteLine(i + " - " + product.Name); // debug print
 
                         // create new product record
                         int batchLimit = 500;
@@ -464,7 +463,7 @@ namespace ImportProducts
 
                             dataTable.Rows.Add(dataRow);
 
-                            if (dataTable.Rows.Count >= batchLimit)
+                            if (dataTable.Rows.Count >= batchLimit || i == productCount - 1)
                             {
                                 // Set up the bulk copy object. 
                                 // Note that the column positions in the source
@@ -561,17 +560,9 @@ namespace ImportProducts
                                         //reader.Close();
                                     }
                                 }
-                            }
-                            dataTable.Rows.Clear();
-                            updatedRows = +batchLimit;
-
-                            using (var context = new ImportProductsEntities())
-                            {
-                                Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                                feed.StepImport = currentProduct;
-                                feed.StepAddToCategories = null;
-                                feed.StepAddImages = null;
-                                context.SaveChanges();
+                                i += dataTable.Rows.Count;
+                                dataTable.Rows.Clear();
+                                UpdateSteps(stepImport: i);
                             }
                         }
                         else
@@ -672,33 +663,23 @@ namespace ImportProducts
                                 db.SaveChanges();
                             }
 
-                            updatedRows++;
-                            if (updatedRows >= batchLimit)
-                            {
-                                using (var context = new ImportProductsEntities())
-                                {
-                                    Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                                    feed.StepImport = currentProduct;
-                                    feed.StepAddToCategories = null;
-                                    feed.StepAddImages = null;
-                                    context.SaveChanges();
-                                }
-                            }
+                            i++;
+                            UpdateSteps(stepImport: i);
                         }
 
-                        currentProduct++;
                         if (bw.CancellationPending)
                         {
                             e.Cancel = true;
                             break;
                         }
-                        else if (bw.WorkerReportsProgress && currentProduct%100 == 0)
-                            bw.ReportProgress((int) (100*currentProduct/countProducts));
-
+                        else if (bw.WorkerReportsProgress && i % 100 == 0)
+                        {
+                            bw.ReportProgress((int) (100*i/productCount));
+                        }
                     }
                 }
 
-                currentProduct = 0;
+                initialStep = 0;
 
             UpdateAdvCats:
                 // Set step for backgroundWorker
@@ -710,15 +691,15 @@ namespace ImportProducts
                 {
                     destinationConnection.Open();
 
-                    int currentStep = 0;
+                    int i = 0;
                     foreach (var product in products)
                     {
-                        if (currentStep++ < currentProduct)
+                        if (i++ < initialStep)
                         {
                             continue;
                         }
 
-                        Console.WriteLine(currentProduct.ToString() + " - " + product.Name); // debug print
+                        Console.WriteLine(i + " - " + product.Name); // debug print
 
                         // create advanced categories
                         var product1 = product;
@@ -957,27 +938,22 @@ namespace ImportProducts
                             commandAdd.ExecuteNonQuery();
                         }
 
-                        using (var context = new ImportProductsEntities())
-                        {
-                            Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                            feed.StepImport = null;
-                            feed.StepAddToCategories = currentProduct;
-                            feed.StepAddImages = null;
-                            context.SaveChanges();
-                        }
+                        i++;
+                        UpdateSteps(stepAddToCategories: i);
 
-                        currentProduct++;
                         if (bw.CancellationPending)
                         {
                             e.Cancel = true;
                             break;
                         }
-                        else if (bw.WorkerReportsProgress && currentProduct % 100 == 0)
-                            bw.ReportProgress((int)(100 * currentProduct / countProducts));
+                        else if (bw.WorkerReportsProgress && i % 100 == 0)
+                        {
+                            bw.ReportProgress((int) (100*i/productCount));
+                        }
                     }
                 }
 
-                currentProduct = 0;
+                initialStep = 0;
 
             UpdateImages:
                 // Set step for backgroundWorker
@@ -989,42 +965,37 @@ namespace ImportProducts
                 {
                     destinationConnection.Open();
 
-                    while (db.ProductImages.Count(pi => pi.Products.CreatedByUser == vendorId) > 0)
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        sb.AppendLine("DELETE TOP (500)");
-                        sb.AppendLine("FROM         CAT_ProductImages");
-                        sb.AppendLine("FROM         CAT_ProductImages INNER JOIN");
-                        sb.AppendLine("CAT_Products ON CAT_ProductImages.ProductID = CAT_Products.ProductID");
-                        sb.AppendLine("WHERE     (CAT_Products.CreatedByUser = @CreatedByUser)");
-                        SqlCommand commandDelete =
-                            new SqlCommand(
-                                sb.ToString(),
-                                destinationConnection);
-                        commandDelete.Parameters.Add("@CreatedByUser", SqlDbType.Int);
-                        commandDelete.Parameters["@CreatedByUser"].Value = vendorId;
-                        commandDelete.ExecuteNonQuery();
-                    }
-
-                    int currentStep = 0;
+                    int i = 0;
                     foreach (var product in products)
                     {
-                        if (currentStep++ < currentProduct)
+                        if (i++ < initialStep)
                         {
                             continue;
                         }
 
-                        Console.WriteLine(currentProduct.ToString() + " - " + product.Name);
+                        Console.WriteLine(i + " - " + product.Name);
 
                         var tempProduct =
                             db.Products.SingleOrDefault(
                                 p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
                         if (tempProduct == null)
                         {
-                            currentProduct++;
+                            i++;
                             continue;
                         }
                         var productId = tempProduct.ProductID;
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("DELETE");
+                        sb.AppendLine("FROM         CAT_ProductImages");
+                        sb.AppendLine("WHERE     ProductID = @ProductID");
+                        SqlCommand commandDelete =
+                            new SqlCommand(
+                                sb.ToString(),
+                                destinationConnection);
+                        commandDelete.Parameters.Add("@ProductID", SqlDbType.Int);
+                        commandDelete.Parameters["@ProductID"].Value = productId;
+                        commandDelete.ExecuteNonQuery();
 
                         foreach (var image in product.Images.Elements("url"))
                         {
@@ -1046,30 +1017,41 @@ namespace ImportProducts
                             }
                         }
 
-                        using (var context = new ImportProductsEntities())
-                        {
-                            Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                            feed.StepImport = null;
-                            feed.StepAddToCategories = null;
-                            feed.StepAddImages = currentProduct;
-                            context.SaveChanges();
-                        }
+                        initialStep++;
+                        UpdateSteps(stepAddImages: i);
 
-                        currentProduct++;
                         if (bw.CancellationPending)
                         {
                             e.Cancel = true;
                             break;
                         }
-                        else if (bw.WorkerReportsProgress && currentProduct % 100 == 0)
-                            bw.ReportProgress((int)(100 * currentProduct / countProducts));
+                        else if (bw.WorkerReportsProgress && i % 100 == 0)
+                        {
+                            bw.ReportProgress((int) (100*i/productCount));
+                        }
                     }
+                }
+                if (!e.Cancel)
+                {
+                    UpdateSteps();
                 }
             }
             catch (Exception ex)
             {
                 e.Result = "ERROR:" + ex.Message;
                 log.Error("Error error logging", ex);
+            }
+        }
+
+        private static void UpdateSteps(int? stepImport = null, int? stepAddToCategories = null, int? stepAddImages = null)
+        {
+            using (var context = new ImportProductsEntities())
+            {
+                Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
+                feed.StepImport = stepImport;
+                feed.StepAddToCategories = stepAddToCategories;
+                feed.StepAddImages = stepAddImages;
+                context.SaveChanges();
             }
         }
     }
