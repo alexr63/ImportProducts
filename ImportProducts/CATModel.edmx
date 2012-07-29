@@ -751,7 +751,7 @@
     </Options>
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
-      <Diagram Name="CATModel" ZoomLevel="39">
+      <Diagram Name="CATModel" ZoomLevel="111">
         <EntityTypeShape EntityType="SelectedHotelsModel.Product" Width="1.5" PointX="1.375" PointY="0.625" Height="14.672180989583332" IsExpanded="true" />
         <EntityTypeShape EntityType="SelectedHotelsModel.ProductImage" Width="1.5" PointX="3.625" PointY="6.75" Height="2.5571907552083317" />
         <AssociationConnector Association="SelectedHotelsModel.FK_CAT_ProductImages_Products" >

@@ -538,16 +538,40 @@ namespace ImportProducts
         {
             try
             {
+#if SQLDELETION
                 using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                 using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
                 {
                     destinationConnection.Open();
-                    SqlCommand commandDelete =
-                        new SqlCommand(
-                            "DELETE FROM CAT_AdvCats WHERE (AdvCatID NOT IN (SELECT AdvCatID FROM CAT_AdvCatProducts))",
-                            destinationConnection);
-                    commandDelete.ExecuteNonQuery();
+                    int rowsAffected = 500;
+                    while (rowsAffected > 0)
+                    {
+                        SqlCommand commandDelete =
+                            new SqlCommand(
+                                "DELETE TOP(500) FROM CAT_AdvCats WHERE (AdvCatID NOT IN (SELECT AdvCatID FROM CAT_AdvCatProducts)) AND (AdvCatID NOT IN (SELECT ParentId FROM CAT_AdvCatProducts))",
+                                destinationConnection);
+                        rowsAffected = commandDelete.ExecuteNonQuery();
+                    }
                 }
+#else
+               using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+               {
+                   bool done = false;
+                   while (!done)
+                   {
+                       var advCats = db.AdvCats.Where(ac => !ac.CAT_AdvCatProducts.Any() && !ac.AdvCats1.Any());
+                       done = advCats.Count() == 0;
+                       if (!done)
+                       {
+                           foreach (var advCat in advCats.ToList())
+                           {
+                               db.AdvCats.Remove(advCat);
+                               db.SaveChanges();
+                           }
+                       }
+                   }
+               }
+#endif
             }
             catch (Exception ex)
             {
