@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="merchantProductFeed" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="merchantProductFeed" msdata:IsDataSet="true" msdata:Locale="en-US">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="merchant">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="prod" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="pId" type="xs:string" minOccurs="0" msdata:Ordinal="0" />
+                    <xs:element name="isbn" type="xs:string" minOccurs="0" msdata:Ordinal="1" />
+                    <xs:element name="text" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="name" type="xs:string" minOccurs="0" />
+                          <xs:element name="desc" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="uri" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="awTrack" type="xs:string" minOccurs="0" />
+                          <xs:element name="awThumb" type="xs:string" minOccurs="0" />
+                          <xs:element name="awImage" type="xs:string" minOccurs="0" />
+                          <xs:element name="mThumb" type="xs:string" minOccurs="0" />
+                          <xs:element name="mLink" type="xs:string" minOccurs="0" />
+                          <xs:element name="mImage" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="price" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="buynow" type="xs:string" minOccurs="0" msdata:Ordinal="0" />
+                          <xs:element name="store" type="xs:string" minOccurs="0" msdata:Ordinal="1" />
+                          <xs:element name="rrp" type="xs:string" minOccurs="0" msdata:Ordinal="2" />
+                          <xs:element name="delivery" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
+                        </xs:sequence>
+                        <xs:attribute name="curr" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="cat" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="awCatId" type="xs:string" minOccurs="0" />
+                          <xs:element name="awCat" type="xs:string" minOccurs="0" />
+                          <xs:element name="mCat" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="brand" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
+                    <xs:element name="valFrom" type="xs:string" minOccurs="0" msdata:Ordinal="4" />
+                    <xs:element name="valTo" type="xs:string" minOccurs="0" msdata:Ordinal="5" />
+                  </xs:sequence>
+                  <xs:attribute name="id" type="xs:string" />
+                  <xs:attribute name="pre_order" type="xs:string" />
+                  <xs:attribute name="web_offer" type="xs:string" />
+                  <xs:attribute name="in_stock" type="xs:string" />
+                  <xs:attribute name="stock_quantity" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" />
+            <xs:attribute name="name" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

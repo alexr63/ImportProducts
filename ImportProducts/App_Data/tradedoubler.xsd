@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="products" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="products" msdata:IsDataSet="true" msdata:Locale="en-US">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="product">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="name" type="xs:string" minOccurs="0" />
+              <xs:element name="productUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="imageUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="description" type="xs:string" minOccurs="0" />
+              <xs:element name="price" type="xs:string" minOccurs="0" />
+              <xs:element name="currency" type="xs:string" minOccurs="0" />
+              <xs:element name="TDProductId" type="xs:string" minOccurs="0" />
+              <xs:element name="TDCategoryID" type="xs:string" minOccurs="0" />
+              <xs:element name="TDCategoryName" type="xs:string" minOccurs="0" />
+              <xs:element name="merchantCategoryName" type="xs:string" minOccurs="0" />
+              <xs:element name="sku" type="xs:string" minOccurs="0" />
+              <xs:element name="shortDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="promoText" type="xs:string" minOccurs="0" />
+              <xs:element name="previousPrice" type="xs:string" minOccurs="0" />
+              <xs:element name="warranty" type="xs:string" minOccurs="0" />
+              <xs:element name="availability" type="xs:string" minOccurs="0" />
+              <xs:element name="inStock" type="xs:string" minOccurs="0" />
+              <xs:element name="shippingCost" type="xs:string" minOccurs="0" />
+              <xs:element name="deliveryTime" type="xs:string" minOccurs="0" />
+              <xs:element name="weight" type="xs:string" minOccurs="0" />
+              <xs:element name="size" type="xs:string" minOccurs="0" />
+              <xs:element name="brand" type="xs:string" minOccurs="0" />
+              <xs:element name="model" type="xs:string" minOccurs="0" />
+              <xs:element name="ean" type="xs:string" minOccurs="0" />
+              <xs:element name="upc" type="xs:string" minOccurs="0" />
+              <xs:element name="isbn" type="xs:string" minOccurs="0" />
+              <xs:element name="condition" type="xs:string" minOccurs="0" />
+              <xs:element name="mpn" type="xs:string" minOccurs="0" />
+              <xs:element name="techSpecs" type="xs:string" minOccurs="0" />
+              <xs:element name="manufacturer" type="xs:string" minOccurs="0" />
+              <xs:element name="programName" type="xs:string" minOccurs="0" />
+              <xs:element name="programLogoPath" type="xs:string" minOccurs="0" />
+              <xs:element name="programId" type="xs:string" minOccurs="0" />
+              <xs:element name="fields" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="address" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode" type="xs:string" minOccurs="0" />
+                    <xs:element name="city" type="xs:string" minOccurs="0" />
+                    <xs:element name="Confidence" type="xs:string" minOccurs="0" />
+                    <xs:element name="country" type="xs:string" minOccurs="0" />
+                    <xs:element name="currency" type="xs:string" minOccurs="0" />
+                    <xs:element name="ExpediaID" type="xs:string" minOccurs="0" />
+                    <xs:element name="highRate" type="xs:string" minOccurs="0" />
+                    <xs:element name="latitude" type="xs:string" minOccurs="0" />
+                    <xs:element name="longitude" type="xs:string" minOccurs="0" />
+                    <xs:element name="lowRate" type="xs:string" minOccurs="0" />
+                    <xs:element name="postalcode" type="xs:string" minOccurs="0" />
+                    <xs:element name="stateprovince" type="xs:string" minOccurs="0" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

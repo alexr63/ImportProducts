@@ -8,6 +8,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Threading;
+using System.Xml.Schema;
 using Ionic.Zip;
 
 namespace ImportProducts
@@ -150,6 +151,24 @@ namespace ImportProducts
                                         ExtractExistingFileAction.OverwriteSilently);
                     _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, zipEntry.FileName);
                 }
+            }
+
+            XmlSchemaSet schemas = new XmlSchemaSet();
+            schemas.Add("", "datafeed.xsd");
+            Form1.activeStep = "Validating inpout..";
+            bw.ReportProgress(0); // start new step of background process
+            XDocument xDoc = XDocument.Load(_URL);
+            bool errors = false;
+            xDoc.Validate(schemas, (o, e2) =>
+            {
+                e.Result = "ERROR:" + e2.Message;
+                log.Error(e2.Message);
+                errors = true;
+            });
+            if (errors)
+            {
+                e.Cancel = true;
+                return;
             }
 
             // show progress & catch Cancel

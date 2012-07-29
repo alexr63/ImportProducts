@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
 
 namespace ImportProducts
 {
@@ -131,6 +132,24 @@ namespace ImportProducts
              if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;
 
             _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
+
+            XmlSchemaSet schemas = new XmlSchemaSet();
+            schemas.Add("", "tradedoubler.xsd");
+            Form1.activeStep = "Validating inpout..";
+            bw.ReportProgress(0); // start new step of background process
+            XDocument xDoc = XDocument.Load(_URL);
+            bool errors = false;
+            xDoc.Validate(schemas, (o, e2) =>
+            {
+                e.Result = "ERROR:" + e2.Message;
+                log.Error(e2.Message);
+                errors = true;
+            });
+            if (errors)
+            {
+                e.Cancel = true;
+                return;
+            }
 
             // Set step for backgroundWorker
             Form1.activeStep = "Import records..";
