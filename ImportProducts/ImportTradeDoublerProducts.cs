@@ -226,9 +226,23 @@ namespace ImportProducts
 
                         if (!String.IsNullOrEmpty(product.Category))
                         {
-                            var advCatCategory =
-                                db.AdvCats.SingleOrDefault(
-                                    ac => ac.PortalID == portalId && ac.AdvCatName == product.Category && ac.Level == level);
+                            AdvCat advCatCategory;
+                            if (parentID.HasValue)
+                            {
+                                advCatCategory =
+                                    db.AdvCats.SingleOrDefault(
+                                        ac =>
+                                        ac.PortalID == portalId && ac.AdvCatName == product.Category &&
+                                        ac.Level == level && ac.ParentId == parentID.Value);
+                            }
+                            else
+                            {
+                                advCatCategory =
+                                    db.AdvCats.SingleOrDefault(
+                                        ac =>
+                                        ac.PortalID == portalId && ac.AdvCatName == product.Category &&
+                                        ac.Level == level);
+                            }
                             if (advCatCategory == null)
                             {
                                 if (db.AdvCats.Count() > 0)
