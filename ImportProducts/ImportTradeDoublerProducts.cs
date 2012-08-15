@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -120,18 +121,21 @@ namespace ImportProducts
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
 
-            string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
-            if (File.Exists(xmlFileName))
+            if (!File.Exists(_URL))
             {
-                File.Delete(xmlFileName);
+                string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
+                if (File.Exists(xmlFileName))
+                {
+                    File.Delete(xmlFileName);
+                }
+                // inside function display progressbar
+                SaveFileFromURL(_URL, xmlFileName, 60, bw, e);
+
+                // exit if user cancel during saving file or error
+                if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;
+
+                _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
             }
-            // inside function display progressbar
-            SaveFileFromURL(_URL, xmlFileName, 60,bw,e);
-
-            // exit if user cancel during saving file or error
-             if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;
-
-            _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
 
             XmlSchemaSet schemas = new XmlSchemaSet();
             schemas.Add("", "tradedoubler.xsd");
@@ -166,9 +170,39 @@ namespace ImportProducts
                     UnitCost = (decimal)el.Element("price"),
                     Description = (string)el.Element("description"),
                     DescriptionHTML = (string)el.Element("description"),
-                    URL = (string)el.Element("productUrl")
+                    URL = (string)el.Element("productUrl"),
+                    Country = (string)el.Element("fields").Element("country"),
+                    City = (string)el.Element("fields").Element("city")
                 };
 
+            foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
+            {
+                RegionInfo ri = null;
+                try
+                {
+                    ri = new RegionInfo(ci.Name);
+                }
+                catch
+                {
+                    // If a RegionInfo object could not be created we don't want to use the CultureInfo
+                    // for the country list.
+                    continue;
+                }
+                if (ri.EnglishName == countryFilter)
+                {
+                    countryFilter = ri.TwoLetterISORegionName;
+                    break;
+                }
+            }
+            if (!String.IsNullOrEmpty(countryFilter))
+            {
+                products = products.Where(p => p.Country == countryFilter);
+            }
+
+            if (!String.IsNullOrEmpty(cityFilter))
+            {
+                products = products.Where(p => p.City == cityFilter);
+            }
 
             long countProducts = products.Count();
             long currentProduct = 0;
@@ -183,7 +217,8 @@ namespace ImportProducts
 
                         int? parentID = null;
                         int? catRootID = null;
-                        int? catCategoryID = null;
+                        int? catCountryID = null;
+                        int? catCityID = null;
                         int level = 0;
                         int maxOrder = 0;
 
@@ -224,36 +259,38 @@ namespace ImportProducts
                             level++;
                         }
 
-                        if (!String.IsNullOrEmpty(product.Category))
+                        var regionInfo = new RegionInfo(product.Country);
+                        var countryName = regionInfo.EnglishName;
+                        if (!String.IsNullOrEmpty(countryName))
                         {
-                            AdvCat advCatCategory;
+                            AdvCat advCatCountry;
                             if (parentID.HasValue)
                             {
-                                advCatCategory =
+                                advCatCountry =
                                     db.AdvCats.SingleOrDefault(
                                         ac =>
-                                        ac.PortalID == portalId && ac.AdvCatName == product.Category &&
+                                        ac.PortalID == portalId && ac.AdvCatName == countryName &&
                                         ac.Level == level && ac.ParentId == parentID.Value);
                             }
                             else
                             {
-                                advCatCategory =
+                                advCatCountry =
                                     db.AdvCats.SingleOrDefault(
                                         ac =>
-                                        ac.PortalID == portalId && ac.AdvCatName == product.Category &&
+                                        ac.PortalID == portalId && ac.AdvCatName == countryName &&
                                         ac.Level == level);
                             }
-                            if (advCatCategory == null)
+                            if (advCatCountry == null)
                             {
                                 if (db.AdvCats.Count() > 0)
                                 {
                                     maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
                                 }
-                                advCatCategory = new AdvCat
+                                advCatCountry = new AdvCat
                                 {
                                     AdvCatOrder = maxOrder + 1,
                                     PortalID = portalId,
-                                    AdvCatName = product.Category,
+                                    AdvCatName = countryName,
                                     IsVisible = true,
                                     DisableLink = false,
                                     Url = String.Empty,
@@ -265,13 +302,72 @@ namespace ImportProducts
                                     Level = level,
                                     AdvCatImportID = String.Empty
                                 };
-                                db.AdvCats.Add(advCatCategory);
+                                if (parentID.HasValue)
+                                {
+                                    advCatCountry.ParentId = parentID.Value;
+                                }
+                                db.AdvCats.Add(advCatCountry);
                                 db.SaveChanges();
 
-                                Common.AddAdvCatDefaultPermissions(db, advCatCategory.AdvCatID);
+                                Common.AddAdvCatDefaultPermissions(db, advCatCountry.AdvCatID);
                             }
-                            parentID = advCatCategory.AdvCatID;
-                            catCategoryID = advCatCategory.AdvCatID;
+                            parentID = advCatCountry.AdvCatID;
+                            catCountryID = advCatCountry.AdvCatID;
+                            level++;
+                        }
+
+                        if (!String.IsNullOrEmpty(product.City))
+                        {
+                            AdvCat advCatCity;
+                            if (parentID.HasValue)
+                            {
+                                advCatCity =
+                                    db.AdvCats.SingleOrDefault(
+                                        ac =>
+                                        ac.PortalID == portalId && ac.AdvCatName == product.City &&
+                                        ac.Level == level && ac.ParentId == parentID.Value);
+                            }
+                            else
+                            {
+                                advCatCity =
+                                    db.AdvCats.SingleOrDefault(
+                                        ac =>
+                                        ac.PortalID == portalId && ac.AdvCatName == product.City &&
+                                        ac.Level == level);
+                            }
+                            if (advCatCity == null)
+                            {
+                                if (db.AdvCats.Count() > 0)
+                                {
+                                    maxOrder = db.AdvCats.Max(ac => ac.AdvCatOrder);
+                                }
+                                advCatCity = new AdvCat
+                                {
+                                    AdvCatOrder = maxOrder + 1,
+                                    PortalID = portalId,
+                                    AdvCatName = product.City,
+                                    IsVisible = true,
+                                    DisableLink = false,
+                                    Url = String.Empty,
+                                    Title = String.Empty,
+                                    Description = String.Empty,
+                                    KeyWords = String.Empty,
+                                    IsDeleted = false,
+                                    IconFile = String.Empty,
+                                    Level = level,
+                                    AdvCatImportID = String.Empty
+                                };
+                                if (parentID.HasValue)
+                                {
+                                    advCatCity.ParentId = parentID.Value;
+                                }
+                                db.AdvCats.Add(advCatCity);
+                                db.SaveChanges();
+
+                                Common.AddAdvCatDefaultPermissions(db, advCatCity.AdvCatID);
+                            }
+                            parentID = advCatCity.AdvCatID;
+                            catCityID = advCatCity.AdvCatID;
                             level++;
                         }
 
@@ -340,11 +436,22 @@ namespace ImportProducts
                             db.AdvCatProducts.Add(advCatProduct);
                             db.SaveChanges();
                         }
-                        if (catCategoryID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCategoryID.Value && act.ProductID == product2.ProductID) == null)
+                        if (catCountryID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCountryID.Value && act.ProductID == product2.ProductID) == null)
                         {
                             AdvCatProduct advCatProduct = new AdvCatProduct
                             {
-                                AdvCatID = catCategoryID.Value,
+                                AdvCatID = catCountryID.Value,
+                                ProductID = product2.ProductID,
+                                AddAdvCatToProductDisplay = false
+                            };
+                            db.AdvCatProducts.Add(advCatProduct);
+                            db.SaveChanges();
+                        }
+                        if (catCityID.HasValue && db.AdvCatProducts.SingleOrDefault(act => act.AdvCatID == catCityID.Value && act.ProductID == product2.ProductID) == null)
+                        {
+                            AdvCatProduct advCatProduct = new AdvCatProduct
+                            {
+                                AdvCatID = catCityID.Value,
                                 ProductID = product2.ProductID,
                                 AddAdvCatToProductDisplay = false
                             };
