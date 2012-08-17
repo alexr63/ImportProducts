@@ -1,0 +1,8 @@
+﻿Changes to Catalook tables:
+
+1. ALTER TABLE [dbo].[CAT_AdvCatProducts] ADD CONSTRAINT [FK_CAT_AdvCatProducts_CAT_Products] FOREIGN KEY ([ProductID]) REFERENCES [dbo].[CAT_Products] ([ProductID]) ON DELETE CASCADE
+
+2. CREATE UNIQUE NONCLUSTERED INDEX [IX_CAT_AdvCats] ON [dbo].[CAT_AdvCats] ([AdvCatName], [ParentId], [PortalID])
+
+3. CREATE UNIQUE NONCLUSTERED INDEX [IX_CAT_Products_1] ON [dbo].[CAT_Products] ([CategoryID], [ProductNumber], [CreatedByUser])
+

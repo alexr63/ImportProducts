@@ -371,7 +371,7 @@ namespace ImportProducts
                             level++;
                         }
 
-                        var product2 = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber);
+                        var product2 = db.Products.SingleOrDefault(p => p.CategoryID == categoryId && p.ProductNumber == product.ProductNumber && p.CreatedByUser == vendorId);
                         if (product2 == null)
                         {
                             product2 = new Product

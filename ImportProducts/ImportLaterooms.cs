@@ -911,7 +911,7 @@ namespace ImportProducts
                         // add product to advanced categories
                         var tempProduct =
                             db.Products.SingleOrDefault(
-                                p => p.CategoryID == categoryId && p.ProductNumber == xmlProduct1.ProductNumber);
+                                p => p.CategoryID == categoryId && p.ProductNumber == xmlProduct1.ProductNumber && p.CreatedByUser == vendorId);
                         if (tempProduct == null)
                         {
                             continue;
@@ -1000,7 +1000,7 @@ namespace ImportProducts
 
                         var tempProduct =
                             db.Products.SingleOrDefault(
-                                p => p.CategoryID == categoryId && p.ProductNumber == xmlProduct1.ProductNumber);
+                                p => p.CategoryID == categoryId && p.ProductNumber == xmlProduct1.ProductNumber && p.CreatedByUser == vendorId);
                         if (tempProduct == null)
                         {
                             i++;

@@ -156,7 +156,9 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ImportProductsModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="App.Config" />
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
     <EntityDeploy Include="CATModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>CATModel.Designer.cs</LastGenOutput>
@@ -195,6 +197,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="App_Data\ImportProducts.sql" />
+    <Content Include="notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
