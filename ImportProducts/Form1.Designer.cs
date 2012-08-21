@@ -36,6 +36,8 @@
             this.toolStripMenuItemRun = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemResume = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripDeleteProducts = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteCategoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.tsslTotalProcess = new System.Windows.Forms.ToolStripStatusLabel();
@@ -45,7 +47,7 @@
             this.tsslCurrent = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.deleteCategoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip.SuspendLayout();
@@ -68,7 +70,9 @@
             this.toolStripMenuItemRun,
             this.toolStripMenuItemResume,
             this.toolStripDeleteProducts,
-            this.deleteCategoriesToolStripMenuItem});
+            this.deleteCategoriesToolStripMenuItem,
+            this.toolStripMenuItemCopy,
+            this.toolStripMenuItemDelete});
             this.toolStripMenuItemFeed.Name = "toolStripMenuItemFeed";
             this.toolStripMenuItemFeed.Size = new System.Drawing.Size(44, 20);
             this.toolStripMenuItemFeed.Text = "Feed";
@@ -101,6 +105,20 @@
             this.toolStripDeleteProducts.Size = new System.Drawing.Size(166, 22);
             this.toolStripDeleteProducts.Text = "Delete Products";
             this.toolStripDeleteProducts.Click += new System.EventHandler(this.toolStripDeleteProducts_Click);
+            // 
+            // deleteCategoriesToolStripMenuItem
+            // 
+            this.deleteCategoriesToolStripMenuItem.Name = "deleteCategoriesToolStripMenuItem";
+            this.deleteCategoriesToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.deleteCategoriesToolStripMenuItem.Text = "Delete Categories";
+            this.deleteCategoriesToolStripMenuItem.Click += new System.EventHandler(this.deleteCategoriesToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItemCopy
+            // 
+            this.toolStripMenuItemCopy.Name = "toolStripMenuItemCopy";
+            this.toolStripMenuItemCopy.Size = new System.Drawing.Size(166, 22);
+            this.toolStripMenuItemCopy.Text = "Copy";
+            this.toolStripMenuItemCopy.Click += new System.EventHandler(this.toolStripMenuItemCopy_Click);
             // 
             // dataGridView1
             // 
@@ -180,12 +198,12 @@
             this.notifyIcon.Visible = true;
             this.notifyIcon.BalloonTipClicked += new System.EventHandler(this.notifyIcon_BalloonTipClicked);
             // 
-            // deleteCategoriesToolStripMenuItem
+            // toolStripMenuItemDelete
             // 
-            this.deleteCategoriesToolStripMenuItem.Name = "deleteCategoriesToolStripMenuItem";
-            this.deleteCategoriesToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.deleteCategoriesToolStripMenuItem.Text = "Delete Categories";
-            this.deleteCategoriesToolStripMenuItem.Click += new System.EventHandler(this.deleteCategoriesToolStripMenuItem_Click);
+            this.toolStripMenuItemDelete.Name = "toolStripMenuItemDelete";
+            this.toolStripMenuItemDelete.Size = new System.Drawing.Size(166, 22);
+            this.toolStripMenuItemDelete.Text = "Delete";
+            this.toolStripMenuItemDelete.Click += new System.EventHandler(this.toolStripMenuItemDelete_Click);
             // 
             // Form1
             // 
@@ -229,6 +247,8 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripDeleteProducts;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemResume;
         private System.Windows.Forms.ToolStripMenuItem deleteCategoriesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCopy;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDelete;
     }
 }
 

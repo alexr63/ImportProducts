@@ -236,6 +236,9 @@ namespace ImportProducts
             {
                 toolStripMenuItemResume.Enabled = false;
             }
+
+            toolStripMenuItemCopy.Enabled = dataGridView1.SelectedRows.Count == 1;
+            toolStripMenuItemDelete.Enabled = dataGridView1.SelectedRows.Count == 1;
         }
 
         // SergePSV - check unfinished downloads
@@ -576,6 +579,45 @@ namespace ImportProducts
             catch (Exception ex)
             {
                 log.Error("Error error logging", ex);
+            }
+        }
+
+        private void toolStripMenuItemCopy_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
+            var selectedFeed = selectedRow.DataBoundItem as Feed;
+            var newFeed = new Feed();
+            newFeed.Name = selectedFeed.Name + " - Copy";
+            newFeed.Description = selectedFeed.Description;
+            newFeed.URL = selectedFeed.URL;
+            newFeed.PortalId = selectedFeed.PortalId;
+            newFeed.Category = selectedFeed.Category;
+            newFeed.VendorId = selectedFeed.VendorId;
+            newFeed.AdvancedCategoryRoot = selectedFeed.AdvancedCategoryRoot;
+            using (ImportProductsEntities db = new ImportProductsEntities())
+            {
+                db.Feeds.Add(newFeed);
+                db.SaveChanges();
+            }
+            BindData();
+        }
+
+        private void toolStripMenuItemDelete_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to delete this item?", "Confirm Delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
+                var selectedFeed = selectedRow.DataBoundItem as Feed;
+                using (ImportProductsEntities db = new ImportProductsEntities())
+                {
+                    var feed = db.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
+                    if (feed != null)
+                    {
+                        db.Feeds.Remove(feed);
+                        db.SaveChanges();
+                    }
+                }
+                BindData();
             }
         }
     }
