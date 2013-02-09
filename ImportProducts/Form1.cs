@@ -112,25 +112,19 @@ namespace ImportProducts
                     {
                         using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                         {
-                            var category = db.Categories.SingleOrDefault(c => c.CategoryName == selectedFeed.Category && c.PortalID == selectedFeed.PortalId);
+                            var category = db.Categories.SingleOrDefault(c => c.Name == selectedFeed.Category && c.PortalId == selectedFeed.PortalId);
                             if (category != null)
                             {
-                                bgParams.CategoryId = category.CategoryID;
+                                bgParams.CategoryId = category.Id;
                             }
                             else
                             {
                                 category = new Category();
-                                category.CategoryName = selectedFeed.Category;
-                                category.Description = String.Empty;
-                                category.PortalID = selectedFeed.PortalId;
-                                category.CategoryImportID = String.Empty;
-                                category.CategoryFolderImage = String.Empty;
-                                category.CategoryOpenFolderImage = String.Empty;
-                                category.CategoryPageImage = String.Empty;
-                                category.CreatedByUser = 1;
+                                category.Name = selectedFeed.Category;
+                                category.PortalId = selectedFeed.PortalId;
                                 db.Categories.Add(category);
                                 db.SaveChanges();
-                                bgParams.CategoryId = category.CategoryID;
+                                bgParams.CategoryId = category.Id;
                             }
                         }
                     }
@@ -151,13 +145,19 @@ namespace ImportProducts
                             break;
                         case "Trade Doubler":
                         case "Home and garden":
+#if ImportTradeDoublerProducts
                             workD = new BackGroundWorkerDelegateWork(ImportTradeDoublerProducts.DoImport);
+#endif
                             break;
                         case "Productserve":
+#if ImportProductserve
                             workD = new BackGroundWorkerDelegateWork(ImportProductserve.DoImport);
+#endif
                             break;
                         case "Webgains":
+#if ImportWebgainsProducts
                             workD = new BackGroundWorkerDelegateWork(ImportWebgainsProducts.DoImport);
+#endif
                             break;
                         case "Update Locations from Laterooms":
                             workD = new BackGroundWorkerDelegateWork(UpdateLocationsFromLaterooms.DoImport);
@@ -562,13 +562,13 @@ namespace ImportProducts
                    bool done = false;
                    while (!done)
                    {
-                       var advCats = db.AdvCats.Where(ac => !ac.CAT_AdvCatProducts.Any() && !ac.AdvCats1.Any());
-                       done = advCats.Count() == 0;
+                       var categories = db.Categories.Where(c => !c.Products.Any() && !c.SubCategories.Any());
+                       done = !categories.Any();
                        if (!done)
                        {
-                           foreach (var advCat in advCats.ToList())
+                           foreach (var category in categories.ToList())
                            {
-                               db.AdvCats.Remove(advCat);
+                               db.Categories.Remove(category);
                                db.SaveChanges();
                            }
                        }

@@ -25,12 +25,8 @@ namespace ImportProducts
             throw new UnintentionalCodeFirstException();
         }
     
+        public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
-        public DbSet<AdvCatPermission> AdvCatPermissions { get; set; }
-        public DbSet<AdvCat> AdvCats { get; set; }
-        public DbSet<AdvCatProduct> AdvCatProducts { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<List> Lists { get; set; }
     }
 }

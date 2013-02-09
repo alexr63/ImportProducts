@@ -16,19 +16,18 @@ namespace ImportProducts
     {
         public Category()
         {
-            this.CAT_Products = new HashSet<Product>();
+            this.Products = new HashSet<Product>();
+            this.SubCategories = new HashSet<Category>();
         }
     
-        public int CategoryID { get; set; }
-        public string CategoryName { get; set; }
-        public string Description { get; set; }
-        public int PortalID { get; set; }
-        public string CategoryImportID { get; set; }
-        public string CategoryFolderImage { get; set; }
-        public string CategoryOpenFolderImage { get; set; }
-        public string CategoryPageImage { get; set; }
-        public Nullable<int> CreatedByUser { get; set; }
+        public int Id { get; set; }
+        public int PortalId { get; set; }
+        public string Name { get; set; }
+        public Nullable<int> ParentId { get; set; }
+        public bool IsDeleted { get; set; }
     
-        public virtual ICollection<Product> CAT_Products { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Category> SubCategories { get; set; }
+        public virtual Category ParentCategory { get; set; }
     }
 }

@@ -14,21 +14,10 @@ namespace ImportProducts
     
     public partial class ProductImage
     {
-        public ProductImage()
-        {
-            this.Description = "";
-            this.ImageType = "0";
-            this.ViewOrder = 0;
-        }
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+        public string URL { get; set; }
     
-        public int ImageID { get; set; }
-        public int ProductID { get; set; }
-        public string ImageURL { get; set; }
-        public string ImageFile { get; set; }
-        public string Description { get; set; }
-        public string ImageType { get; set; }
-        public Nullable<int> ViewOrder { get; set; }
-    
-        public virtual Product Products { get; set; }
+        public virtual Product Product { get; set; }
     }
 }
