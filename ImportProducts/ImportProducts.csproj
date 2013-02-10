@@ -59,17 +59,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Book.cs">
+      <DependentUpon>SelectedHotels.tt</DependentUpon>
+    </Compile>
     <Compile Include="Category.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
     <Compile Include="City.cs">
       <DependentUpon>ImportProducts.tt</DependentUpon>
     </Compile>
+    <Compile Include="Clothe.cs">
+      <DependentUpon>SelectedHotels.tt</DependentUpon>
+    </Compile>
     <Compile Include="Country.cs">
       <DependentUpon>ImportProducts.tt</DependentUpon>
     </Compile>
     <Compile Include="Feed.cs">
       <DependentUpon>ImportProducts.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Hotel.cs">
+      <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
     <Compile Include="ImportProducts.Context.cs">
       <AutoGen>True</AutoGen>
@@ -81,10 +90,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ImportProducts.tt</DependentUpon>
     </Compile>
+    <Compile Include="Location.cs">
+      <DependentUpon>SelectedHotels.tt</DependentUpon>
+    </Compile>
     <Compile Include="Product.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
     <Compile Include="ProductImage.cs">
+      <DependentUpon>SelectedHotels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductType.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
     <Compile Include="SelectedHotels.Context.cs">

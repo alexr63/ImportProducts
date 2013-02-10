@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -168,7 +169,7 @@ namespace ImportProducts
 
             // read hotels from XML
             // use XmlReader to avoid huge file size dependence
-            var products =
+            var xmlProducts =
                 from el in StreamRootChildDoc(_URL)
                 select new
                            {
@@ -184,25 +185,25 @@ namespace ImportProducts
                                URL = (string) el.Element("hotel_link")
                            };
 
+            long countProducts = xmlProducts.Count();
             using (ImportProductsEntities db = new ImportProductsEntities())
             {
-                long countProducts = products.Count();
                 long currentProduct = 0;
-                foreach (var product in products)
+                foreach (var xmlProduct in xmlProducts)
                 {
-                    if (!String.IsNullOrEmpty(product.Country))
+                    if (!String.IsNullOrEmpty(xmlProduct.Country))
                     {
-                        var country = db.Countries.SingleOrDefault(c => c.Name == product.Country);
+                        var country = db.Countries.SingleOrDefault(c => c.Name == xmlProduct.Country);
                         if (country == null)
                         {
-                            country = new Country {Name = product.Country};
+                            country = new Country { Name = xmlProduct.Country };
                             db.Countries.Add(country);
                             db.SaveChanges();
                         }
-                        string hotelCity = product.City;
-                        if (product.City.Length > 50)
+                        string hotelCity = xmlProduct.City;
+                        if (xmlProduct.City.Length > 50)
                         {
-                            hotelCity = product.City.Substring(0, 47).PadRight(50, '.');
+                            hotelCity = xmlProduct.City.Substring(0, 47).PadRight(50, '.');
                         }
                         var city = db.Cities.SingleOrDefault(c => c.Name == hotelCity && c.CountryId == country.Id);
                         if (city == null)
@@ -230,6 +231,119 @@ namespace ImportProducts
             }
             else if (bw.WorkerReportsProgress) bw.ReportProgress(100);
             Thread.Sleep(100); // a little bit slow working for visualisation Progress
+
+            Form1.activeStep = "Update locations...";
+            bw.ReportProgress(0); // start new step of background process
+
+            using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+            {
+                int i = 0;
+                foreach (var xmlProduct in xmlProducts)
+                {
+                    var xmlProduct1 = xmlProduct;
+                    Console.WriteLine(i + " - " + xmlProduct1.Name); // debug print
+
+                    // create locations
+                    string hotelCity = xmlProduct1.City;
+                    if (xmlProduct1.City.Length > 50)
+                    {
+                        hotelCity = xmlProduct1.City.Substring(0, 47).PadRight(50, '.');
+                    }
+                    int? parentId = null;
+                    int? countryId = null;
+                    Location country = null;
+                    int? countyId = null;
+                    Location county = null;
+                    int? cityId = null;
+                    Location city = null;
+                    int level = 0;
+                    int maxOrder = 0;
+
+                    if (!String.IsNullOrEmpty(xmlProduct1.Country))
+                    {
+                        country =
+                            db.Locations.SingleOrDefault(
+                                l =>
+                                l.Name == xmlProduct1.Country &&
+                                l.ParentId == null);
+                        if (country == null)
+                        {
+                            country = new Location
+                            {
+                                Name = xmlProduct1.Country,
+                                IsDeleted = false
+                            };
+                            db.Locations.Add(country);
+                            db.SaveChanges();
+                        }
+                        parentId = country.Id;
+                        countryId = country.Id;
+                        level++;
+                    }
+
+                    if (!String.IsNullOrEmpty(xmlProduct1.County))
+                    {
+                        county =
+                            db.Locations.SingleOrDefault(
+                                l =>
+                                l.Name == xmlProduct1.County &&
+                                l.ParentId == parentId);
+                        if (county == null)
+                        {
+                            county = new Location
+                            {
+                                Name = xmlProduct1.County,
+                                ParentId = parentId.Value,
+                                IsDeleted = false
+                            };
+                            db.Locations.Add(county);
+                            db.SaveChanges();
+                        }
+                        parentId = county.Id;
+                        countyId = county.Id;
+                        level++;
+                    }
+
+                    if (!String.IsNullOrEmpty(xmlProduct1.City))
+                    {
+                        city =
+                            db.Locations.SingleOrDefault(
+                                l =>
+                                l.Name == hotelCity &&
+                                l.ParentId == parentId);
+                        if (city == null)
+                        {
+                            city = new Location
+                            {
+                                Name = hotelCity,
+                                ParentId = parentId.Value,
+                                IsDeleted = false
+                            };
+                            db.Locations.Add(city);
+                            db.SaveChanges();
+                        }
+                        parentId = city.Id;
+                        cityId = city.Id;
+                        level++;
+                    }
+
+                    db.SaveChanges();
+
+                    i++;
+
+                    if (bw.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        goto Cancelled;
+                    }
+                    else if (bw.WorkerReportsProgress && i % 100 == 0)
+                    {
+                        bw.ReportProgress((int)(100 * i / countProducts));
+                    }
+                }
+            }
+        Cancelled:
+            int q = 0;
         }
     }
 }

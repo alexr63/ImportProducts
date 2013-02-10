@@ -537,51 +537,6 @@ namespace ImportProducts
             StartWorkerProcess(feed.StepImport, feed.StepAddToCategories, feed.StepAddImages);
         }
 
-        private void deleteCategoriesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-#if SQLDELETION
-                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
-                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
-                {
-                    destinationConnection.Open();
-                    int rowsAffected = 500;
-                    while (rowsAffected > 0)
-                    {
-                        SqlCommand commandDelete =
-                            new SqlCommand(
-                                "DELETE TOP(500) FROM CAT_AdvCats WHERE (AdvCatID NOT IN (SELECT AdvCatID FROM CAT_AdvCatProducts)) AND (AdvCatID NOT IN (SELECT ParentId FROM CAT_AdvCatProducts))",
-                                destinationConnection);
-                        rowsAffected = commandDelete.ExecuteNonQuery();
-                    }
-                }
-#else
-               using (SelectedHotelsEntities db = new SelectedHotelsEntities())
-               {
-                   bool done = false;
-                   while (!done)
-                   {
-                       var categories = db.Categories.Where(c => !c.Products.Any() && !c.SubCategories.Any());
-                       done = !categories.Any();
-                       if (!done)
-                       {
-                           foreach (var category in categories.ToList())
-                           {
-                               db.Categories.Remove(category);
-                               db.SaveChanges();
-                           }
-                       }
-                   }
-               }
-#endif
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error error logging", ex);
-            }
-        }
-
         private void toolStripMenuItemCopy_Click(object sender, EventArgs e)
         {
             DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
@@ -618,6 +573,51 @@ namespace ImportProducts
                     }
                 }
                 BindData();
+            }
+        }
+
+        private void deleteLocationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+#if SQLDELETION
+                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
+                {
+                    destinationConnection.Open();
+                    int rowsAffected = 500;
+                    while (rowsAffected > 0)
+                    {
+                        SqlCommand commandDelete =
+                            new SqlCommand(
+                                "DELETE TOP(500) FROM CAT_AdvCats WHERE (AdvCatID NOT IN (SELECT AdvCatID FROM CAT_AdvCatProducts)) AND (AdvCatID NOT IN (SELECT ParentId FROM CAT_AdvCatProducts))",
+                                destinationConnection);
+                        rowsAffected = commandDelete.ExecuteNonQuery();
+                    }
+                }
+#else
+                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                {
+                    bool done = false;
+                    while (!done)
+                    {
+                        var locations = db.Locations.Where(l => !l.Hotels.Any() && !l.SubLocations.Any());
+                        done = !locations.Any();
+                        if (!done)
+                        {
+                            foreach (var location in locations.ToList())
+                            {
+                                db.Locations.Remove(location);
+                                db.SaveChanges();
+                            }
+                        }
+                    }
+                }
+#endif
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error error logging", ex);
             }
         }
     }

@@ -230,141 +230,6 @@ namespace ImportProducts
             else if (bw.WorkerReportsProgress) bw.ReportProgress(100);
             Thread.Sleep(100); // a little bit slow working for visualisation Progress
 
-            // Prepare dataTable
-            DataTable dataTable = new DataTable();
-            DataColumn dataColumn = new DataColumn("ProductName", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("CategoryID", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Category2ID", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Category3", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ProductNumber", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("UnitCost", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("UnitCost2", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("UnitCost3", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("UnitCost4", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("UnitCost5", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("UnitCost6", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Description", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("DescriptionHTML", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("URL", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ProductCost", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ProductImage", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("OrderQuant", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("CreatedByUser", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("DateCreated", typeof (System.DateTime));
-            dataTable.Columns.Add(dataColumn);
-
-            // default columns
-            dataColumn = new DataColumn("EAN", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ISBN", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Free1", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Free2", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Free3", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("KeyWords", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Stock", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Weight", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Volume", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Length", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Width", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Height", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("FreightCosts1", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("FreightCosts2", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Featured", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("SalePrice", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("SaleStart", typeof (System.DateTime));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("SaleEnd", typeof (System.DateTime));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("DownLoad", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ZIPPassWord", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("DownLoadFile", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Archive", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit1", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit2", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit3", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit4", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("BulkPriceLimit5", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("RoleID", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("SubscriptionPeriod", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("RecurringBilling", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("TaxExempt", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ShipExempt", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("InsuredValue", typeof (System.Decimal));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("PublicationStart", typeof (System.DateTime));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("PublicationEnd", typeof (System.DateTime));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("Status", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("DonationItem", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("PayPalSubscription", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("UseRoleFees", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("RoleExpiryType", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ItemDeliveryType", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ReorderPoint", typeof (System.Int32));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("OrderQuantValidExpr", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("ShippingAddress", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("AuctionFinished", typeof (System.Boolean));
-            dataTable.Columns.Add(dataColumn);
-            dataColumn = new DataColumn("TaxCode", typeof (System.String));
-            dataTable.Columns.Add(dataColumn);
-
             // Set step for backgroundWorker
             Form1.activeStep = "Import records..";
             bw.ReportProgress(0); // start new step of background process
@@ -375,11 +240,6 @@ namespace ImportProducts
                 if (stepImport.HasValue)
                 {
                     initialStep = stepImport.Value;
-                }
-                else if (stepAddToCategories.HasValue)
-                {
-                    initialStep = stepAddToCategories.Value;
-                    goto UpdateAdvCats;
                 }
                 else if (stepAddImages.HasValue)
                 {
@@ -408,100 +268,92 @@ namespace ImportProducts
 
                         // create new product record
                         int batchLimit = 500;
-                        if (isVendorProductsEmpty ||
+                        Hotel hotel =
                             db.Products.SingleOrDefault(
-                                p => p.Categories.Any(c => c.Id == categoryId && p.Number == xmlProduct1.ProductNumber && p.CreatedByUser == vendorId)) == null)
+                                p => p.ProductTypeId == 1 && p.Categories.Any(c => c.Id == categoryId) && p.Number == xmlProduct1.ProductNumber && p.CreatedByUser == vendorId) as Hotel;
+                        if (hotel == null)
                         {
-                            DataRow dataRow = dataTable.NewRow();
-                            dataRow["Name"] = xmlProduct1.Name;
-                            dataRow["Number"] = xmlProduct1.ProductNumber;
-                            dataRow["UnitCost"] = xmlProduct1.UnitCost;
-                            dataRow["Description"] = xmlProduct1.Description;
-                            dataRow["URL"] = xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
-                            dataRow["Image"] = (string) xmlProduct1.Images.Element("url");
-                            dataRow["CreatedByUser"] = vendorId;
-                            dataRow["IsDeleted"] = false;
+                            hotel = new Hotel();
+                            hotel.ProductTypeId = 1; // TODO: ProductTypesEnum
+                            hotel.Name = xmlProduct1.Name;
+                            hotel.Number = xmlProduct1.ProductNumber;
+                            hotel.UnitCost = xmlProduct1.UnitCost;
+                            hotel.Description = xmlProduct1.Description;
+                            hotel.URL = xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                            hotel.Image = (string) xmlProduct1.Images.Element("url");
+                            hotel.CreatedByUser = vendorId;
+                            hotel.IsDeleted = false;
 
-                            dataTable.Rows.Add(dataRow);
+                            hotel.Rooms = null;
 
-                            if (dataTable.Rows.Count >= batchLimit || i >= productCount - batchLimit)
+                            int? parentId = null;
+                            Location country =
+                                db.Locations.SingleOrDefault(
+                                    c =>
+                                    c.Name == xmlProduct1.Country &&
+                                    c.ParentId == null);
+                            if (country != null)
                             {
-                                // Set up the bulk copy object. 
-                                // Note that the column positions in the source
-                                // data reader match the column positions in 
-                                // the destination table so there is no need to
-                                // map columns.
-                                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(destinationConnection))
-                                {
-                                    bulkCopy.BatchSize = 5000;
-
-                                    bulkCopy.DestinationTableName = "dbo.Cowrie_Products";
-                                    bulkCopy.ColumnMappings.Add("Name", "Name");
-                                    bulkCopy.ColumnMappings.Add("Number", "Number");
-                                    bulkCopy.ColumnMappings.Add("Cost", "Cost");
-                                    bulkCopy.ColumnMappings.Add("Description", "Description");
-                                    bulkCopy.ColumnMappings.Add("URL", "URL");
-                                    bulkCopy.ColumnMappings.Add("Image", "Image");
-                                    bulkCopy.ColumnMappings.Add("CreatedByUser", "CreatedByUser");
-                                    bulkCopy.ColumnMappings.Add("IsDeleted", "IsDeleted");
-
-                                    try
-                                    {
-                                        // Write from the source to the destination.
-                                        bulkCopy.WriteToServer(dataTable);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        log.Error("Error error logging", ex);
-                                    }
-                                    finally
-                                    {
-                                        // Close the SqlDataReader. The SqlBulkCopy
-                                        // object is automatically closed at the end
-                                        // of the using block.
-                                        //reader.Close();
-                                    }
-                                }
-                                i += dataTable.Rows.Count;
-                                dataTable.Rows.Clear();
-                                UpdateSteps(stepImport: i);
+                                hotel.LocationId = country.Id;
+                                parentId = country.Id;
                             }
+                            Location county =
+                                db.Locations.SingleOrDefault(
+                                    c =>
+                                    c.Name == xmlProduct1.County &&
+                                    c.ParentId == parentId);
+                            if (county != null)
+                            {
+                                hotel.LocationId = county.Id;
+                            }
+                            Location city =
+                                db.Locations.SingleOrDefault(
+                                    c =>
+                                    c.Name == xmlProduct1.City &&
+                                    c.ParentId == parentId);
+                            if (city != null)
+                            {
+                                hotel.LocationId = city.Id;
+                            }
+                            db.Products.Add(hotel);
+
+                            db.SaveChanges();
+
+                            i++;
+                            UpdateSteps(stepImport: i);
                         }
                         else
                         {
-                            var product =
-                                db.Products.SingleOrDefault(
-                                    p => p.Categories.Any(c => c.Id == categoryId) && p.Number == xmlProduct1.ProductNumber && p.CreatedByUser == vendorId);
                             // no need to check for null vallue because of previous if
                             bool isChanged = false;
-                            if (product.Name != xmlProduct1.Name)
+                            if (hotel.Name != xmlProduct1.Name)
                             {
-                                product.Name = xmlProduct1.Name;
+                                hotel.Name = xmlProduct1.Name;
                                 isChanged = true;
                             }
-                            if (product.Number != xmlProduct1.ProductNumber)
+                            if (hotel.Number != xmlProduct1.ProductNumber)
                             {
-                                product.Number = xmlProduct1.ProductNumber;
+                                hotel.Number = xmlProduct1.ProductNumber;
                                 isChanged = true;
                             }
-                            if (product.UnitCost != xmlProduct1.UnitCost)
+                            if (hotel.UnitCost != xmlProduct1.UnitCost)
                             {
-                                product.UnitCost = xmlProduct1.UnitCost;
+                                hotel.UnitCost = xmlProduct1.UnitCost;
                                 isChanged = true;
                             }
-                            if (product.Description != xmlProduct1.Description)
+                            if (hotel.Description != xmlProduct1.Description)
                             {
-                                product.Description = xmlProduct1.Description;
+                                hotel.Description = xmlProduct1.Description;
                                 isChanged = true;
                             }
-                            if (product.URL != xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
+                            if (hotel.URL != xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
                             {
-                                product.URL = xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                                hotel.URL = xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
                                 isChanged = true;
                             }
-                            if (product.Image != (string) xmlProduct1.Images.Element("url"))
+                            if (hotel.Image != (string) xmlProduct1.Images.Element("url"))
                             {
-                                product.Image = (string) xmlProduct1.Images.Element("url");
+                                hotel.Image = (string) xmlProduct1.Images.Element("url");
                                 isChanged = true;
                             }
 
@@ -513,213 +365,6 @@ namespace ImportProducts
                             i++;
                             UpdateSteps(stepImport: i);
                         }
-
-                        if (bw.CancellationPending)
-                        {
-                            e.Cancel = true;
-                            goto Cancelled;
-                        }
-                        else if (bw.WorkerReportsProgress && i % 100 == 0)
-                        {
-                            bw.ReportProgress((int) (100*i/productCount));
-                        }
-                    }
-                }
-
-                initialStep = 0;
-
-            UpdateAdvCats:
-                // Set step for backgroundWorker
-                Form1.activeStep = "Update advanced categories..";
-                bw.ReportProgress(0); // start new step of background process
-
-                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
-                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
-                {
-                    destinationConnection.Open();
-
-                    int i = 0;
-                    foreach (var xmlProduct in xmlProducts)
-                    {
-                        if (i < initialStep)
-                        {
-                            i++;
-                            continue;
-                        }
-
-                        var xmlProduct1 = xmlProduct;
-                        Console.WriteLine(i + " - " + xmlProduct1.Name); // debug print
-
-                        // create advanced categories
-                        string hotelCity = xmlProduct1.City;
-                        if (xmlProduct1.City.Length > 50)
-                        {
-                            hotelCity = xmlProduct1.City.Substring(0, 47).PadRight(50, '.');
-                        }
-                        int? parentID = null;
-                        int? catRootID = null;
-                        Category rootCategory = null;
-                        int? catCountryID = null;
-                        Category countryCategory = null;
-                        int? catCountyID = null;
-                        Category countyCategory = null;
-                        int? catCityID = null;
-                        Category cityCategory = null;
-                        int level = 0;
-                        int maxOrder = 0;
-
-                        if (!String.IsNullOrEmpty(advancedCategoryRoot))
-                        {
-                            rootCategory =
-                                db.Categories.SingleOrDefault(
-                                    c =>
-                                    c.PortalId == portalId && c.Name == advancedCategoryRoot &&
-                                    c.ParentCategory == null);
-                            if (rootCategory == null)
-                            {
-                                rootCategory = new Category
-                                                 {
-                                                     PortalId = portalId,
-                                                     Name = advancedCategoryRoot,
-                                                     IsDeleted = false
-                                                 };
-                                db.Categories.Add(rootCategory);
-                                db.SaveChanges();
-                            }
-                            parentID = rootCategory.Id;
-                            catRootID = rootCategory.Id;
-                            level++;
-                        }
-
-                        if (!String.IsNullOrEmpty(xmlProduct1.Country))
-                        {
-                            if (parentID.HasValue)
-                            {
-                                countryCategory =
-                                    db.Categories.SingleOrDefault(
-                                        c =>
-                                        c.PortalId == portalId && c.Name == xmlProduct1.Country &&
-                                        c.ParentId == parentID.Value);
-                            }
-                            else
-                            {
-                                countryCategory =
-                                    db.Categories.SingleOrDefault(
-                                        c =>
-                                        c.PortalId == portalId && c.Name == xmlProduct1.Country &&
-                                        c.ParentId == null);
-                            }
-                            if (countryCategory == null)
-                            {
-                                countryCategory = new Category
-                                                    {
-                                                        PortalId = portalId,
-                                                        Name = xmlProduct1.Country,
-                                                        IsDeleted = false
-                                                    };
-                                if (parentID.HasValue)
-                                {
-                                    countryCategory.ParentId = parentID.Value;
-                                }
-                                db.Categories.Add(countryCategory);
-                                db.SaveChanges();
-                            }
-                            parentID = countryCategory.Id;
-                            catCountryID = countryCategory.Id;
-                            level++;
-                        }
-
-                        if (!String.IsNullOrEmpty(xmlProduct1.County))
-                        {
-                            countyCategory =
-                                db.Categories.SingleOrDefault(
-                                    c =>
-                                    c.PortalId == portalId && c.Name == xmlProduct1.County &&
-                                    c.ParentId == parentID);
-                            if (countyCategory == null)
-                            {
-                                countyCategory = new Category
-                                                   {
-                                                       PortalId = portalId,
-                                                       Name = xmlProduct1.County,
-                                                       ParentId = parentID.Value,
-                                                       IsDeleted = false
-                                                   };
-                                db.Categories.Add(countyCategory);
-                                db.SaveChanges();
-                            }
-                            parentID = countyCategory.Id;
-                            catCountyID = countyCategory.Id;
-                            level++;
-                        }
-
-                        if (!String.IsNullOrEmpty(xmlProduct1.City))
-                        {
-                            cityCategory =
-                                db.Categories.SingleOrDefault(
-                                    c =>
-                                    c.PortalId == portalId && c.Name == hotelCity &&
-                                    c.ParentId == parentID);
-                            if (cityCategory == null)
-                            {
-                                cityCategory = new Category
-                                                 {
-                                                     PortalId = portalId,
-                                                     Name = hotelCity,
-                                                     ParentId = parentID.Value,
-                                                     IsDeleted = false
-                                                 };
-                                db.Categories.Add(cityCategory);
-                                db.SaveChanges();
-                            }
-                            parentID = cityCategory.Id;
-                            catCityID = cityCategory.Id;
-                            level++;
-                        }
-
-                        // add product to advanced categories
-                        var tempProduct =
-                            db.Products.SingleOrDefault(
-                                p =>
-                                p.Categories.Any(c => c.Id == categoryId) && p.Number == xmlProduct1.ProductNumber &&
-                                p.CreatedByUser == vendorId);
-                        if (tempProduct == null)
-                        {
-                            continue;
-                        }
-                        var productId = tempProduct.Id;
-                        if (rootCategory != null)
-                        {
-                            if (!tempProduct.Categories.Any(c => c == rootCategory))
-                            {
-                                tempProduct.Categories.Add(rootCategory);
-                            }
-                        }
-                        if (countyCategory != null)
-                        {
-                            if (!tempProduct.Categories.Any(c => c == countyCategory))
-                            {
-                                tempProduct.Categories.Add(countyCategory);
-                            }
-                        }
-                        if (countyCategory != null)
-                        {
-                            if (!tempProduct.Categories.Any(c => c == countyCategory))
-                            {
-                                tempProduct.Categories.Add(countyCategory);
-                            }
-                        }
-                        if (cityCategory != null)
-                        {
-                            if (!tempProduct.Categories.Any(c => c == cityCategory))
-                            {
-                                tempProduct.Categories.Add(rootCategory);
-                            }
-                        }
-                        db.SaveChanges();
-
-                        i++;
-                        UpdateSteps(stepAddToCategories: i);
 
                         if (bw.CancellationPending)
                         {

@@ -12,18 +12,11 @@ namespace ImportProducts
     using System;
     using System.Collections.Generic;
     
-    public partial class Category
+    public partial class Clothe : Product
     {
-        public Category()
-        {
-            this.Products = new HashSet<Product>();
-        }
-    
-        public int Id { get; set; }
-        public int PortalId { get; set; }
-        public string Name { get; set; }
-        public bool IsDeleted { get; set; }
-    
-        public virtual ICollection<Product> Products { get; set; }
+        public string Size { get; set; }
+        public string Colour { get; set; }
+        public string Brand { get; set; }
+        public string Style { get; set; }
     }
 }
