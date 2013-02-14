@@ -145,9 +145,7 @@ namespace ImportProducts
                             break;
                         case "Trade Doubler":
                         case "Home and garden":
-#if ImportTradeDoublerProducts
                             workD = new BackGroundWorkerDelegateWork(ImportTradeDoublerProducts.DoImport);
-#endif
                             break;
                         case "Productserve":
 #if ImportProductserve

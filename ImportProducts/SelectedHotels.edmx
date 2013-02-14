@@ -10,6 +10,7 @@
           <EntitySet Name="Cowrie_Categories" EntityType="SelectedHotelsModel.Store.Cowrie_Categories" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_CategoryProducts" EntityType="SelectedHotelsModel.Store.Cowrie_CategoryProducts" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_Clothes" EntityType="SelectedHotelsModel.Store.Cowrie_Clothes" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Cowrie_HomeAndGardens" EntityType="SelectedHotelsModel.Store.Cowrie_HomeAndGardens" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_Hotels" EntityType="SelectedHotelsModel.Store.Cowrie_Hotels" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_Locations" EntityType="SelectedHotelsModel.Store.Cowrie_Locations" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_ProductImages" EntityType="SelectedHotelsModel.Store.Cowrie_ProductImages" store:Type="Tables" Schema="dbo" />
@@ -30,6 +31,10 @@
           <AssociationSet Name="FK_Cowrie_Clothes_Cowrie_Products" Association="SelectedHotelsModel.Store.FK_Cowrie_Clothes_Cowrie_Products">
             <End Role="Cowrie_Products" EntitySet="Cowrie_Products" />
             <End Role="Cowrie_Clothes" EntitySet="Cowrie_Clothes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cowrie_HomeAndGardens_Cowrie_Products" Association="SelectedHotelsModel.Store.FK_Cowrie_HomeAndGardens_Cowrie_Products">
+            <End Role="Cowrie_Products" EntitySet="Cowrie_Products" />
+            <End Role="Cowrie_HomeAndGardens" EntitySet="Cowrie_HomeAndGardens" />
           </AssociationSet>
           <AssociationSet Name="FK_Cowrie_Hotels_Cowrie_Locations" Association="SelectedHotelsModel.Store.FK_Cowrie_Hotels_Cowrie_Locations">
             <End Role="Cowrie_Locations" EntitySet="Cowrie_Locations" />
@@ -86,6 +91,17 @@
           <Property Name="Colour" Type="nvarchar" MaxLength="50" />
           <Property Name="Brand" Type="nvarchar" MaxLength="50" />
           <Property Name="Style" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Cowrie_HomeAndGardens">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Weight" Type="nvarchar" MaxLength="50" />
+          <Property Name="Size" Type="nvarchar" MaxLength="50" />
+          <Property Name="Brand" Type="nvarchar" MaxLength="50" />
+          <Property Name="Model" Type="nvarchar" MaxLength="50" />
+          <Property Name="Manufacturer" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Cowrie_Hotels">
           <Key>
@@ -186,6 +202,20 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Cowrie_Clothes">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cowrie_HomeAndGardens_Cowrie_Products">
+          <End Role="Cowrie_Products" Type="SelectedHotelsModel.Store.Cowrie_Products" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Cowrie_HomeAndGardens" Type="SelectedHotelsModel.Store.Cowrie_HomeAndGardens" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Cowrie_Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Cowrie_HomeAndGardens">
               <PropertyRef Name="Id" />
             </Dependent>
           </ReferentialConstraint>
@@ -411,6 +441,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="HomeAndGarden" BaseType="SelectedHotelsModel.Product">
+          <Property Type="String" Name="Weight" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Size" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Brand" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Model" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Manufacturer" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -463,6 +500,16 @@
                 <ScalarProperty Name="Colour" ColumnName="Colour" />
                 <ScalarProperty Name="Brand" ColumnName="Brand" />
                 <ScalarProperty Name="Style" ColumnName="Style" />
+              </MappingFragment>
+            </EntityTypeMapping>
+            <EntityTypeMapping TypeName="IsTypeOf(SelectedHotelsModel.HomeAndGarden)">
+              <MappingFragment StoreEntitySet="Cowrie_HomeAndGardens">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Size" ColumnName="Size" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="Manufacturer" ColumnName="Manufacturer" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="6339562abb234989927627da190a3d2e" Name="Diagram1">
+      <Diagram DiagramId="6339562abb234989927627da190a3d2e" Name="Diagram1" ZoomLevel="74">
         <EntityTypeShape EntityType="SelectedHotelsModel.Category" Width="1.5" PointX="0.75" PointY="3.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SelectedHotelsModel.Product" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
         <AssociationConnector Association="SelectedHotelsModel.Cowrie_CategoryProducts" ManuallyRouted="false" />
@@ -22,6 +22,8 @@
         <InheritanceConnector EntityType="SelectedHotelsModel.Book" />
         <InheritanceConnector EntityType="SelectedHotelsModel.Clothe" ManuallyRouted="false" >
         </InheritanceConnector>
+        <EntityTypeShape EntityType="SelectedHotelsModel.HomeAndGarden" Width="1.5" PointX="5.625" PointY="10.625" />
+        <InheritanceConnector EntityType="SelectedHotelsModel.HomeAndGarden" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

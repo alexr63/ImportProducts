@@ -74,8 +74,12 @@
     <Compile Include="Country.cs">
       <DependentUpon>ImportProducts.tt</DependentUpon>
     </Compile>
+    <Compile Include="Enums.cs" />
     <Compile Include="Feed.cs">
       <DependentUpon>ImportProducts.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HomeAndGarden.cs">
+      <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
     <Compile Include="Hotel.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
@@ -90,6 +94,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ImportProducts.tt</DependentUpon>
     </Compile>
+    <Compile Include="ImportTradeDoublerProducts.cs" />
     <Compile Include="Location.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>

@@ -270,11 +270,11 @@ namespace ImportProducts
                         int batchLimit = 500;
                         Hotel hotel =
                             db.Products.SingleOrDefault(
-                                p => p.ProductTypeId == 1 && p.Categories.Any(c => c.Id == categoryId) && p.Number == xmlProduct1.ProductNumber && p.CreatedByUser == vendorId) as Hotel;
+                                p => p.ProductTypeId == (int)Enums.ProductTypeEnum.Hotels && p.Categories.Any(c => c.Id == categoryId) && p.Number == xmlProduct1.ProductNumber && p.CreatedByUser == vendorId) as Hotel;
                         if (hotel == null)
                         {
                             hotel = new Hotel();
-                            hotel.ProductTypeId = 1; // TODO: ProductTypesEnum
+                            hotel.ProductTypeId = (int) Enums.ProductTypeEnum.Hotels;
                             hotel.Name = xmlProduct1.Name;
                             hotel.Number = xmlProduct1.ProductNumber;
                             hotel.UnitCost = xmlProduct1.UnitCost;
