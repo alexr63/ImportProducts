@@ -235,6 +235,7 @@ namespace ImportProducts
                             product2 = new HomeAndGarden
                             {
                                 Name = product.Name.Replace("&apos;", "'"),
+                                ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
                                 Number = product.ProductNumber,
                                 UnitCost = product.UnitCost,
                                 Description = product.Description,
