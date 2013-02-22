@@ -95,6 +95,7 @@
       <DependentUpon>ImportProducts.tt</DependentUpon>
     </Compile>
     <Compile Include="ImportTradeDoublerProducts.cs" />
+    <Compile Include="ImportWebgainsProducts.cs" />
     <Compile Include="Location.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>

@@ -112,7 +112,7 @@ namespace ImportProducts
                     {
                         using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                         {
-                            var category = db.Categories.SingleOrDefault(c => c.Name == selectedFeed.Category && c.PortalId == selectedFeed.PortalId);
+                            var category = db.Categories.SingleOrDefault(c => c.Name == selectedFeed.Category);
                             if (category != null)
                             {
                                 bgParams.CategoryId = category.Id;
@@ -121,7 +121,6 @@ namespace ImportProducts
                             {
                                 category = new Category();
                                 category.Name = selectedFeed.Category;
-                                category.PortalId = selectedFeed.PortalId;
                                 db.Categories.Add(category);
                                 db.SaveChanges();
                                 bgParams.CategoryId = category.Id;
@@ -153,9 +152,7 @@ namespace ImportProducts
 #endif
                             break;
                         case "Webgains":
-#if ImportWebgainsProducts
                             workD = new BackGroundWorkerDelegateWork(ImportWebgainsProducts.DoImport);
-#endif
                             break;
                         case "Update Locations from Laterooms":
                             workD = new BackGroundWorkerDelegateWork(UpdateLocationsFromLaterooms.DoImport);

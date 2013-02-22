@@ -17,13 +17,16 @@ namespace ImportProducts
         public Category()
         {
             this.Products = new HashSet<Product>();
+            this.SubCategories = new HashSet<Category>();
         }
     
         public int Id { get; set; }
-        public int PortalId { get; set; }
         public string Name { get; set; }
         public bool IsDeleted { get; set; }
+        public Nullable<int> ParentId { get; set; }
     
         public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Category> SubCategories { get; set; }
+        public virtual Category ParentCategory { get; set; }
     }
 }
