@@ -205,17 +205,19 @@ namespace ImportProducts
                                     db.Categories.Add(category);
                                     db.SaveChanges();
                                 }
+                                Category parentCategory = category;
 
-                                string sybCategoryName = categoryNames[1];
+                                string subCategoryName = categoryNames[1];
                                 category =
                                     db.Categories.SingleOrDefault(
-                                        c => c.Name == sybCategoryName && c.ParentId == null);
+                                        c => c.Name == subCategoryName && c.ParentId == parentCategory.Id);
                                 if (category == null)
                                 {
                                     category = new Category
                                                    {
                                                        IsDeleted = false,
-                                                       Name = sybCategoryName
+                                                       Name = subCategoryName,
+                                                       ParentCategory = parentCategory
                                                    };
                                     db.Categories.Add(category);
                                     db.SaveChanges();
