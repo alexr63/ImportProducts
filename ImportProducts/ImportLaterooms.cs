@@ -315,6 +315,13 @@ namespace ImportProducts
                             {
                                 hotel.LocationId = city.Id;
                             }
+
+                            Category category = db.Categories.SingleOrDefault(c => c.Id == categoryId);
+                            if (category != null)
+                            {
+                                hotel.Categories.Add(category);
+                            }
+
                             db.Products.Add(hotel);
 
                             db.SaveChanges();
@@ -416,7 +423,7 @@ namespace ImportProducts
 
                         StringBuilder sb = new StringBuilder();
                         sb.AppendLine("DELETE");
-                        sb.AppendLine("FROM         ProductImages");
+                        sb.AppendLine("FROM         Cowrie_ProductImages");
                         sb.AppendLine("WHERE     ProductID = @ProductID");
                         SqlCommand commandDelete =
                             new SqlCommand(
@@ -426,6 +433,7 @@ namespace ImportProducts
                         commandDelete.Parameters["@ProductID"].Value = productId;
                         commandDelete.ExecuteNonQuery();
 
+                        bool isChanged = false;
                         foreach (var image in xmlProduct1.Images.Elements("url"))
                         {
                             if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
@@ -433,7 +441,12 @@ namespace ImportProducts
                                 ProductImage productImage = new ProductImage();
                                 productImage.URL = image.Value;
                                 tempProduct.ProductImages.Add(productImage);
+                                isChanged = true;
                             }
+                        }
+                        if (isChanged)
+                        {
+                            db.SaveChanges();
                         }
 
                         initialStep++;
