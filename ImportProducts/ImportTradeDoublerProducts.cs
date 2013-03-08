@@ -137,6 +137,7 @@ namespace ImportProducts
                 _URL = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "tradedoubler.xml");
             }
 
+#if VALIDATE
             XmlSchemaSet schemas = new XmlSchemaSet();
             schemas.Add("", "tradedoubler.xsd");
             Form1.activeStep = "Validating inpout..";
@@ -154,6 +155,7 @@ namespace ImportProducts
                 e.Cancel = true;
                 return;
             }
+#endif
 
             // Set step for backgroundWorker
             Form1.activeStep = "Import records..";
@@ -178,6 +180,9 @@ namespace ImportProducts
                     Brand = (string)el.Element("brand"),
                     Model = (string)el.Element("model"),
                     Manufacturer = (string)el.Element("manufacturer"),
+                    Colours = (string)el.Element("fields").Element("Colours"),
+                    Department = (string)el.Element("fields").Element("Department"),
+                    Gender = (string)el.Element("fields").Element("Gender"),
                 };
 
             foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
@@ -216,60 +221,112 @@ namespace ImportProducts
             {
                 using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                 {
+                    var category = db.Categories.Find(categoryId);
+
                     foreach (var product in products)
                     {
-                        Console.WriteLine(product.Name.Replace("&apos;", "'")); // debug print
+                        string productName = product.Name.Replace("&apos;", "'");
+                        Console.WriteLine(productName); // debug print
 
-                        int? parentID = null;
-                        int? catRootID = null;
-                        int? catCountryID = null;
-                        int? catCityID = null;
-                        int level = 0;
-                        int maxOrder = 0;
-
-                        HomeAndGarden product2 =
-                            db.Products.SingleOrDefault(
-                            p => p.ProductTypeId == (int)Enums.ProductTypeEnum.HomeAndGardens && p.Categories.Any(c => c.Id == categoryId) && p.Number == product.ProductNumber && p.CreatedByUser == vendorId) as HomeAndGarden;
-                        if (product2 == null)
+                        Category subCategory = db.Categories.SingleOrDefault(
+                            c =>
+                            c.Name == product.Category &&
+                            c.ParentId == categoryId);
+                        if (subCategory == null)
                         {
-                            product2 = new HomeAndGarden
+                            subCategory = new Category();
+                            subCategory.Name = product.Category;
+                            subCategory.ParentId = categoryId;
+                            subCategory.IsDeleted = false;
+                            db.Categories.Add(subCategory);
+                            db.SaveChanges();
+                        }
+
+                        if (category.Name == "Clothes")
+                        {
+                            Clothe product2 =
+                                db.Products.OfType<Clothe>().SingleOrDefault(
+                                    p =>
+                                    p.Name == productName &&
+                                    p.Number == product.ProductNumber);
+                            if (product2 == null)
                             {
-                                Name = product.Name.Replace("&apos;", "'"),
-                                ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
-                                Number = product.ProductNumber,
-                                UnitCost = product.UnitCost,
-                                Description = product.Description,
-                                URL = product.URL,
-                                Image = product.Image,
-                                CreatedByUser = vendorId,
-                                Weight = product.Weight,
-                                Size = product.Size,
-                                Brand = product.Brand,
-                                Model = product.Model,
-                                Manufacturer = product.Manufacturer,
-                            };
+                                product2 = new Clothe
+                                               {
+                                                   Name = product.Name.Replace("&apos;", "'"),
+                                                   ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
+                                                   Number = product.ProductNumber,
+                                                   UnitCost = product.UnitCost,
+                                                   Description = product.Description,
+                                                   URL = product.URL,
+                                                   Image = product.Image,
+                                                   CreatedByUser = vendorId,
+                                                   Colour = product.Colours,
+                                                   Size = product.Size,
+                                                   Brand = product.Brand,
+                                               };
 
-                            db.Products.Add(product2);
-                            db.SaveChanges();
+                                product2.Categories.Add(subCategory);
+                                db.Products.Add(product2);
+                                db.SaveChanges();
+                            }
+                            else
+                            {
+                                product2.UnitCost = product.UnitCost;
+                                product2.Description = product.Description;
+                                product2.URL = product.URL;
+                                product2.Categories.Add(subCategory);
+                                db.SaveChanges();
+                            }
                         }
-                        else
+                        else if (categoryId == (int) Enums.ProductTypeEnum.HomeAndGardens)
                         {
-                            product2.UnitCost = product.UnitCost;
-                            product2.Description = product.Description;
-                            product2.URL = product.URL;
+                            HomeAndGarden product2 =
+                                db.Products.OfType<HomeAndGarden>().SingleOrDefault(
+                                    p =>
+                                    p.Name == productName &&
+                                    p.Number == product.ProductNumber);
+                            if (product2 == null)
+                            {
+                                product2 = new HomeAndGarden
+                                               {
+                                                   Name = product.Name.Replace("&apos;", "'"),
+                                                   ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
+                                                   Number = product.ProductNumber,
+                                                   UnitCost = product.UnitCost,
+                                                   Description = product.Description,
+                                                   URL = product.URL,
+                                                   Image = product.Image,
+                                                   CreatedByUser = vendorId,
+                                                   Weight = product.Weight,
+                                                   Size = product.Size,
+                                                   Brand = product.Brand,
+                                                   Model = product.Model,
+                                                   Manufacturer = product.Manufacturer,
+                                               };
 
-                            db.SaveChanges();
+                                product2.Categories.Add(subCategory);
+                                db.Products.Add(product2);
+                                db.SaveChanges();
+                            }
+                            else
+                            {
+                                product2.UnitCost = product.UnitCost;
+                                product2.Description = product.Description;
+                                product2.URL = product.URL;
+                                product2.Categories.Add(subCategory);
+                                db.SaveChanges();
+                            }
                         }
-
                         currentProduct++;
                         if (bw.CancellationPending)
                         {
                             e.Cancel = true;
                             break;
                         }
-                        else if (bw.WorkerReportsProgress && currentProduct % 100 == 0) bw.ReportProgress((int)(100 * currentProduct / countProducts));
+                        else if (bw.WorkerReportsProgress && currentProduct%100 == 0)
+                            bw.ReportProgress((int) (100*currentProduct/countProducts));
                     }
-                  // rc = true;
                 }
             }
             catch (Exception ex)
@@ -278,7 +335,6 @@ namespace ImportProducts
                 //message = ex.Message;
                 log.Error("Error error logging", ex);
             }
-            //return rc;
         }
     }
 }
