@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Data.Entity.Validation;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -161,7 +165,7 @@ namespace ImportProducts
             Form1.activeStep = "Import records..";
             bw.ReportProgress(0);           // start new step of background process
 
-            var products =
+            var xmlProducts =
                 from el in StreamRootChildDoc(_URL)
                 select new
                 {
@@ -183,6 +187,10 @@ namespace ImportProducts
                     Colours = (string)el.Element("fields").Element("Colours"),
                     Department = (string)el.Element("fields").Element("Department"),
                     Gender = (string)el.Element("fields").Element("Gender"),
+                    Image1 = (string)el.Element("fields").Element("Image1_Large"),
+                    Image2 = (string)el.Element("fields").Element("Image2_Large"),
+                    Image3 = (string)el.Element("fields").Element("Image3_Large"),
+                    Image4 = (string)el.Element("fields").Element("Image4_Large"),
                 };
 
             foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
@@ -206,36 +214,39 @@ namespace ImportProducts
             }
             if (!String.IsNullOrEmpty(countryFilter))
             {
-                products = products.Where(p => p.Country == countryFilter);
+                xmlProducts = xmlProducts.Where(p => p.Country == countryFilter);
             }
 
             if (!String.IsNullOrEmpty(cityFilter))
             {
-                products = products.Where(p => p.City == cityFilter);
+                xmlProducts = xmlProducts.Where(p => p.City == cityFilter);
             }
 
-            long countProducts = products.Count();
+            long countProducts = xmlProducts.Count();
             long currentProduct = 0;
 
             try
             {
                 using (SelectedHotelsEntities db = new SelectedHotelsEntities())
+                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
                 {
+                    destinationConnection.Open();
+
                     var category = db.Categories.Find(categoryId);
 
-                    foreach (var product in products)
+                    foreach (var xmlProduct in xmlProducts)
                     {
-                        string productName = product.Name.Replace("&apos;", "'");
+                        string productName = xmlProduct.Name.Replace("&apos;", "'");
                         Console.WriteLine(productName); // debug print
 
                         Category subCategory = db.Categories.SingleOrDefault(
                             c =>
-                            c.Name == product.Category &&
+                            c.Name == xmlProduct.Category &&
                             c.ParentId == categoryId);
                         if (subCategory == null)
                         {
                             subCategory = new Category();
-                            subCategory.Name = product.Category;
+                            subCategory.Name = xmlProduct.Category;
                             subCategory.ParentId = categoryId;
                             subCategory.IsDeleted = false;
                             db.Categories.Add(subCategory);
@@ -244,77 +255,172 @@ namespace ImportProducts
 
                         if (category.Name == "Clothes")
                         {
-                            Clothe product2 =
+                            Clothe product =
                                 db.Products.OfType<Clothe>().SingleOrDefault(
                                     p =>
                                     p.Name == productName &&
-                                    p.Number == product.ProductNumber);
-                            if (product2 == null)
+                                    p.Number == xmlProduct.ProductNumber);
+                            if (product == null)
                             {
-                                product2 = new Clothe
+                                product = new Clothe
                                                {
-                                                   Name = product.Name.Replace("&apos;", "'"),
+                                                   Name = xmlProduct.Name.Replace("&apos;", "'"),
                                                    ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
-                                                   Number = product.ProductNumber,
-                                                   UnitCost = product.UnitCost,
-                                                   Description = product.Description,
-                                                   URL = product.URL,
-                                                   Image = product.Image,
+                                                   Number = xmlProduct.ProductNumber,
+                                                   UnitCost = xmlProduct.UnitCost,
+                                                   Description = xmlProduct.Description,
+                                                   URL = xmlProduct.URL,
+                                                   Image = xmlProduct.Image,
                                                    CreatedByUser = vendorId,
-                                                   Colour = product.Colours,
-                                                   Size = product.Size,
-                                                   Brand = product.Brand,
+                                                   Colour = xmlProduct.Colours,
+                                                   Size = xmlProduct.Size,
+                                                   Brand = xmlProduct.Brand,
                                                };
 
-                                product2.Categories.Add(subCategory);
-                                db.Products.Add(product2);
+                                product.Categories.Add(subCategory);
+                                db.Products.Add(product);
                                 db.SaveChanges();
                             }
                             else
                             {
-                                product2.UnitCost = product.UnitCost;
-                                product2.Description = product.Description;
-                                product2.URL = product.URL;
-                                product2.Categories.Add(subCategory);
+                                product.UnitCost = xmlProduct.UnitCost;
+                                product.Description = xmlProduct.Description;
+                                product.URL = xmlProduct.URL;
+                                if (!product.Categories.Contains(subCategory))
+                                {
+                                    product.Categories.Add(subCategory);
+                                }
+                                db.SaveChanges();
+                            }
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("DELETE");
+                            sb.AppendLine("FROM         Cowrie_ProductImages");
+                            sb.AppendLine("WHERE     ProductID = @ProductID");
+                            SqlCommand commandDelete =
+                                new SqlCommand(
+                                    sb.ToString(),
+                                    destinationConnection);
+                            commandDelete.Parameters.Add("@ProductID", SqlDbType.Int);
+                            commandDelete.Parameters["@ProductID"].Value = product.Id;
+                            commandDelete.ExecuteNonQuery();
+
+                            bool isChanged = false;
+                            if (xmlProduct.Image1 != null)
+                            {
+                                ProductImage productImage = new ProductImage();
+                                productImage.URL = xmlProduct.Image1;
+                                product.ProductImages.Add(productImage);
+                                isChanged = true;
+                            }
+                            if (xmlProduct.Image2 != null)
+                            {
+                                ProductImage productImage = new ProductImage();
+                                productImage.URL = xmlProduct.Image2;
+                                product.ProductImages.Add(productImage);
+                                isChanged = true;
+                            }
+                            if (xmlProduct.Image3 != null)
+                            {
+                                ProductImage productImage = new ProductImage();
+                                productImage.URL = xmlProduct.Image3;
+                                product.ProductImages.Add(productImage);
+                                isChanged = true;
+                            }
+                            if (xmlProduct.Image4 != null)
+                            {
+                                ProductImage productImage = new ProductImage();
+                                productImage.URL = xmlProduct.Image4;
+                                product.ProductImages.Add(productImage);
+                                isChanged = true;
+                            }
+                            if (isChanged)
+                            {
                                 db.SaveChanges();
                             }
                         }
                         else if (categoryId == (int) Enums.ProductTypeEnum.HomeAndGardens)
                         {
-                            HomeAndGarden product2 =
+                            HomeAndGarden product =
                                 db.Products.OfType<HomeAndGarden>().SingleOrDefault(
                                     p =>
                                     p.Name == productName &&
-                                    p.Number == product.ProductNumber);
-                            if (product2 == null)
+                                    p.Number == xmlProduct.ProductNumber);
+                            if (product == null)
                             {
-                                product2 = new HomeAndGarden
+                                product = new HomeAndGarden
                                                {
-                                                   Name = product.Name.Replace("&apos;", "'"),
+                                                   Name = xmlProduct.Name.Replace("&apos;", "'"),
                                                    ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
-                                                   Number = product.ProductNumber,
-                                                   UnitCost = product.UnitCost,
-                                                   Description = product.Description,
-                                                   URL = product.URL,
-                                                   Image = product.Image,
+                                                   Number = xmlProduct.ProductNumber,
+                                                   UnitCost = xmlProduct.UnitCost,
+                                                   Description = xmlProduct.Description,
+                                                   URL = xmlProduct.URL,
+                                                   Image = xmlProduct.Image,
                                                    CreatedByUser = vendorId,
-                                                   Weight = product.Weight,
-                                                   Size = product.Size,
-                                                   Brand = product.Brand,
-                                                   Model = product.Model,
-                                                   Manufacturer = product.Manufacturer,
+                                                   Weight = xmlProduct.Weight,
+                                                   Size = xmlProduct.Size,
+                                                   Brand = xmlProduct.Brand,
+                                                   Model = xmlProduct.Model,
+                                                   Manufacturer = xmlProduct.Manufacturer,
                                                };
 
-                                product2.Categories.Add(subCategory);
-                                db.Products.Add(product2);
+                                product.Categories.Add(subCategory);
+                                db.Products.Add(product);
                                 db.SaveChanges();
                             }
                             else
                             {
-                                product2.UnitCost = product.UnitCost;
-                                product2.Description = product.Description;
-                                product2.URL = product.URL;
-                                product2.Categories.Add(subCategory);
+                                product.UnitCost = xmlProduct.UnitCost;
+                                product.Description = xmlProduct.Description;
+                                product.URL = xmlProduct.URL;
+                                product.Categories.Add(subCategory);
+                                db.SaveChanges();
+                            }
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("DELETE");
+                            sb.AppendLine("FROM         Cowrie_ProductImages");
+                            sb.AppendLine("WHERE     ProductID = @ProductID");
+                            SqlCommand commandDelete =
+                                new SqlCommand(
+                                    sb.ToString(),
+                                    destinationConnection);
+                            commandDelete.Parameters.Add("@ProductID", SqlDbType.Int);
+                            commandDelete.Parameters["@ProductID"].Value = product.Id;
+                            commandDelete.ExecuteNonQuery();
+
+                            bool isChanged = false;
+                            if (xmlProduct.Image1 != null)
+                            {
+                                ProductImage productImage = new ProductImage();
+                                productImage.URL = xmlProduct.Image1;
+                                product.ProductImages.Add(productImage);
+                                isChanged = true;
+                            }
+                            if (xmlProduct.Image2 != null)
+                            {
+                                ProductImage productImage = new ProductImage();
+                                productImage.URL = xmlProduct.Image2;
+                                product.ProductImages.Add(productImage);
+                                isChanged = true;
+                            }
+                            if (xmlProduct.Image3 != null)
+                            {
+                                ProductImage productImage = new ProductImage();
+                                productImage.URL = xmlProduct.Image3;
+                                product.ProductImages.Add(productImage);
+                                isChanged = true;
+                            }
+                            if (xmlProduct.Image4 != null)
+                            {
+                                ProductImage productImage = new ProductImage();
+                                productImage.URL = xmlProduct.Image4;
+                                product.ProductImages.Add(productImage);
+                                isChanged = true;
+                            }
+                            if (isChanged)
+                            {
                                 db.SaveChanges();
                             }
                         }
@@ -326,6 +432,17 @@ namespace ImportProducts
                         }
                         else if (bw.WorkerReportsProgress && currentProduct%100 == 0)
                             bw.ReportProgress((int) (100*currentProduct/countProducts));
+                    }
+                }
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName,
+                                               validationError.ErrorMessage);
                     }
                 }
             }
