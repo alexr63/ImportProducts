@@ -41,7 +41,6 @@
             this.labelStatus = new System.Windows.Forms.Label();
             this.labelName = new System.Windows.Forms.Label();
             this.labelCategory = new System.Windows.Forms.Label();
-            this.textBoxCategory = new System.Windows.Forms.TextBox();
             this.labelPortalId = new System.Windows.Forms.Label();
             this.numericUpDownPortalId = new System.Windows.Forms.NumericUpDown();
             this.labelVendorId = new System.Windows.Forms.Label();
@@ -52,6 +51,7 @@
             this.comboBoxCountry = new System.Windows.Forms.ComboBox();
             this.labelCityFilter = new System.Windows.Forms.Label();
             this.textBoxCity = new System.Windows.Forms.TextBox();
+            this.comboBoxCategory = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortalId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVendorId)).BeginInit();
@@ -72,7 +72,7 @@
             this.buttonOK.Location = new System.Drawing.Point(216, 326);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 18;
+            this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
             // 
@@ -83,7 +83,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(298, 326);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 19;
+            this.buttonCancel.TabIndex = 8;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -105,7 +105,7 @@
             this.textBoxURL.Location = new System.Drawing.Point(167, 37);
             this.textBoxURL.Name = "textBoxURL";
             this.textBoxURL.Size = new System.Drawing.Size(400, 20);
-            this.textBoxURL.TabIndex = 3;
+            this.textBoxURL.TabIndex = 0;
             this.textBoxURL.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxURL_Validating);
             // 
             // label3
@@ -159,14 +159,6 @@
             this.labelCategory.TabIndex = 4;
             this.labelCategory.Text = "Category";
             // 
-            // textBoxCategory
-            // 
-            this.textBoxCategory.Location = new System.Drawing.Point(167, 68);
-            this.textBoxCategory.Name = "textBoxCategory";
-            this.textBoxCategory.Size = new System.Drawing.Size(100, 20);
-            this.textBoxCategory.TabIndex = 5;
-            this.textBoxCategory.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxCategory_Validating);
-            // 
             // labelPortalId
             // 
             this.labelPortalId.AutoSize = true;
@@ -181,7 +173,7 @@
             this.numericUpDownPortalId.Location = new System.Drawing.Point(167, 99);
             this.numericUpDownPortalId.Name = "numericUpDownPortalId";
             this.numericUpDownPortalId.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDownPortalId.TabIndex = 7;
+            this.numericUpDownPortalId.TabIndex = 2;
             // 
             // labelVendorId
             // 
@@ -197,7 +189,7 @@
             this.numericUpDownVendorId.Location = new System.Drawing.Point(167, 130);
             this.numericUpDownVendorId.Name = "numericUpDownVendorId";
             this.numericUpDownVendorId.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDownVendorId.TabIndex = 9;
+            this.numericUpDownVendorId.TabIndex = 3;
             // 
             // labelAdvancedCategoryRoot
             // 
@@ -213,7 +205,7 @@
             this.textBoxAdvancedCategoryRoot.Location = new System.Drawing.Point(167, 161);
             this.textBoxAdvancedCategoryRoot.Name = "textBoxAdvancedCategoryRoot";
             this.textBoxAdvancedCategoryRoot.Size = new System.Drawing.Size(100, 20);
-            this.textBoxAdvancedCategoryRoot.TabIndex = 11;
+            this.textBoxAdvancedCategoryRoot.TabIndex = 4;
             this.textBoxAdvancedCategoryRoot.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxAdvancedCategoryRoot_Validating);
             // 
             // labelCountryFilter
@@ -232,7 +224,7 @@
             this.comboBoxCountry.Location = new System.Drawing.Point(167, 190);
             this.comboBoxCountry.Name = "comboBoxCountry";
             this.comboBoxCountry.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxCountry.TabIndex = 13;
+            this.comboBoxCountry.TabIndex = 5;
             this.comboBoxCountry.ValueMember = "Id";
             // 
             // labelCityFilter
@@ -249,7 +241,18 @@
             this.textBoxCity.Location = new System.Drawing.Point(167, 223);
             this.textBoxCity.Name = "textBoxCity";
             this.textBoxCity.Size = new System.Drawing.Size(100, 20);
-            this.textBoxCity.TabIndex = 22;
+            this.textBoxCity.TabIndex = 6;
+            // 
+            // comboBoxCategory
+            // 
+            this.comboBoxCategory.DisplayMember = "Name";
+            this.comboBoxCategory.FormattingEnabled = true;
+            this.comboBoxCategory.Location = new System.Drawing.Point(167, 66);
+            this.comboBoxCategory.Name = "comboBoxCategory";
+            this.comboBoxCategory.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxCategory.TabIndex = 1;
+            this.comboBoxCategory.ValueMember = "Id";
+            this.comboBoxCategory.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxCategory_Validating);
             // 
             // EditProperties
             // 
@@ -258,6 +261,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(589, 359);
+            this.Controls.Add(this.comboBoxCategory);
             this.Controls.Add(this.textBoxCity);
             this.Controls.Add(this.labelCityFilter);
             this.Controls.Add(this.comboBoxCountry);
@@ -268,7 +272,6 @@
             this.Controls.Add(this.labelVendorId);
             this.Controls.Add(this.numericUpDownPortalId);
             this.Controls.Add(this.labelPortalId);
-            this.Controls.Add(this.textBoxCategory);
             this.Controls.Add(this.labelCategory);
             this.Controls.Add(this.labelName);
             this.Controls.Add(this.labelStatus);
@@ -306,7 +309,6 @@
         private System.Windows.Forms.Label labelPortalId;
         private System.Windows.Forms.Label labelCategory;
         public System.Windows.Forms.NumericUpDown numericUpDownPortalId;
-        public System.Windows.Forms.TextBox textBoxCategory;
         private System.Windows.Forms.Label labelVendorId;
         public System.Windows.Forms.NumericUpDown numericUpDownVendorId;
         private System.Windows.Forms.Label labelAdvancedCategoryRoot;
@@ -315,5 +317,6 @@
         public System.Windows.Forms.ComboBox comboBoxCountry;
         private System.Windows.Forms.Label labelCityFilter;
         public System.Windows.Forms.TextBox textBoxCity;
+        public System.Windows.Forms.ComboBox comboBoxCategory;
     }
 }

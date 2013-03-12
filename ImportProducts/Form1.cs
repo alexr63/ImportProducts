@@ -180,7 +180,7 @@ namespace ImportProducts
             EditProperties editProperties = new EditProperties();
             editProperties.labelName.Text = selectedFeed.Name;
             editProperties.textBoxURL.Text = selectedFeed.URL;
-            editProperties.textBoxCategory.Text = selectedFeed.Category;
+            editProperties.comboBoxCategory.Text = selectedFeed.Category;
             editProperties.numericUpDownPortalId.Value = selectedFeed.PortalId;
             editProperties.numericUpDownVendorId.Value = selectedFeed.VendorId;
             editProperties.textBoxAdvancedCategoryRoot.Text = selectedFeed.AdvancedCategoryRoot;
@@ -199,7 +199,7 @@ namespace ImportProducts
                 context = new SelectedHotelsEntities();
                 Feed feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
                 feed.URL = editProperties.textBoxURL.Text;
-                feed.Category = editProperties.textBoxCategory.Text;
+                feed.Category = editProperties.comboBoxCategory.Text;
                 feed.PortalId = (int)editProperties.numericUpDownPortalId.Value;
                 feed.VendorId = (int)editProperties.numericUpDownVendorId.Value;
                 feed.AdvancedCategoryRoot = editProperties.textBoxAdvancedCategoryRoot.Text;

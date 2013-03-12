@@ -22,6 +22,13 @@ namespace ImportProducts
             Location emptyCountry = new Location { Id = 0, Name = String.Empty };
             countries.Insert(0, emptyCountry);
             comboBoxCountry.DataSource = countries;
+
+            List<ProductType> productTypes = (from t in db.ProductTypes
+                                              orderby t.Name
+                                              select t).ToList();
+            ProductType emptyProductType = new ProductType {Id = 0, Name = "please select"};
+            productTypes.Insert(0, emptyProductType);
+            comboBoxCategory.DataSource = productTypes;
         }
 
         private void textBoxURL_Validating(object sender, CancelEventArgs e)
@@ -33,18 +40,6 @@ namespace ImportProducts
             else
             {
                 errorProvider1.SetError(textBoxURL, "Please enter URL");
-            }
-        }
-
-        private void textBoxCategory_Validating(object sender, CancelEventArgs e)
-        {
-            if (textBoxCategory.Text.Length > 0)
-            {
-                errorProvider1.SetError(textBoxCategory, "");
-            }
-            else
-            {
-                errorProvider1.SetError(textBoxCategory, "Please enter Category");
             }
         }
 
@@ -60,9 +55,16 @@ namespace ImportProducts
             }
         }
 
-        private void comboBoxCountry_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBoxCategory_Validating(object sender, CancelEventArgs e)
         {
-
+            if (comboBoxCategory.SelectedIndex != 0)
+            {
+                errorProvider1.SetError(comboBoxCategory, "");
+            }
+            else
+            {
+                errorProvider1.SetError(comboBoxCategory, "Please select Category");
+            }
         }
     }
 }
