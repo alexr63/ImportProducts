@@ -14,11 +14,12 @@ namespace ImportProducts
         public EditProperties()
         {
             InitializeComponent();
-            ImportProductsEntities db = new ImportProductsEntities();
-            List<Country> countries = (from c in db.Countries
-                                       orderby c.Name
-                                       select c).ToList();
-            Country emptyCountry = new Country {Id = 0, Name = String.Empty};
+            SelectedHotelsEntities db = new SelectedHotelsEntities();
+            List<Location> countries = (from l in db.Locations
+                                        where l.ParentId == null
+                                       orderby l.Name
+                                       select l).ToList();
+            Location emptyCountry = new Location { Id = 0, Name = String.Empty };
             countries.Insert(0, emptyCountry);
             comboBoxCountry.DataSource = countries;
         }
@@ -61,19 +62,7 @@ namespace ImportProducts
 
         private void comboBoxCountry_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int result;
-            if (comboBoxCountry.SelectedValue != null && int.TryParse(comboBoxCountry.SelectedValue.ToString(), out result))
-            {
-                int countryId = int.Parse(comboBoxCountry.SelectedValue.ToString());
-                ImportProductsEntities db = new ImportProductsEntities();
-                List<City> cities = (from c in db.Cities
-                                     where c.CountryId == countryId
-                                     orderby c.Name
-                                     select c).ToList();
-                City emptyCity = new City { Id = 0, Name = String.Empty, CountryId = 0 };
-                cities.Insert(0, emptyCity);
-                comboBoxCity.DataSource = cities;
-            }
+
         }
     }
 }

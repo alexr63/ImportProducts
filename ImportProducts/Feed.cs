@@ -16,6 +16,7 @@ namespace ImportProducts
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public string URL { get; set; }
         public Nullable<System.DateTime> LastRun { get; set; }
         public string Status { get; set; }
@@ -23,7 +24,6 @@ namespace ImportProducts
         public string Category { get; set; }
         public int VendorId { get; set; }
         public string AdvancedCategoryRoot { get; set; }
-        public string Description { get; set; }
         public string CountryFilter { get; set; }
         public string CityFilter { get; set; }
         public Nullable<int> StepImport { get; set; }

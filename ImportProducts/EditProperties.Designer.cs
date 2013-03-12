@@ -51,7 +51,7 @@
             this.labelCountryFilter = new System.Windows.Forms.Label();
             this.comboBoxCountry = new System.Windows.Forms.ComboBox();
             this.labelCityFilter = new System.Windows.Forms.Label();
-            this.comboBoxCity = new System.Windows.Forms.ComboBox();
+            this.textBoxCity = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortalId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVendorId)).BeginInit();
@@ -234,7 +234,6 @@
             this.comboBoxCountry.Size = new System.Drawing.Size(121, 21);
             this.comboBoxCountry.TabIndex = 13;
             this.comboBoxCountry.ValueMember = "Id";
-            this.comboBoxCountry.SelectedIndexChanged += new System.EventHandler(this.comboBoxCountry_SelectedIndexChanged);
             // 
             // labelCityFilter
             // 
@@ -245,15 +244,12 @@
             this.labelCityFilter.TabIndex = 20;
             this.labelCityFilter.Text = "City Filter";
             // 
-            // comboBoxCity
+            // textBoxCity
             // 
-            this.comboBoxCity.DisplayMember = "Name";
-            this.comboBoxCity.FormattingEnabled = true;
-            this.comboBoxCity.Location = new System.Drawing.Point(166, 223);
-            this.comboBoxCity.Name = "comboBoxCity";
-            this.comboBoxCity.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxCity.TabIndex = 21;
-            this.comboBoxCity.ValueMember = "Id";
+            this.textBoxCity.Location = new System.Drawing.Point(167, 223);
+            this.textBoxCity.Name = "textBoxCity";
+            this.textBoxCity.Size = new System.Drawing.Size(100, 20);
+            this.textBoxCity.TabIndex = 22;
             // 
             // EditProperties
             // 
@@ -262,7 +258,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(589, 359);
-            this.Controls.Add(this.comboBoxCity);
+            this.Controls.Add(this.textBoxCity);
             this.Controls.Add(this.labelCityFilter);
             this.Controls.Add(this.comboBoxCountry);
             this.Controls.Add(this.labelCountryFilter);
@@ -318,6 +314,6 @@
         private System.Windows.Forms.Label labelCountryFilter;
         public System.Windows.Forms.ComboBox comboBoxCountry;
         private System.Windows.Forms.Label labelCityFilter;
-        public System.Windows.Forms.ComboBox comboBoxCity;
+        public System.Windows.Forms.TextBox textBoxCity;
     }
 }

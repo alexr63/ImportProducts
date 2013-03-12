@@ -186,18 +186,18 @@ namespace ImportProducts
                            };
 
             long countProducts = xmlProducts.Count();
-            using (ImportProductsEntities db = new ImportProductsEntities())
+            using (SelectedHotelsEntities db = new SelectedHotelsEntities())
             {
                 long currentProduct = 0;
                 foreach (var xmlProduct in xmlProducts)
                 {
                     if (!String.IsNullOrEmpty(xmlProduct.Country))
                     {
-                        var country = db.Countries.SingleOrDefault(c => c.Name == xmlProduct.Country);
+                        var country = db.Locations.SingleOrDefault(l => l.Name == xmlProduct.Country && l.ParentId == null);
                         if (country == null)
                         {
-                            country = new Country { Name = xmlProduct.Country };
-                            db.Countries.Add(country);
+                            country = new Location { Name = xmlProduct.Country };
+                            db.Locations.Add(country);
                             db.SaveChanges();
                         }
                         string hotelCity = xmlProduct.City;
@@ -205,11 +205,11 @@ namespace ImportProducts
                         {
                             hotelCity = xmlProduct.City.Substring(0, 47).PadRight(50, '.');
                         }
-                        var city = db.Cities.SingleOrDefault(c => c.Name == hotelCity && c.CountryId == country.Id);
+                        var city = db.Locations.SingleOrDefault(l => l.Name == hotelCity && l.ParentId == country.Id);
                         if (city == null)
                         {
-                            city = new City {Name = hotelCity, CountryId = country.Id};
-                            db.Cities.Add(city);
+                            city = new Location {Name = hotelCity, ParentId = country.Id};
+                            db.Locations.Add(city);
                             db.SaveChanges();
                         }
                     }

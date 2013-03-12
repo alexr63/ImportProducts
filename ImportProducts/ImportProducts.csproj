@@ -65,18 +65,12 @@
     <Compile Include="Category.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
-    <Compile Include="City.cs">
-      <DependentUpon>ImportProducts.tt</DependentUpon>
-    </Compile>
     <Compile Include="Clothe.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
-    <Compile Include="Country.cs">
-      <DependentUpon>ImportProducts.tt</DependentUpon>
-    </Compile>
     <Compile Include="Enums.cs" />
     <Compile Include="Feed.cs">
-      <DependentUpon>ImportProducts.tt</DependentUpon>
+      <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
     <Compile Include="HomeAndGarden.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
@@ -84,18 +78,11 @@
     <Compile Include="Hotel.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
-    <Compile Include="ImportProducts.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ImportProducts.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ImportProducts.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ImportProducts.tt</DependentUpon>
-    </Compile>
     <Compile Include="ImportTradeDoublerProducts.cs" />
     <Compile Include="ImportWebgainsProducts.cs" />
+    <Compile Include="ListItem.cs">
+      <DependentUpon>SelectedHotels.tt</DependentUpon>
+    </Compile>
     <Compile Include="Location.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
@@ -137,11 +124,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="ImportLaterooms.cs" />
-    <Compile Include="ImportProducts.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ImportProducts.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common.cs" />
@@ -161,22 +143,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EntityDeploy Include="ImportProducts.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ImportProducts.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <None Include="App.Config">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="ImportProducts.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ImportProducts.Context.cs</LastGenOutput>
-      <DependentUpon>ImportProducts.edmx</DependentUpon>
-    </None>
-    <None Include="ImportProducts.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ImportProducts.cs</LastGenOutput>
-      <DependentUpon>ImportProducts.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\ImportProductsEntities.datasource" />

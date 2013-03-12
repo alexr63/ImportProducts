@@ -34,7 +34,7 @@ namespace ImportProducts
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private ImportProductsEntities context;
+        private SelectedHotelsEntities context;
         
         private Feed feed;
 
@@ -81,7 +81,7 @@ namespace ImportProducts
 
         private void BindData()
         {
-            context = new ImportProductsEntities();
+            context = new SelectedHotelsEntities();
             var query = context.Feeds;
             dataGridView1.DataSource = query.ToList();
         }
@@ -100,7 +100,7 @@ namespace ImportProducts
                 keyDownload = selectedFeed.Name; 
                 if (!bgw.Keys.Contains(keyDownload))
                 {
-                    context = new ImportProductsEntities();
+                    context = new SelectedHotelsEntities();
                     feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
                     bgProcesses.Add(keyDownload, feed);
                     // set parameters for background process here if lists of parameters are the same for different rows in Feeds
@@ -185,7 +185,7 @@ namespace ImportProducts
             editProperties.numericUpDownVendorId.Value = selectedFeed.VendorId;
             editProperties.textBoxAdvancedCategoryRoot.Text = selectedFeed.AdvancedCategoryRoot;
             editProperties.comboBoxCountry.Text = selectedFeed.CountryFilter;
-            editProperties.comboBoxCity.Text = selectedFeed.CityFilter;
+            editProperties.textBoxCity.Text = selectedFeed.CityFilter;
             if (selectedFeed.LastRun != null)
             {
                 editProperties.labelLastRun.Text = selectedFeed.LastRun.Value.ToString();
@@ -196,7 +196,7 @@ namespace ImportProducts
             }
             if (editProperties.ShowDialog(this) == DialogResult.OK)
             {
-                context = new ImportProductsEntities();
+                context = new SelectedHotelsEntities();
                 Feed feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
                 feed.URL = editProperties.textBoxURL.Text;
                 feed.Category = editProperties.textBoxCategory.Text;
@@ -204,7 +204,7 @@ namespace ImportProducts
                 feed.VendorId = (int)editProperties.numericUpDownVendorId.Value;
                 feed.AdvancedCategoryRoot = editProperties.textBoxAdvancedCategoryRoot.Text;
                 feed.CountryFilter = editProperties.comboBoxCountry.Text;
-                feed.CityFilter = editProperties.comboBoxCity.Text;
+                feed.CityFilter = editProperties.textBoxCity.Text;
                 feed.StepImport = null;
                 feed.StepAddToCategories = null;
                 feed.StepAddImages = null;
@@ -222,7 +222,7 @@ namespace ImportProducts
 
             DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
             var selectedFeed = selectedRow.DataBoundItem as Feed;
-            context = new ImportProductsEntities();
+            context = new SelectedHotelsEntities();
             feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
             if (feed.Name == "Laterooms" && (feed.StepImport != null || feed.StepAddToCategories != null || feed.StepAddImages != null))
             {
@@ -443,7 +443,7 @@ namespace ImportProducts
                 string keyDownload = "DELETE_" + selectedFeed.Name;    
                 if (!bgw.Keys.Contains(keyDownload))
                 {
-                    context = new ImportProductsEntities();
+                    context = new SelectedHotelsEntities();
                     feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
                     bgProcesses.Add(keyDownload, feed);
                     workD = new BackGroundWorkerDelegateWork(DeleteProducts);
@@ -474,7 +474,7 @@ namespace ImportProducts
             {
                 bw.ReportProgress(0);           // start new step of background process
 
-                using (var context = new ImportProductsEntities())
+                using (var context = new SelectedHotelsEntities())
                 {
                     Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
                     feed.StepImport = null;
@@ -528,7 +528,7 @@ namespace ImportProducts
         {
             DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
             var selectedFeed = selectedRow.DataBoundItem as Feed;
-            context = new ImportProductsEntities();
+            context = new SelectedHotelsEntities();
             feed = context.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
             StartWorkerProcess(feed.StepImport, feed.StepAddToCategories, feed.StepAddImages);
         }
@@ -545,7 +545,7 @@ namespace ImportProducts
             newFeed.Category = selectedFeed.Category;
             newFeed.VendorId = selectedFeed.VendorId;
             newFeed.AdvancedCategoryRoot = selectedFeed.AdvancedCategoryRoot;
-            using (ImportProductsEntities db = new ImportProductsEntities())
+            using (SelectedHotelsEntities db = new SelectedHotelsEntities())
             {
                 db.Feeds.Add(newFeed);
                 db.SaveChanges();
@@ -559,7 +559,7 @@ namespace ImportProducts
             {
                 DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
                 var selectedFeed = selectedRow.DataBoundItem as Feed;
-                using (ImportProductsEntities db = new ImportProductsEntities())
+                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
                 {
                     var feed = db.Feeds.SingleOrDefault(f => f.Id == selectedFeed.Id);
                     if (feed != null)
