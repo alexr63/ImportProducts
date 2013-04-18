@@ -10,32 +10,13 @@
           <EntitySet Name="Cowrie_Categories" EntityType="SelectedHotelsModel.Store.Cowrie_Categories" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_CategoryProducts" EntityType="SelectedHotelsModel.Store.Cowrie_CategoryProducts" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_Clothes" EntityType="SelectedHotelsModel.Store.Cowrie_Clothes" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Cowrie_Feeds" EntityType="SelectedHotelsModel.Store.Cowrie_Feeds" store:Type="Tables" store:Schema="dbo" store:Name="Cowrie_Feeds">
-            <DefiningQuery>SELECT 
-      [Cowrie_Feeds].[Id] AS [Id], 
-      [Cowrie_Feeds].[Name] AS [Name], 
-      [Cowrie_Feeds].[Description] AS [Description], 
-      [Cowrie_Feeds].[URL] AS [URL], 
-      [Cowrie_Feeds].[LastRun] AS [LastRun], 
-      [Cowrie_Feeds].[Status] AS [Status], 
-      [Cowrie_Feeds].[PortalId] AS [PortalId], 
-      [Cowrie_Feeds].[Category] AS [Category], 
-      [Cowrie_Feeds].[VendorId] AS [VendorId], 
-      [Cowrie_Feeds].[AdvancedCategoryRoot] AS [AdvancedCategoryRoot], 
-      [Cowrie_Feeds].[CountryFilter] AS [CountryFilter], 
-      [Cowrie_Feeds].[CityFilter] AS [CityFilter], 
-      [Cowrie_Feeds].[StepImport] AS [StepImport], 
-      [Cowrie_Feeds].[StepAddToCategories] AS [StepAddToCategories], 
-      [Cowrie_Feeds].[StepAddImages] AS [StepAddImages]
-      FROM [dbo].[Cowrie_Feeds] AS [Cowrie_Feeds]</DefiningQuery>
-          </EntitySet>
+          <EntitySet Name="Cowrie_Feeds" EntityType="SelectedHotelsModel.Store.Cowrie_Feeds" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_HomeAndGardens" EntityType="SelectedHotelsModel.Store.Cowrie_HomeAndGardens" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_Hotels" EntityType="SelectedHotelsModel.Store.Cowrie_Hotels" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_Locations" EntityType="SelectedHotelsModel.Store.Cowrie_Locations" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_ProductImages" EntityType="SelectedHotelsModel.Store.Cowrie_ProductImages" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_Products" EntityType="SelectedHotelsModel.Store.Cowrie_Products" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Cowrie_ProductTypes" EntityType="SelectedHotelsModel.Store.Cowrie_ProductTypes" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Lists" EntityType="SelectedHotelsModel.Store.Lists" store:Type="Tables" Schema="dbo" />
           <AssociationSet Name="FK_Cowrie_Books_Cowrie_Products" Association="SelectedHotelsModel.Store.FK_Cowrie_Books_Cowrie_Products">
             <End Role="Cowrie_Products" EntitySet="Cowrie_Products" />
             <End Role="Cowrie_Books" EntitySet="Cowrie_Books" />
@@ -201,26 +182,6 @@
           </Key>
           <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="Lists">
-          <Key>
-            <PropertyRef Name="EntryID" />
-          </Key>
-          <Property Name="EntryID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="ListName" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Value" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="Text" Type="nvarchar" Nullable="false" MaxLength="150" />
-          <Property Name="ParentID" Type="int" Nullable="false" />
-          <Property Name="Level" Type="int" Nullable="false" />
-          <Property Name="SortOrder" Type="int" Nullable="false" />
-          <Property Name="DefinitionID" Type="int" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" MaxLength="500" />
-          <Property Name="PortalID" Type="int" Nullable="false" />
-          <Property Name="SystemList" Type="bit" Nullable="false" />
-          <Property Name="CreatedByUserID" Type="int" />
-          <Property Name="CreatedOnDate" Type="datetime" />
-          <Property Name="LastModifiedByUserID" Type="int" />
-          <Property Name="LastModifiedOnDate" Type="datetime" />
         </EntityType>
         <Association Name="FK_Cowrie_Books_Cowrie_Products">
           <End Role="Cowrie_Products" Type="SelectedHotelsModel.Store.Cowrie_Products" Multiplicity="1">
@@ -403,7 +364,6 @@
             <End Role="Category1" EntitySet="Categories" />
           </AssociationSet>
           <EntitySet Name="Feeds" EntityType="SelectedHotelsModel.Feed" />
-          <EntitySet Name="ListItems" EntityType="SelectedHotelsModel.ListItem" />
         </EntityContainer>
         <EntityType Name="Category">
           <Key>
@@ -577,26 +537,6 @@
           <Property Type="Int32" Name="StepAddToCategories" />
           <Property Type="Int32" Name="StepAddImages" />
         </EntityType>
-        <EntityType Name="ListItem">
-          <Key>
-            <PropertyRef Name="EntryID" />
-          </Key>
-          <Property Type="Int32" Name="EntryID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="ListName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Value" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Text" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="ParentID" Nullable="false" />
-          <Property Type="Int32" Name="Level" Nullable="false" />
-          <Property Type="Int32" Name="SortOrder" Nullable="false" />
-          <Property Type="Int32" Name="DefinitionID" Nullable="false" />
-          <Property Type="String" Name="Description" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="PortalID" Nullable="false" />
-          <Property Type="Boolean" Name="SystemList" Nullable="false" />
-          <Property Type="Int32" Name="CreatedByUserID" />
-          <Property Type="DateTime" Name="CreatedOnDate" Precision="3" />
-          <Property Type="Int32" Name="LastModifiedByUserID" />
-          <Property Type="DateTime" Name="LastModifiedOnDate" Precision="3" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -715,27 +655,6 @@
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ListItems">
-            <EntityTypeMapping TypeName="SelectedHotelsModel.ListItem">
-              <MappingFragment StoreEntitySet="Lists">
-                <ScalarProperty Name="LastModifiedOnDate" ColumnName="LastModifiedOnDate" />
-                <ScalarProperty Name="LastModifiedByUserID" ColumnName="LastModifiedByUserID" />
-                <ScalarProperty Name="CreatedOnDate" ColumnName="CreatedOnDate" />
-                <ScalarProperty Name="CreatedByUserID" ColumnName="CreatedByUserID" />
-                <ScalarProperty Name="SystemList" ColumnName="SystemList" />
-                <ScalarProperty Name="PortalID" ColumnName="PortalID" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="DefinitionID" ColumnName="DefinitionID" />
-                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
-                <ScalarProperty Name="Level" ColumnName="Level" />
-                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
-                <ScalarProperty Name="Text" ColumnName="Text" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-                <ScalarProperty Name="ListName" ColumnName="ListName" />
-                <ScalarProperty Name="EntryID" ColumnName="EntryID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

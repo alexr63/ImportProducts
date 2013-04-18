@@ -31,6 +31,5 @@ namespace ImportProducts
         public DbSet<Location> Locations { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Feed> Feeds { get; set; }
-        public DbSet<ListItem> ListItems { get; set; }
     }
 }
