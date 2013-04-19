@@ -305,6 +305,7 @@ namespace ImportProducts
                             if (county != null)
                             {
                                 hotel.LocationId = county.Id;
+                                parentId = county.Id;
                             }
                             Location city =
                                 db.Locations.SingleOrDefault(
@@ -333,16 +334,6 @@ namespace ImportProducts
                         {
                             // no need to check for null vallue because of previous if
                             bool isChanged = false;
-                            if (hotel.Name != xmlProduct1.Name)
-                            {
-                                hotel.Name = xmlProduct1.Name;
-                                isChanged = true;
-                            }
-                            if (hotel.Number != xmlProduct1.ProductNumber)
-                            {
-                                hotel.Number = xmlProduct1.ProductNumber;
-                                isChanged = true;
-                            }
                             if (hotel.UnitCost != xmlProduct1.UnitCost)
                             {
                                 hotel.UnitCost = xmlProduct1.UnitCost;
@@ -361,6 +352,40 @@ namespace ImportProducts
                             if (hotel.Image != (string) xmlProduct1.Images.Element("url"))
                             {
                                 hotel.Image = (string) xmlProduct1.Images.Element("url");
+                                isChanged = true;
+                            }
+
+                            int? parentId = null;
+                            Location country =
+                                db.Locations.SingleOrDefault(
+                                    c =>
+                                    c.Name == xmlProduct1.Country &&
+                                    c.ParentId == null);
+                            if (country != null)
+                            {
+                                hotel.LocationId = country.Id;
+                                parentId = country.Id;
+                                isChanged = true;
+                            }
+                            Location county =
+                                db.Locations.SingleOrDefault(
+                                    c =>
+                                    c.Name == xmlProduct1.County &&
+                                    c.ParentId == parentId);
+                            if (county != null)
+                            {
+                                hotel.LocationId = county.Id;
+                                parentId = county.Id;
+                                isChanged = true;
+                            }
+                            Location city =
+                                db.Locations.SingleOrDefault(
+                                    c =>
+                                    c.Name == xmlProduct1.City &&
+                                    c.ParentId == parentId);
+                            if (city != null)
+                            {
+                                hotel.LocationId = city.Id;
                                 isChanged = true;
                             }
 
