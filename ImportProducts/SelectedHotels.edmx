@@ -97,19 +97,11 @@
           <Property Name="Brand" Type="nvarchar" MaxLength="50" />
           <Property Name="Style" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <!--Errors Found During Generation:
-      warning 6002: The table/view 'SelectedHotels.dbo.Cowrie_Feeds' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
-      -->
         <EntityType Name="Cowrie_Feeds">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="Name" />
-            <PropertyRef Name="PortalId" />
-            <PropertyRef Name="Category" />
-            <PropertyRef Name="VendorId" />
-            <PropertyRef Name="AdvancedCategoryRoot" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="URL" Type="nvarchar" MaxLength="1000" />
@@ -143,6 +135,8 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="LocationId" Type="int" />
           <Property Name="Rooms" Type="int" />
+          <Property Name="Star" Type="nvarchar" MaxLength="50" />
+          <Property Name="CustomerRating" Type="int" />
         </EntityType>
         <EntityType Name="Cowrie_Locations">
           <Key>
@@ -426,6 +420,8 @@
           <Property Type="Int32" Name="LocationId" />
           <Property Type="Int32" Name="Rooms" />
           <NavigationProperty Name="Location" Relationship="SelectedHotelsModel.FK_Cowrie_Hotels_Cowrie_Locations" FromRole="Cowrie_Hotels" ToRole="Cowrie_Locations" />
+          <Property Type="String" Name="Star" FixedLength="false" MaxLength="50" Unicode="true" />
+          <Property Type="Int32" Name="CustomerRating" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -515,13 +511,8 @@
         <EntityType Name="Feed">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="Name" />
-            <PropertyRef Name="PortalId" />
-            <PropertyRef Name="Category" />
-            <PropertyRef Name="VendorId" />
-            <PropertyRef Name="AdvancedCategoryRoot" />
           </Key>
-          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Description" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="URL" MaxLength="1000" FixedLength="false" Unicode="true" />
@@ -570,6 +561,8 @@
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(SelectedHotelsModel.Hotel)">
               <MappingFragment StoreEntitySet="Cowrie_Hotels">
+                <ScalarProperty Name="CustomerRating" ColumnName="CustomerRating" />
+                <ScalarProperty Name="Star" ColumnName="Star" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="LocationId" ColumnName="LocationId" />
                 <ScalarProperty Name="Rooms" ColumnName="Rooms" />

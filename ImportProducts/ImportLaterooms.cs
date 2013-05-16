@@ -169,7 +169,7 @@ namespace ImportProducts
 
             XmlSchemaSet schemas = new XmlSchemaSet();
             schemas.Add("", "Hotels_Standard.xsd");
-            Form1.activeStep = "Validating inpout..";
+            Form1.activeStep = "Validating input..";
             bw.ReportProgress(0); // start new step of background process
             XDocument xDoc = XDocument.Load(_URL);
             bool errors = false;
@@ -208,7 +208,9 @@ namespace ImportProducts
                                UnitCost = (decimal) el.Element("PricesFrom"),
                                Description = (string) el.Element("hotel_description"),
                                DescriptionHTML = (string) el.Element("alternate_description"),
-                               URL = (string) el.Element("hotel_link")
+                               URL = (string) el.Element("hotel_link"),
+                               Star = (string) el.Element("hotel_star"),
+                               CustomerRating = (string) el.Element("customerrating"),
                            };
 
             if (!String.IsNullOrEmpty(countryFilter))
@@ -281,6 +283,11 @@ namespace ImportProducts
                             hotel.Description = xmlProduct1.Description;
                             hotel.URL = xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
                             hotel.Image = (string) xmlProduct1.Images.Element("url");
+                            hotel.Star = xmlProduct1.Star;
+                            if (!String.IsNullOrEmpty(xmlProduct1.CustomerRating))
+                            {
+                                hotel.CustomerRating = int.Parse(xmlProduct1.CustomerRating);
+                            }
                             hotel.CreatedByUser = vendorId;
                             hotel.IsDeleted = false;
 
@@ -352,6 +359,16 @@ namespace ImportProducts
                             if (hotel.Image != (string) xmlProduct1.Images.Element("url"))
                             {
                                 hotel.Image = (string) xmlProduct1.Images.Element("url");
+                                isChanged = true;
+                            }
+                            if (hotel.Star != xmlProduct1.Star)
+                            {
+                                hotel.Star = xmlProduct1.Star;
+                                isChanged = true;
+                            }
+                            if (hotel.CustomerRating.ToString() != xmlProduct1.CustomerRating)
+                            {
+                                hotel.CustomerRating = int.Parse(xmlProduct1.CustomerRating);
                                 isChanged = true;
                             }
 

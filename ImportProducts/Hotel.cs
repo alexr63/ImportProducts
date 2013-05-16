@@ -16,6 +16,8 @@ namespace ImportProducts
     {
         public Nullable<int> LocationId { get; set; }
         public Nullable<int> Rooms { get; set; }
+        public string Star { get; set; }
+        public Nullable<int> CustomerRating { get; set; }
     
         public virtual Location Location { get; set; }
     }
