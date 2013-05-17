@@ -283,7 +283,13 @@ namespace ImportProducts
                             hotel.Description = xmlProduct1.Description;
                             hotel.URL = xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
                             hotel.Image = (string) xmlProduct1.Images.Element("url");
-                            hotel.Star = xmlProduct1.Star;
+                            int star = 0;
+                            string strStar = new string(xmlProduct1.Star.TakeWhile(char.IsDigit).ToArray());
+                            if (strStar.Length > 0)
+                            {
+                                star = int.Parse(strStar);
+                            }
+                            hotel.Star = star;
                             if (!String.IsNullOrEmpty(xmlProduct1.CustomerRating))
                             {
                                 hotel.CustomerRating = int.Parse(xmlProduct1.CustomerRating);
@@ -361,9 +367,15 @@ namespace ImportProducts
                                 hotel.Image = (string) xmlProduct1.Images.Element("url");
                                 isChanged = true;
                             }
-                            if (hotel.Star != xmlProduct1.Star)
+                            int star = 0;
+                            string strStar = new string(xmlProduct1.Star.TakeWhile(char.IsDigit).ToArray());
+                            if (strStar.Length > 0)
                             {
-                                hotel.Star = xmlProduct1.Star;
+                                star = int.Parse(strStar);
+                            }
+                            if (hotel.Star != star)
+                            {
+                                hotel.Star = star;
                                 isChanged = true;
                             }
                             if (hotel.CustomerRating.ToString() != xmlProduct1.CustomerRating)

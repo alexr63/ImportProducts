@@ -135,7 +135,7 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="LocationId" Type="int" />
           <Property Name="Rooms" Type="int" />
-          <Property Name="Star" Type="nvarchar" MaxLength="50" />
+          <Property Name="Star" Type="int" />
           <Property Name="CustomerRating" Type="int" />
         </EntityType>
         <EntityType Name="Cowrie_Locations">
@@ -420,7 +420,7 @@
           <Property Type="Int32" Name="LocationId" />
           <Property Type="Int32" Name="Rooms" />
           <NavigationProperty Name="Location" Relationship="SelectedHotelsModel.FK_Cowrie_Hotels_Cowrie_Locations" FromRole="Cowrie_Hotels" ToRole="Cowrie_Locations" />
-          <Property Type="String" Name="Star" FixedLength="false" MaxLength="50" Unicode="true" />
+          <Property Type="Int32" Name="Star" />
           <Property Type="Int32" Name="CustomerRating" />
         </EntityType>
         <EntityType Name="Location">
