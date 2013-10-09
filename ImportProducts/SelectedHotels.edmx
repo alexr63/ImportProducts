@@ -137,6 +137,7 @@
           <Property Name="Rooms" Type="int" />
           <Property Name="Star" Type="int" />
           <Property Name="CustomerRating" Type="int" />
+          <Property Name="Address" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Cowrie_Locations">
           <Key>
@@ -154,6 +155,7 @@
           <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="URL" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Cowrie_Products">
           <Key>
@@ -401,6 +403,7 @@
           <Property Type="Int32" Name="ProductId" Nullable="false" />
           <Property Type="String" Name="URL" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Product" Relationship="SelectedHotelsModel.FK_Cowrie_ProductImages_Cowrie_Products" FromRole="Cowrie_ProductImages" ToRole="Product" />
+          <Property Type="String" Name="Description" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_Cowrie_ProductImages_Cowrie_Products">
           <End Type="SelectedHotelsModel.Product" Role="Product" Multiplicity="1">
@@ -422,6 +425,7 @@
           <NavigationProperty Name="Location" Relationship="SelectedHotelsModel.FK_Cowrie_Hotels_Cowrie_Locations" FromRole="Cowrie_Hotels" ToRole="Cowrie_Locations" />
           <Property Type="Int32" Name="Star" />
           <Property Type="Int32" Name="CustomerRating" />
+          <Property Type="String" Name="Address" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -561,6 +565,7 @@
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(SelectedHotelsModel.Hotel)">
               <MappingFragment StoreEntitySet="Cowrie_Hotels">
+                <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="CustomerRating" ColumnName="CustomerRating" />
                 <ScalarProperty Name="Star" ColumnName="Star" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -606,6 +611,7 @@
           <EntitySetMapping Name="ProductImages">
             <EntityTypeMapping TypeName="SelectedHotelsModel.ProductImage">
               <MappingFragment StoreEntitySet="Cowrie_ProductImages">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="URL" ColumnName="URL" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

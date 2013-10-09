@@ -211,6 +211,8 @@ namespace ImportProducts
                                URL = (string) el.Element("hotel_link"),
                                Star = (string) el.Element("hotel_star"),
                                CustomerRating = (string) el.Element("customerrating"),
+                               Rooms = (string)el.Element("hotel_total_rooms"),
+                               Address = (string)el.Element("hotel_address")
                            };
 
             if (!String.IsNullOrEmpty(countryFilter))
@@ -288,16 +290,22 @@ namespace ImportProducts
                             if (strStar.Length > 0)
                             {
                                 star = int.Parse(strStar);
+                                hotel.Star = star;
                             }
-                            hotel.Star = star;
                             if (!String.IsNullOrEmpty(xmlProduct1.CustomerRating))
                             {
                                 hotel.CustomerRating = int.Parse(xmlProduct1.CustomerRating);
                             }
+                            if (!String.IsNullOrEmpty(xmlProduct1.Rooms))
+                            {
+                                hotel.Rooms = int.Parse(xmlProduct1.Rooms);
+                            }
+                            if (!String.IsNullOrEmpty(xmlProduct1.Address))
+                            {
+                                hotel.Address = xmlProduct1.Address;
+                            }
                             hotel.CreatedByUser = vendorId;
                             hotel.IsDeleted = false;
-
-                            hotel.Rooms = null;
 
                             int? parentId = null;
                             Location country =
@@ -367,7 +375,7 @@ namespace ImportProducts
                                 hotel.Image = (string) xmlProduct1.Images.Element("url");
                                 isChanged = true;
                             }
-                            int star = 0;
+                            int? star = null;
                             string strStar = new string(xmlProduct1.Star.TakeWhile(char.IsDigit).ToArray());
                             if (strStar.Length > 0)
                             {
@@ -378,9 +386,29 @@ namespace ImportProducts
                                 hotel.Star = star;
                                 isChanged = true;
                             }
-                            if (hotel.CustomerRating.ToString() != xmlProduct1.CustomerRating)
+                            int? customerRating = null;
+                            if (!String.IsNullOrEmpty(xmlProduct1.CustomerRating))
                             {
-                                hotel.CustomerRating = int.Parse(xmlProduct1.CustomerRating);
+                                customerRating = int.Parse(xmlProduct1.CustomerRating);
+                            }
+                            if (hotel.CustomerRating != customerRating)
+                            {
+                                hotel.CustomerRating = customerRating;
+                                isChanged = true;
+                            }
+                            int? rooms = null;
+                            if (!String.IsNullOrEmpty(xmlProduct1.Rooms))
+                            {
+                                rooms = int.Parse(xmlProduct1.Rooms);
+                            }
+                            if (hotel.Rooms != rooms)
+                            {
+                                hotel.Rooms = rooms;
+                                isChanged = true;
+                            }
+                            if (hotel.Address != xmlProduct1.Address)
+                            {
+                                hotel.Address = xmlProduct1.Address;
                                 isChanged = true;
                             }
 
