@@ -212,7 +212,8 @@ namespace ImportProducts
                                Star = (string) el.Element("hotel_star"),
                                CustomerRating = (string) el.Element("customerrating"),
                                Rooms = (string)el.Element("hotel_total_rooms"),
-                               Address = (string)el.Element("hotel_address")
+                               Address = (string)el.Element("hotel_address"),
+                               CurrencyCode = (string)el.Element("CurrencyCode")
                            };
 
             if (!String.IsNullOrEmpty(countryFilter))
@@ -303,6 +304,10 @@ namespace ImportProducts
                             if (!String.IsNullOrEmpty(xmlProduct1.Address))
                             {
                                 hotel.Address = xmlProduct1.Address;
+                            }
+                            if (!String.IsNullOrEmpty(xmlProduct1.CurrencyCode))
+                            {
+                                hotel.CurrencyCode = xmlProduct1.CurrencyCode;
                             }
                             hotel.CreatedByUser = vendorId;
                             hotel.IsDeleted = false;
@@ -409,6 +414,11 @@ namespace ImportProducts
                             if (hotel.Address != xmlProduct1.Address)
                             {
                                 hotel.Address = xmlProduct1.Address;
+                                isChanged = true;
+                            }
+                            if (hotel.CurrencyCode != xmlProduct1.CurrencyCode)
+                            {
+                                hotel.CurrencyCode = xmlProduct1.CurrencyCode;
                                 isChanged = true;
                             }
 

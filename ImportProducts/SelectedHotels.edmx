@@ -138,6 +138,7 @@
           <Property Name="Star" Type="int" />
           <Property Name="CustomerRating" Type="int" />
           <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="CurrencyCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Cowrie_Locations">
           <Key>
@@ -426,6 +427,7 @@
           <Property Type="Int32" Name="Star" />
           <Property Type="Int32" Name="CustomerRating" />
           <Property Type="String" Name="Address" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CurrencyCode" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -565,6 +567,7 @@
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(SelectedHotelsModel.Hotel)">
               <MappingFragment StoreEntitySet="Cowrie_Hotels">
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="CustomerRating" ColumnName="CustomerRating" />
                 <ScalarProperty Name="Star" ColumnName="Star" />

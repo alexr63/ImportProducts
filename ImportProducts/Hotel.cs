@@ -19,6 +19,7 @@ namespace ImportProducts
         public Nullable<int> Star { get; set; }
         public Nullable<int> CustomerRating { get; set; }
         public string Address { get; set; }
+        public string CurrencyCode { get; set; }
     
         public virtual Location Location { get; set; }
     }
