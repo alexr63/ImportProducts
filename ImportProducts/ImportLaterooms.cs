@@ -269,7 +269,9 @@ namespace ImportProducts
                         }
 
                         var xmlProduct1 = xmlProduct;
+#if DEBUG
                         Console.WriteLine(i + " - " + xmlProduct1.Name); // debug print
+#endif
 
                         // create new product record
                         int batchLimit = 500;
@@ -341,6 +343,11 @@ namespace ImportProducts
                             if (city != null)
                             {
                                 hotel.LocationId = city.Id;
+                            }
+
+                            if (hotel.Location.IsDeleted)
+                            {
+                                hotel.Location.IsDeleted = false;
                             }
 
                             Category category = db.Categories.SingleOrDefault(c => c.Id == categoryId);
@@ -453,6 +460,12 @@ namespace ImportProducts
                             if (city != null)
                             {
                                 hotel.LocationId = city.Id;
+                                isChanged = true;
+                            }
+
+                            if (hotel.Location.IsDeleted)
+                            {
+                                hotel.Location.IsDeleted = false;
                                 isChanged = true;
                             }
 
