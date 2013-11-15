@@ -112,6 +112,18 @@ namespace ImportProducts
             }
         }
 
+        private static void DeleteEmptyLocations(SelectedHotelsEntities db)
+        {
+            foreach (Location location in db.Locations.Where(l => !l.IsDeleted))
+            {
+                if (!Common.HotelsInLocation(db, location.Id).Any())
+                {
+                    location.IsDeleted = true;
+                }
+            }
+            db.SaveChanges();
+        }
+
         public static void DoImport(object sender, DoWorkEventArgs e)               // static bool    (string _URL, out string message)
         {
             //log.Error("This is my test error");
@@ -312,6 +324,7 @@ namespace ImportProducts
                                 hotel.CurrencyCode = xmlProduct1.CurrencyCode;
                             }
                             hotel.CreatedByUser = vendorId;
+                            hotel.CreatedDate = DateTime.Now;
                             hotel.IsDeleted = false;
 
                             int? parentId = null;
@@ -322,6 +335,7 @@ namespace ImportProducts
                                     c.ParentId == null);
                             if (country != null)
                             {
+                                hotel.Location = country;
                                 hotel.LocationId = country.Id;
                                 parentId = country.Id;
                             }
@@ -332,6 +346,7 @@ namespace ImportProducts
                                     c.ParentId == parentId);
                             if (county != null)
                             {
+                                hotel.Location = county;
                                 hotel.LocationId = county.Id;
                                 parentId = county.Id;
                             }
@@ -342,6 +357,7 @@ namespace ImportProducts
                                     c.ParentId == parentId);
                             if (city != null)
                             {
+                                hotel.Location = city;
                                 hotel.LocationId = city.Id;
                             }
 
@@ -488,6 +504,8 @@ namespace ImportProducts
                             bw.ReportProgress((int) (100*i/productCount));
                         }
                     }
+
+                    DeleteEmptyLocations(db);
                 }
 
                 initialStep = 0;
@@ -512,7 +530,9 @@ namespace ImportProducts
                         }
 
                         var xmlProduct1 = xmlProduct;
+#if DEBUG
                         Console.WriteLine(i + " - " + xmlProduct1.Name);
+#endif
 
                         var tempProduct =
                             db.Products.SingleOrDefault(

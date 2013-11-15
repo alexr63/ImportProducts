@@ -169,6 +169,7 @@
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="URL" Type="nvarchar" MaxLength="250" />
           <Property Name="CreatedByUser" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
           <Property Name="Image" Type="nvarchar" MaxLength="250" />
           <Property Name="ProductTypeId" Type="int" />
@@ -391,6 +392,7 @@
           <NavigationProperty Name="ProductImages" Relationship="SelectedHotelsModel.FK_Cowrie_ProductImages_Cowrie_Products" FromRole="Product" ToRole="Cowrie_ProductImages" />
           <Property Type="Int32" Name="ProductTypeId" />
           <NavigationProperty Name="ProductType" Relationship="SelectedHotelsModel.FK_Cowrie_Products_Cowrie_ProductTypes" FromRole="Product" ToRole="Cowrie_ProductTypes" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="3" />
         </EntityType>
         <Association Name="Cowrie_CategoryProducts">
           <End Role="Cowrie_Categories" Type="SelectedHotelsModel.Category" Multiplicity="*" />
@@ -553,6 +555,7 @@
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="IsTypeOf(SelectedHotelsModel.Product)">
               <MappingFragment StoreEntitySet="Cowrie_Products">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ProductTypeId" ColumnName="ProductTypeId" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
