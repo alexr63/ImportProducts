@@ -209,7 +209,7 @@ namespace ImportProducts
             // use XmlReader to avoid huge file size dependence
             var xmlProducts =
                 from el in StreamRootChildDoc(_URL)
-                select new
+                select new ProductView
                            {
                                Country = (string) el.Element("hotel_country"),
                                County = (string) el.Element("hotel_county"),
@@ -269,10 +269,8 @@ namespace ImportProducts
                 {
                     destinationConnection.Open();
 
-                    bool isVendorProductsEmpty = db.Products.Count(p => p.CreatedByUser == vendorId) == 0;
-
                     int i = 0;
-                    foreach (var xmlProduct in xmlProducts)
+                    foreach (ProductView product in xmlProducts)
                     {
                         if (i < initialStep)
                         {
@@ -280,48 +278,46 @@ namespace ImportProducts
                             continue;
                         }
 
-                        var xmlProduct1 = xmlProduct;
 #if DEBUG
-                        Console.WriteLine(i + " - " + xmlProduct1.Name); // debug print
+                        Console.WriteLine(i + " - " + product.Name); // debug print
 #endif
 
                         // create new product record
-                        int batchLimit = 500;
                         Hotel hotel =
                             db.Products.SingleOrDefault(
-                                p => p.ProductTypeId == (int)Enums.ProductTypeEnum.Hotels && p.Categories.Any(c => c.Id == categoryId) && p.Name == xmlProduct1.Name && p.Number == xmlProduct1.ProductNumber) as Hotel;
+                                p => p.ProductTypeId == (int)Enums.ProductTypeEnum.Hotels && p.Categories.Any(c => c.Id == categoryId) && p.Name == product.Name && p.Number == product.ProductNumber) as Hotel;
                         if (hotel == null)
                         {
                             hotel = new Hotel();
                             hotel.ProductTypeId = (int) Enums.ProductTypeEnum.Hotels;
-                            hotel.Name = xmlProduct1.Name;
-                            hotel.Number = xmlProduct1.ProductNumber;
-                            hotel.UnitCost = xmlProduct1.UnitCost;
-                            hotel.Description = xmlProduct1.Description;
-                            hotel.URL = xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
-                            hotel.Image = (string) xmlProduct1.Images.Element("url");
+                            hotel.Name = product.Name;
+                            hotel.Number = product.ProductNumber;
+                            hotel.UnitCost = product.UnitCost;
+                            hotel.Description = product.Description;
+                            hotel.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                            hotel.Image = (string)product.Images.Element("url");
                             int star = 0;
-                            string strStar = new string(xmlProduct1.Star.TakeWhile(char.IsDigit).ToArray());
+                            string strStar = new string(product.Star.TakeWhile(char.IsDigit).ToArray());
                             if (strStar.Length > 0)
                             {
                                 star = int.Parse(strStar);
                                 hotel.Star = star;
                             }
-                            if (!String.IsNullOrEmpty(xmlProduct1.CustomerRating))
+                            if (!String.IsNullOrEmpty(product.CustomerRating))
                             {
-                                hotel.CustomerRating = int.Parse(xmlProduct1.CustomerRating);
+                                hotel.CustomerRating = int.Parse(product.CustomerRating);
                             }
-                            if (!String.IsNullOrEmpty(xmlProduct1.Rooms))
+                            if (!String.IsNullOrEmpty(product.Rooms))
                             {
-                                hotel.Rooms = int.Parse(xmlProduct1.Rooms);
+                                hotel.Rooms = int.Parse(product.Rooms);
                             }
-                            if (!String.IsNullOrEmpty(xmlProduct1.Address))
+                            if (!String.IsNullOrEmpty(product.Address))
                             {
-                                hotel.Address = xmlProduct1.Address;
+                                hotel.Address = product.Address;
                             }
-                            if (!String.IsNullOrEmpty(xmlProduct1.CurrencyCode))
+                            if (!String.IsNullOrEmpty(product.CurrencyCode))
                             {
-                                hotel.CurrencyCode = xmlProduct1.CurrencyCode;
+                                hotel.CurrencyCode = product.CurrencyCode;
                             }
                             hotel.CreatedByUser = vendorId;
                             hotel.CreatedDate = DateTime.Now;
@@ -331,7 +327,7 @@ namespace ImportProducts
                             Location country =
                                 db.Locations.SingleOrDefault(
                                     c =>
-                                    c.Name == xmlProduct1.Country &&
+                                    c.Name == product.Country &&
                                     c.ParentId == null);
                             if (country != null)
                             {
@@ -342,7 +338,7 @@ namespace ImportProducts
                             Location county =
                                 db.Locations.SingleOrDefault(
                                     c =>
-                                    c.Name == xmlProduct1.County &&
+                                    c.Name == product.County &&
                                     c.ParentId == parentId);
                             if (county != null)
                             {
@@ -353,7 +349,7 @@ namespace ImportProducts
                             Location city =
                                 db.Locations.SingleOrDefault(
                                     c =>
-                                    c.Name == xmlProduct1.City &&
+                                    c.Name == product.City &&
                                     c.ParentId == parentId);
                             if (city != null)
                             {
@@ -383,28 +379,28 @@ namespace ImportProducts
                         {
                             // no need to check for null vallue because of previous if
                             bool isChanged = false;
-                            if (hotel.UnitCost != xmlProduct1.UnitCost)
+                            if (hotel.UnitCost != product.UnitCost)
                             {
-                                hotel.UnitCost = xmlProduct1.UnitCost;
+                                hotel.UnitCost = product.UnitCost;
                                 isChanged = true;
                             }
-                            if (hotel.Description != xmlProduct1.Description)
+                            if (hotel.Description != product.Description)
                             {
-                                hotel.Description = xmlProduct1.Description;
+                                hotel.Description = product.Description;
                                 isChanged = true;
                             }
-                            if (hotel.URL != xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
+                            if (hotel.URL != product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
                             {
-                                hotel.URL = xmlProduct1.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                                hotel.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
                                 isChanged = true;
                             }
-                            if (hotel.Image != (string) xmlProduct1.Images.Element("url"))
+                            if (hotel.Image != (string)product.Images.Element("url"))
                             {
-                                hotel.Image = (string) xmlProduct1.Images.Element("url");
+                                hotel.Image = (string)product.Images.Element("url");
                                 isChanged = true;
                             }
                             int? star = null;
-                            string strStar = new string(xmlProduct1.Star.TakeWhile(char.IsDigit).ToArray());
+                            string strStar = new string(product.Star.TakeWhile(char.IsDigit).ToArray());
                             if (strStar.Length > 0)
                             {
                                 star = int.Parse(strStar);
@@ -415,9 +411,9 @@ namespace ImportProducts
                                 isChanged = true;
                             }
                             int? customerRating = null;
-                            if (!String.IsNullOrEmpty(xmlProduct1.CustomerRating))
+                            if (!String.IsNullOrEmpty(product.CustomerRating))
                             {
-                                customerRating = int.Parse(xmlProduct1.CustomerRating);
+                                customerRating = int.Parse(product.CustomerRating);
                             }
                             if (hotel.CustomerRating != customerRating)
                             {
@@ -425,66 +421,101 @@ namespace ImportProducts
                                 isChanged = true;
                             }
                             int? rooms = null;
-                            if (!String.IsNullOrEmpty(xmlProduct1.Rooms))
+                            if (!String.IsNullOrEmpty(product.Rooms))
                             {
-                                rooms = int.Parse(xmlProduct1.Rooms);
+                                rooms = int.Parse(product.Rooms);
                             }
                             if (hotel.Rooms != rooms)
                             {
                                 hotel.Rooms = rooms;
                                 isChanged = true;
                             }
-                            if (hotel.Address != xmlProduct1.Address)
+                            if (hotel.Address != product.Address)
                             {
-                                hotel.Address = xmlProduct1.Address;
+                                hotel.Address = product.Address;
                                 isChanged = true;
                             }
-                            if (hotel.CurrencyCode != xmlProduct1.CurrencyCode)
+                            if (hotel.CurrencyCode != product.CurrencyCode)
                             {
-                                hotel.CurrencyCode = xmlProduct1.CurrencyCode;
+                                hotel.CurrencyCode = product.CurrencyCode;
                                 isChanged = true;
                             }
 
                             int? parentId = null;
+                            int? locationId = null;
                             Location country =
                                 db.Locations.SingleOrDefault(
                                     c =>
-                                    c.Name == xmlProduct1.Country &&
+                                    c.Name == product.Country &&
                                     c.ParentId == null);
                             if (country != null)
                             {
-                                hotel.LocationId = country.Id;
+                                locationId = country.Id;
                                 parentId = country.Id;
-                                isChanged = true;
                             }
                             Location county =
                                 db.Locations.SingleOrDefault(
                                     c =>
-                                    c.Name == xmlProduct1.County &&
+                                    c.Name == product.County &&
                                     c.ParentId == parentId);
                             if (county != null)
                             {
-                                hotel.LocationId = county.Id;
+                                locationId = county.Id;
                                 parentId = county.Id;
-                                isChanged = true;
                             }
                             Location city =
                                 db.Locations.SingleOrDefault(
                                     c =>
-                                    c.Name == xmlProduct1.City &&
+                                    c.Name == product.City &&
                                     c.ParentId == parentId);
                             if (city != null)
                             {
-                                hotel.LocationId = city.Id;
-                                isChanged = true;
+                                locationId = city.Id;
                             }
 
-                            if (hotel.Location.IsDeleted)
+                            if (locationId != null)
                             {
-                                hotel.Location.IsDeleted = false;
+                                var location = db.Locations.Find(locationId.Value);
+                                if (location.IsDeleted)
+                                {
+                                    hotel.Location.IsDeleted = false;
+                                    isChanged = true;
+                                }
+                            }
+
+                            if (hotel.LocationId != locationId)
+                            {
                                 isChanged = true;
                             }
 
+                            if (isChanged)
+                            {
+                                db.SaveChanges();
+                            }
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("DELETE");
+                            sb.AppendLine("FROM         Cowrie_ProductImages");
+                            sb.AppendLine("WHERE     ProductID = @ProductID");
+                            SqlCommand commandDelete =
+                                new SqlCommand(
+                                    sb.ToString(),
+                                    destinationConnection);
+                            commandDelete.Parameters.Add("@ProductID", SqlDbType.Int);
+                            commandDelete.Parameters["@ProductID"].Value = hotel.Id;
+                            commandDelete.ExecuteNonQuery();
+
+                            isChanged = false;
+                            foreach (var image in product.Images.Elements("url"))
+                            {
+                                if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
+                                {
+                                    ProductImage productImage = new ProductImage();
+                                    productImage.URL = image.Value;
+                                    hotel.ProductImages.Add(productImage);
+                                    isChanged = true;
+                                }
+                            }
                             if (isChanged)
                             {
                                 db.SaveChanges();
@@ -545,33 +576,7 @@ namespace ImportProducts
                         }
                         var productId = tempProduct.Id;
 
-                        StringBuilder sb = new StringBuilder();
-                        sb.AppendLine("DELETE");
-                        sb.AppendLine("FROM         Cowrie_ProductImages");
-                        sb.AppendLine("WHERE     ProductID = @ProductID");
-                        SqlCommand commandDelete =
-                            new SqlCommand(
-                                sb.ToString(),
-                                destinationConnection);
-                        commandDelete.Parameters.Add("@ProductID", SqlDbType.Int);
-                        commandDelete.Parameters["@ProductID"].Value = productId;
-                        commandDelete.ExecuteNonQuery();
-
-                        bool isChanged = false;
-                        foreach (var image in xmlProduct1.Images.Elements("url"))
-                        {
-                            if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
-                            {
-                                ProductImage productImage = new ProductImage();
-                                productImage.URL = image.Value;
-                                tempProduct.ProductImages.Add(productImage);
-                                isChanged = true;
-                            }
-                        }
-                        if (isChanged)
-                        {
-                            db.SaveChanges();
-                        }
+                        // removed
 
                         initialStep++;
                         UpdateSteps(stepAddImages: i);
@@ -611,6 +616,25 @@ namespace ImportProducts
                 feed.StepAddImages = stepAddImages;
                 context.SaveChanges();
             }
+        }
+
+        private class ProductView
+        {
+            public string Country { get; set; }
+            public string County { get; set; }
+            public string City { get; set; }
+            public string ProductNumber { get; set; }
+            public string Name { get; set; }
+            public XElement Images { get; set; }
+            public decimal UnitCost { get; set; }
+            public string Description { get; set; }
+            public string DescriptionHTML { get; set; }
+            public string URL { get; set; }
+            public string Star { get; set; }
+            public string CustomerRating { get; set; }
+            public string Rooms { get; set; }
+            public string Address { get; set; }
+            public string CurrencyCode { get; set; }
         }
     }
 }
