@@ -124,12 +124,8 @@ namespace ImportProducts
             db.SaveChanges();
         }
 
-        public static void DoImport(object sender, DoWorkEventArgs e)               // static bool    (string _URL, out string message)
+        public static void DoImport(object sender, DoWorkEventArgs e)
         {
-            //log.Error("This is my test error");
-
-            //bool rc = false;
-            //message = String.Empty;
             BackgroundWorker bw = sender as BackgroundWorker;
             // Parse list input parameters
             BackgroundWorkParameters param = (BackgroundWorkParameters) e.Argument;
@@ -137,12 +133,9 @@ namespace ImportProducts
             int categoryId = param.CategoryId;
             int portalId = param.PortalId;
             int vendorId = param.VendorId;
-            string advancedCategoryRoot = param.AdvancedCategoryRoot;
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
             int? stepImport = param.StepImport;
-            int? stepAddToCategories = param.StepAddToCategories;
-            int? stepAddImages = param.StepAddImages;
 
             if (!File.Exists(_URL))
             {
@@ -258,17 +251,9 @@ namespace ImportProducts
                 {
                     initialStep = stepImport.Value;
                 }
-                else if (stepAddImages.HasValue)
-                {
-                    initialStep = stepAddImages.Value;
-                    goto UpdateImages;
-                }
 
                 using (SelectedHotelsEntities db = new SelectedHotelsEntities())
-                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
                 {
-                    destinationConnection.Open();
-
                     int i = 0;
                     foreach (ProductView product in xmlProducts)
                     {
@@ -362,7 +347,7 @@ namespace ImportProducts
                                 hotel.Location.IsDeleted = false;
                             }
 
-                            Category category = db.Categories.SingleOrDefault(c => c.Id == categoryId);
+                            Category category = db.Categories.Find(categoryId);
                             if (category != null)
                             {
                                 hotel.Categories.Add(category);
@@ -493,26 +478,26 @@ namespace ImportProducts
                                 db.SaveChanges();
                             }
 
-                            StringBuilder sb = new StringBuilder();
-                            sb.AppendLine("DELETE");
-                            sb.AppendLine("FROM         Cowrie_ProductImages");
-                            sb.AppendLine("WHERE     ProductID = @ProductID");
-                            SqlCommand commandDelete =
-                                new SqlCommand(
-                                    sb.ToString(),
-                                    destinationConnection);
-                            commandDelete.Parameters.Add("@ProductID", SqlDbType.Int);
-                            commandDelete.Parameters["@ProductID"].Value = hotel.Id;
-                            commandDelete.ExecuteNonQuery();
-
                             isChanged = false;
                             foreach (var image in product.Images.Elements("url"))
                             {
                                 if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
                                 {
-                                    ProductImage productImage = new ProductImage();
-                                    productImage.URL = image.Value;
-                                    hotel.ProductImages.Add(productImage);
+                                    ProductImage productImage =
+                                        hotel.ProductImages.SingleOrDefault(pi => pi.URL == image.Value);
+                                    if (productImage == null)
+                                    {
+                                        productImage = new ProductImage {URL = image.Value};
+                                        hotel.ProductImages.Add(productImage);
+                                        isChanged = true;
+                                    }
+                                }
+                            }
+                            foreach (ProductImage productImage in hotel.ProductImages)
+                            {
+                                if (product.Images.Elements("url").All(xe => xe.Value != productImage.URL))
+                                {
+                                    hotel.ProductImages.Remove(productImage);
                                     isChanged = true;
                                 }
                             }
@@ -539,59 +524,6 @@ namespace ImportProducts
                     DeleteEmptyLocations(db);
                 }
 
-                initialStep = 0;
-
-            UpdateImages:
-                // Set step for backgroundWorker
-                Form1.activeStep = "Update images..";
-                bw.ReportProgress(0); // start new step of background process
-
-                using (SelectedHotelsEntities db = new SelectedHotelsEntities())
-                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
-                {
-                    destinationConnection.Open();
-
-                    int i = 0;
-                    foreach (var xmlProduct in xmlProducts)
-                    {
-                        if (i < initialStep)
-                        {
-                            i++;
-                            continue;
-                        }
-
-                        var xmlProduct1 = xmlProduct;
-#if DEBUG
-                        Console.WriteLine(i + " - " + xmlProduct1.Name);
-#endif
-
-                        var tempProduct =
-                            db.Products.SingleOrDefault(
-                                p =>
-                                p.ProductTypeId == (int)Enums.ProductTypeEnum.Hotels && p.Categories.Any(c => c.Id == categoryId) && p.Name == xmlProduct1.Name && p.Number == xmlProduct1.ProductNumber);
-                        if (tempProduct == null)
-                        {
-                            i++;
-                            continue;
-                        }
-                        var productId = tempProduct.Id;
-
-                        // removed
-
-                        initialStep++;
-                        UpdateSteps(stepAddImages: i);
-
-                        if (bw.CancellationPending)
-                        {
-                            e.Cancel = true;
-                            goto Cancelled;
-                        }
-                        else if (bw.WorkerReportsProgress && i % 100 == 0)
-                        {
-                            bw.ReportProgress((int) (100*i/productCount));
-                        }
-                    }
-                }
                 if (!e.Cancel)
                 {
                     UpdateSteps();
