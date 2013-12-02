@@ -147,6 +147,9 @@ namespace ImportProducts
                         case "Clothes":
                             workD = new BackGroundWorkerDelegateWork(ImportTradeDoublerProducts.DoImport);
                             break;
+                        case "Trade Doubler Hotels":
+                            workD = new BackGroundWorkerDelegateWork(ImportTradeDoublerHotels.DoImport);
+                            break;
                         case "Productserve":
 #if ImportProductserve
                             workD = new BackGroundWorkerDelegateWork(ImportProductserve.DoImport);

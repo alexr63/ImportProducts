@@ -78,6 +78,7 @@
     <Compile Include="Hotel.cs">
       <DependentUpon>SelectedHotels.tt</DependentUpon>
     </Compile>
+    <Compile Include="ImportTradeDoublerHotels.cs" />
     <Compile Include="ImportTradeDoublerProducts.cs" />
     <Compile Include="ImportWebgainsProducts.cs" />
     <Compile Include="Location.cs">

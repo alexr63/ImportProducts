@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="products" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="products" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="product">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="name" type="xs:string" minOccurs="0" />
+              <xs:element name="productUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="imageUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="description" type="xs:string" minOccurs="0" />
+              <xs:element name="price" type="xs:string" minOccurs="0" />
+              <xs:element name="currency" type="xs:string" minOccurs="0" />
+              <xs:element name="TDProductId" type="xs:string" minOccurs="0" />
+              <xs:element name="TDCategoryID" type="xs:string" minOccurs="0" />
+              <xs:element name="TDCategoryName" type="xs:string" minOccurs="0" />
+              <xs:element name="merchantCategoryName" type="xs:string" minOccurs="0" />
+              <xs:element name="sku" type="xs:string" minOccurs="0" />
+              <xs:element name="shortDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="promoText" type="xs:string" minOccurs="0" />
+              <xs:element name="previousPrice" type="xs:string" minOccurs="0" />
+              <xs:element name="warranty" type="xs:string" minOccurs="0" />
+              <xs:element name="availability" type="xs:string" minOccurs="0" />
+              <xs:element name="inStock" type="xs:string" minOccurs="0" />
+              <xs:element name="shippingCost" type="xs:string" minOccurs="0" />
+              <xs:element name="deliveryTime" type="xs:string" minOccurs="0" />
+              <xs:element name="weight" type="xs:string" minOccurs="0" />
+              <xs:element name="size" type="xs:string" minOccurs="0" />
+              <xs:element name="brand" type="xs:string" minOccurs="0" />
+              <xs:element name="model" type="xs:string" minOccurs="0" />
+              <xs:element name="ean" type="xs:string" minOccurs="0" />
+              <xs:element name="upc" type="xs:string" minOccurs="0" />
+              <xs:element name="isbn" type="xs:string" minOccurs="0" />
+              <xs:element name="condition" type="xs:string" minOccurs="0" />
+              <xs:element name="mpn" type="xs:string" minOccurs="0" />
+              <xs:element name="techSpecs" type="xs:string" minOccurs="0" />
+              <xs:element name="manufacturer" type="xs:string" minOccurs="0" />
+              <xs:element name="programName" type="xs:string" minOccurs="0" />
+              <xs:element name="programLogoPath" type="xs:string" minOccurs="0" />
+              <xs:element name="programId" type="xs:string" minOccurs="0" />
+              <xs:element name="fields" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="address" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode1" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode10" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode2" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode3" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode4" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode5" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode6" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode7" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode8" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode9" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Accessibility_equipment_for_the_deaf" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Accessible_bathroom" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Accessible_path_of_travel" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Braille_or_raised_signage" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Child_Activities" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Free_Breakfast" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Gym" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Handicapped_parking" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Hot_Tub" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_In-room_accessibility" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Internet_Access" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Kitchen" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Meeting_Facilities" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Pet_Friendly" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Pool" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Restaurant" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Roll-in_shower" type="xs:string" minOccurs="0" />
+                    <xs:element name="amenity_Spa" type="xs:string" minOccurs="0" />
+                    <xs:element name="AverageOverallRating" type="xs:string" minOccurs="0" />
+                    <xs:element name="chain" type="xs:string" minOccurs="0" />
+                    <xs:element name="city" type="xs:string" minOccurs="0" />
+                    <xs:element name="cityLandingLink" type="xs:string" minOccurs="0" />
+                    <xs:element name="country" type="xs:string" minOccurs="0" />
+                    <xs:element name="currency" type="xs:string" minOccurs="0" />
+                    <xs:element name="expediaId" type="xs:string" minOccurs="0" />
+                    <xs:element name="Hotels.comID" type="xs:string" minOccurs="0" />
+                    <xs:element name="Hotels.comURL" type="xs:string" minOccurs="0" />
+                    <xs:element name="location" type="xs:string" minOccurs="0" />
+                    <xs:element name="neighbourhoods1" type="xs:string" minOccurs="0" />
+                    <xs:element name="neighbourhoods2" type="xs:string" minOccurs="0" />
+                    <xs:element name="neighbourhoods3" type="xs:string" minOccurs="0" />
+                    <xs:element name="neighbourhoods4" type="xs:string" minOccurs="0" />
+                    <xs:element name="postalcode" type="xs:string" minOccurs="0" />
+                    <xs:element name="regions1" type="xs:string" minOccurs="0" />
+                    <xs:element name="regions2" type="xs:string" minOccurs="0" />
+                    <xs:element name="StarRating" type="xs:string" minOccurs="0" />
+                    <xs:element name="telephone" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Adventure" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Airport" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Beach" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Boutique" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Budget_Value" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Business" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Casino" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Family-friendly" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Golf" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Green___Sustainable" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Historic" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Hot_Springs" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_LGBT_Welcoming" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Luxury" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Romantic" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Self-catering" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Shopping" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Ski" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Spa" type="xs:string" minOccurs="0" />
+                    <xs:element name="theme_Winery_Vineyard" type="xs:string" minOccurs="0" />
+                    <xs:element name="TotalReviews" type="xs:string" minOccurs="0" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
