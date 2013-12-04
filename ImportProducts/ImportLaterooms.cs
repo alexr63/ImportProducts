@@ -358,7 +358,7 @@ namespace ImportProducts
                             db.SaveChanges();
 
                             i++;
-                            UpdateSteps(stepImport: i);
+                            Common.UpdateSteps(stepImport: i);
                         }
                         else
                         {
@@ -507,7 +507,7 @@ namespace ImportProducts
                             }
 
                             i++;
-                            UpdateSteps(stepImport: i);
+                            Common.UpdateSteps(stepImport: i);
                         }
 
                         if (bw.CancellationPending)
@@ -526,7 +526,7 @@ namespace ImportProducts
 
                 if (!e.Cancel)
                 {
-                    UpdateSteps();
+                    Common.UpdateSteps();
                 }
             Cancelled:
                 int q = 0;
@@ -535,18 +535,6 @@ namespace ImportProducts
             {
                 e.Result = "ERROR:" + ex.Message;
                 log.Error("Error error logging", ex);
-            }
-        }
-
-        private static void UpdateSteps(int? stepImport = null, int? stepAddToCategories = null, int? stepAddImages = null)
-        {
-            using (var context = new SelectedHotelsEntities())
-            {
-                Feed feed = context.Feeds.SingleOrDefault(f => f.Id == 1);
-                feed.StepImport = stepImport;
-                feed.StepAddToCategories = stepAddToCategories;
-                feed.StepAddImages = stepAddImages;
-                context.SaveChanges();
             }
         }
 

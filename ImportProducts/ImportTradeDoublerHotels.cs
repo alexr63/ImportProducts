@@ -271,53 +271,53 @@ namespace ImportProducts
                             db.Products.OfType<Hotel>().SingleOrDefault(
                                 p => p.Name == productName && p.Number == product.ProductNumber);
                         if (hotel == null)
+                        {
+                            hotel = new Hotel
                             {
-                                hotel = new Hotel
-                                               {
-                                                   Name = productName,
-                                                   ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
-                                                   Number = product.ProductNumber,
-                                                   UnitCost = product.UnitCost,
-                                                   Description = product.Description,
-                                                   URL = product.URL,
-                                                   Image = product.Image,
-                                                   CreatedByUser = vendorId,
-                                                   CreatedDate = DateTime.Now,
-                                                   IsDeleted = false
-                                               };
+                                Name = productName,
+                                ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
+                                Number = product.ProductNumber,
+                                UnitCost = product.UnitCost,
+                                Description = product.Description,
+                                URL = product.URL,
+                                Image = product.Image,
+                                CreatedByUser = vendorId,
+                                CreatedDate = DateTime.Now,
+                                IsDeleted = false
+                            };
 
-                                if (!String.IsNullOrEmpty(product.StarRating))
-                                {
-                                    hotel.Star = float.Parse(product.StarRating);
-                                }
-                                if (!String.IsNullOrEmpty(product.AverageOverallRating))
-                                {
-                                    hotel.CustomerRating = float.Parse(product.AverageOverallRating);
-                                }
-                                if (!String.IsNullOrEmpty(product.Address))
-                                {
-                                    hotel.Address = product.Address;
-                                }
-                                if (!String.IsNullOrEmpty(product.Currency))
-                                {
-                                    hotel.CurrencyCode = product.Currency;
-                                }
+                            if (!String.IsNullOrEmpty(product.StarRating))
+                            {
+                                hotel.Star = float.Parse(product.StarRating);
+                            }
+                            if (!String.IsNullOrEmpty(product.AverageOverallRating))
+                            {
+                                hotel.CustomerRating = float.Parse(product.AverageOverallRating);
+                            }
+                            if (!String.IsNullOrEmpty(product.Address))
+                            {
+                                hotel.Address = product.Address;
+                            }
+                            if (!String.IsNullOrEmpty(product.Currency))
+                            {
+                                hotel.CurrencyCode = product.Currency;
+                            }
 
-                                Category category = db.Categories.Find(categoryId);
-                                if (category != null)
-                                {
-                                    hotel.Categories.Add(category);
-                                }
+                            Category category = db.Categories.Find(categoryId);
+                            if (category != null)
+                            {
+                                hotel.Categories.Add(category);
+                            }
 
-                                db.Products.Add(hotel);
+                            db.Products.Add(hotel);
 
-                                db.SaveChanges();
+                            db.SaveChanges();
 
                             i++;
-                            UpdateSteps(stepImport: i);
-                            }
-                            else
-                            {
+                            Common.UpdateSteps(stepImport: i);
+                        }
+                        else
+                        {
                             // no need to check for null vallue because of previous if
                             bool isChanged = false;
                             if (hotel.UnitCost != product.UnitCost)
@@ -330,14 +330,14 @@ namespace ImportProducts
                                 hotel.Description = product.Description;
                                 isChanged = true;
                             }
-                            if (hotel.URL != product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
+                            if (hotel.URL != product.URL)
                             {
-                                hotel.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                                hotel.URL = product.URL;
                                 isChanged = true;
                             }
-                            if (hotel.Image != (string)product.Images.Element("url"))
+                            if (hotel.Image != product.Image)
                             {
-                                hotel.Image = (string)product.Images.Element("url");
+                                hotel.Image = product.Image;
                                 isChanged = true;
                             }
                             if (isChanged)
@@ -345,8 +345,8 @@ namespace ImportProducts
                                 db.SaveChanges();
                             }
                             i++;
-                            UpdateSteps(stepImport: i);
-                            }
+                            Common.UpdateSteps(stepImport: i);
+                        }
 
                         if (bw.CancellationPending)
                         {
@@ -364,7 +364,7 @@ namespace ImportProducts
 
                 if (!e.Cancel)
                 {
-                    UpdateSteps();
+                    Common.UpdateSteps();
                 }
             Cancelled:
                 int q = 0;
