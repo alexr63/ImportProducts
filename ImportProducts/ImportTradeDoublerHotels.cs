@@ -196,31 +196,14 @@ namespace ImportProducts
                     StarRating = (string)el.Element("fields").Element("StarRating"),
                     AverageOverallRating = (string)el.Element("fields").Element("AverageOverallRating"),
                     Address = (string)el.Element("fields").Element("address"),
-                    Currency = (string)el.Element("currency")
+                    Currency = (string)el.Element("currency"),
+                    Regions1 = (string)el.Element("fields").Element("regions1"),
+                    Regions2 = (string)el.Element("fields").Element("regions2")
                 };
 
-            foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
-            {
-                RegionInfo ri = null;
-                try
-                {
-                    ri = new RegionInfo(ci.Name);
-                }
-                catch
-                {
-                    // If a RegionInfo object could not be created we don't want to use the CultureInfo
-                    // for the country list.
-                    continue;
-                }
-                if (ri.EnglishName == countryFilter)
-                {
-                    countryFilter = ri.TwoLetterISORegionName;
-                    break;
-                }
-            }
             if (!String.IsNullOrEmpty(countryFilter))
             {
-                xmlProducts = xmlProducts.Where(p => p.Country == countryFilter);
+                xmlProducts = xmlProducts.Where(p => p.Regions1 == countryFilter || p.Regions2 == countryFilter);
             }
 
             if (!String.IsNullOrEmpty(cityFilter))
@@ -303,6 +286,45 @@ namespace ImportProducts
                                 hotel.CurrencyCode = product.Currency;
                             }
 
+                            int? parentId = null;
+                            Location country =
+                                db.Locations.SingleOrDefault(
+                                    c =>
+                                    c.Name == (product.Regions2 ?? product.Regions1) &&
+                                    c.ParentId == null);
+                            if (country != null)
+                            {
+                                hotel.Location = country;
+                                hotel.LocationId = country.Id;
+                                parentId = country.Id;
+                            }
+                            Location county =
+                                db.Locations.SingleOrDefault(
+                                    c =>
+                                    c.Name == product.Regions2 &&
+                                    c.ParentId == parentId);
+                            if (county != null)
+                            {
+                                hotel.Location = county;
+                                hotel.LocationId = county.Id;
+                                parentId = county.Id;
+                            }
+                            Location city =
+                                db.Locations.SingleOrDefault(
+                                    c =>
+                                    c.Name == product.City &&
+                                    c.ParentId == parentId);
+                            if (city != null)
+                            {
+                                hotel.Location = city;
+                                hotel.LocationId = city.Id;
+                            }
+
+                            if (hotel.Location.IsDeleted)
+                            {
+                                hotel.Location.IsDeleted = false;
+                            }
+
                             Category category = db.Categories.Find(categoryId);
                             if (category != null)
                             {
@@ -340,6 +362,37 @@ namespace ImportProducts
                                 hotel.Image = product.Image;
                                 isChanged = true;
                             }
+                            double? star = null;
+                            if (!String.IsNullOrEmpty(product.StarRating))
+                            {
+                                star = double.Parse(product.StarRating);
+                            }
+                            if (hotel.Star != star)
+                            {
+                                hotel.Star = star;
+                                isChanged = true;
+                            }
+                            double? customerRating = null;
+                            if (!String.IsNullOrEmpty(product.AverageOverallRating))
+                            {
+                                customerRating = int.Parse(product.AverageOverallRating);
+                            }
+                            if (hotel.CustomerRating != customerRating)
+                            {
+                                hotel.CustomerRating = customerRating;
+                                isChanged = true;
+                            }
+                            if (hotel.Address != product.Address)
+                            {
+                                hotel.Address = product.Address;
+                                isChanged = true;
+                            }
+                            if (hotel.CurrencyCode != product.Currency)
+                            {
+                                hotel.CurrencyCode = product.Currency;
+                                isChanged = true;
+                            }
+
                             if (isChanged)
                             {
                                 db.SaveChanges();
