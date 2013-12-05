@@ -269,11 +269,11 @@ namespace ImportProducts
 
                             if (!String.IsNullOrEmpty(product.StarRating))
                             {
-                                hotel.Star = float.Parse(product.StarRating);
+                                hotel.Star = double.Parse(product.StarRating);
                             }
                             if (!String.IsNullOrEmpty(product.AverageOverallRating))
                             {
-                                hotel.CustomerRating = float.Parse(product.AverageOverallRating);
+                                hotel.CustomerRating = double.Parse(product.AverageOverallRating);
                             }
                             if (!String.IsNullOrEmpty(product.Address))
                             {
@@ -319,6 +319,7 @@ namespace ImportProducts
                                     county = new Location
                                     {
                                         Name = product.Regions1,
+                                        ParentId = parentId,
                                         IsDeleted = false
                                     };
                                     db.Locations.Add(county);
@@ -342,6 +343,7 @@ namespace ImportProducts
                                 city = new Location
                                 {
                                     Name = product.City,
+                                    ParentId = parentId,
                                     IsDeleted = false
                                 };
                                 db.Locations.Add(city);
@@ -404,7 +406,7 @@ namespace ImportProducts
                             double? customerRating = null;
                             if (!String.IsNullOrEmpty(product.AverageOverallRating))
                             {
-                                customerRating = int.Parse(product.AverageOverallRating);
+                                customerRating = double.Parse(product.AverageOverallRating);
                             }
                             if (hotel.CustomerRating != customerRating)
                             {
@@ -458,6 +460,7 @@ namespace ImportProducts
                                     county = new Location
                                     {
                                         Name = product.Regions1,
+                                        ParentId = parentId,
                                         IsDeleted = false
                                     };
                                     db.Locations.Add(county);
@@ -481,6 +484,7 @@ namespace ImportProducts
                                 city = new Location
                                 {
                                     Name = product.City,
+                                    ParentId = parentId,
                                     IsDeleted = false
                                 };
                                 db.Locations.Add(city);

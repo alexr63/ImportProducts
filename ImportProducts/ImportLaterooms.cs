@@ -341,6 +341,7 @@ namespace ImportProducts
                                 county = new Location
                                 {
                                     Name = product.County,
+                                    ParentId = parentId,
                                     IsDeleted = false
                                 };
                                 db.Locations.Add(county);
@@ -363,6 +364,7 @@ namespace ImportProducts
                                 city = new Location
                                 {
                                     Name = product.City,
+                                    ParentId = parentId,
                                     IsDeleted = false
                                 };
                                 db.Locations.Add(city);
@@ -488,6 +490,7 @@ namespace ImportProducts
                                 county = new Location
                                 {
                                     Name = product.County,
+                                    ParentId = parentId,
                                     IsDeleted = false
                                 };
                                 db.Locations.Add(county);
@@ -510,6 +513,7 @@ namespace ImportProducts
                                 city = new Location
                                 {
                                     Name = product.City,
+                                    ParentId = parentId,
                                     IsDeleted = false
                                 };
                                 db.Locations.Add(city);
