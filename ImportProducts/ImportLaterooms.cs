@@ -314,6 +314,16 @@ namespace ImportProducts
                                     c =>
                                     c.Name == product.Country &&
                                     c.ParentId == null);
+                            if (country == null)
+                            {
+                                country = new Location
+                                {
+                                    Name = product.Country,
+                                    IsDeleted = false
+                                };
+                                db.Locations.Add(country);
+                                db.SaveChanges();
+                            }
                             if (country != null)
                             {
                                 hotel.Location = country;
@@ -326,6 +336,16 @@ namespace ImportProducts
                                     c =>
                                     c.Name == product.County &&
                                     c.ParentId == parentId);
+                            if (county == null)
+                            {
+                                county = new Location
+                                {
+                                    Name = product.County,
+                                    IsDeleted = false
+                                };
+                                db.Locations.Add(county);
+                                db.SaveChanges();
+                            }
                             if (county != null)
                             {
                                 hotel.Location = county;
@@ -338,6 +358,16 @@ namespace ImportProducts
                                     c =>
                                     c.Name == product.City &&
                                     c.ParentId == parentId);
+                            if (city == null)
+                            {
+                                city = new Location
+                                {
+                                    Name = product.City,
+                                    IsDeleted = false
+                                };
+                                db.Locations.Add(city);
+                                db.SaveChanges();
+                            }
                             if (city != null)
                             {
                                 hotel.Location = city;
@@ -425,15 +455,27 @@ namespace ImportProducts
                             }
 
                             int? parentId = null;
-                            int? locationId = null;
+                            int? locationId = hotel.LocationId;
                             Location country =
                                 db.Locations.SingleOrDefault(
                                     c =>
                                     c.Name == product.Country &&
                                     c.ParentId == null);
+                            if (country == null)
+                            {
+                                country = new Location
+                                {
+                                    Name = product.Country,
+                                    IsDeleted = false
+                                };
+                                db.Locations.Add(country);
+                                db.SaveChanges();
+                            }
                             if (country != null)
                             {
-                                locationId = country.Id;
+                                hotel.Location = country;
+                                hotel.LocationId = country.Id;
+                                hotel.Location.IsDeleted = false;
                                 parentId = country.Id;
                             }
                             Location county =
@@ -441,9 +483,21 @@ namespace ImportProducts
                                     c =>
                                     c.Name == product.County &&
                                     c.ParentId == parentId);
+                            if (county == null)
+                            {
+                                county = new Location
+                                {
+                                    Name = product.County,
+                                    IsDeleted = false
+                                };
+                                db.Locations.Add(county);
+                                db.SaveChanges();
+                            }
                             if (county != null)
                             {
-                                locationId = county.Id;
+                                hotel.Location = county;
+                                hotel.LocationId = county.Id;
+                                hotel.Location.IsDeleted = false;
                                 parentId = county.Id;
                             }
                             Location city =
@@ -451,19 +505,21 @@ namespace ImportProducts
                                     c =>
                                     c.Name == product.City &&
                                     c.ParentId == parentId);
+                            if (city == null)
+                            {
+                                city = new Location
+                                {
+                                    Name = product.City,
+                                    IsDeleted = false
+                                };
+                                db.Locations.Add(city);
+                                db.SaveChanges();
+                            }
                             if (city != null)
                             {
-                                locationId = city.Id;
-                            }
-
-                            if (locationId != null)
-                            {
-                                var location = db.Locations.Find(locationId.Value);
-                                if (location.IsDeleted)
-                                {
-                                    hotel.Location.IsDeleted = false;
-                                    isChanged = true;
-                                }
+                                hotel.Location = city;
+                                hotel.LocationId = city.Id;
+                                hotel.Location.IsDeleted = false;
                             }
 
                             if (hotel.LocationId != locationId)
