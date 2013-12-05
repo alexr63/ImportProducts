@@ -78,8 +78,8 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="LocationId" Type="int" />
           <Property Name="Rooms" Type="int" />
-          <Property Name="Star" Type="float" />
-          <Property Name="CustomerRating" Type="float" />
+          <Property Name="Star" Type="decimal" Precision="18" Scale="1" />
+          <Property Name="CustomerRating" Type="decimal" Precision="18" Scale="1" />
           <Property Name="Address" Type="nvarchar(max)" />
           <Property Name="CurrencyCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -426,8 +426,8 @@
           <Property Type="Int32" Name="LocationId" />
           <Property Type="Int32" Name="Rooms" />
           <NavigationProperty Name="Location" Relationship="SelectedHotelsModel.FK_Cowrie_Hotels_Cowrie_Locations" FromRole="Cowrie_Hotels" ToRole="Cowrie_Locations" />
-          <Property Type="Double" Name="Star" />
-          <Property Type="Double" Name="CustomerRating" />
+          <Property Type="Decimal" Name="Star" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="CustomerRating" Precision="18" Scale="1" />
           <Property Type="String" Name="Address" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CurrencyCode" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>

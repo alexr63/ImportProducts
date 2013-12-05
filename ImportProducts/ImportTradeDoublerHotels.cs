@@ -269,11 +269,11 @@ namespace ImportProducts
 
                             if (!String.IsNullOrEmpty(product.StarRating))
                             {
-                                hotel.Star = double.Parse(product.StarRating);
+                                hotel.Star = decimal.Parse(product.StarRating);
                             }
                             if (!String.IsNullOrEmpty(product.AverageOverallRating))
                             {
-                                hotel.CustomerRating = double.Parse(product.AverageOverallRating);
+                                hotel.CustomerRating = decimal.Parse(product.AverageOverallRating);
                             }
                             if (!String.IsNullOrEmpty(product.Address))
                             {
@@ -393,20 +393,20 @@ namespace ImportProducts
                                 hotel.Image = product.Image;
                                 isChanged = true;
                             }
-                            double? star = null;
+                            decimal? star = null;
                             if (!String.IsNullOrEmpty(product.StarRating))
                             {
-                                star = double.Parse(product.StarRating);
+                                star = decimal.Parse(product.StarRating);
                             }
                             if (hotel.Star != star)
                             {
                                 hotel.Star = star;
                                 isChanged = true;
                             }
-                            double? customerRating = null;
+                            decimal? customerRating = null;
                             if (!String.IsNullOrEmpty(product.AverageOverallRating))
                             {
-                                customerRating = double.Parse(product.AverageOverallRating);
+                                customerRating = decimal.Parse(product.AverageOverallRating);
                             }
                             if (hotel.CustomerRating != customerRating)
                             {

@@ -158,9 +158,6 @@ namespace ImportProducts
                         case "Webgains":
                             workD = new BackGroundWorkerDelegateWork(ImportWebgainsProducts.DoImport);
                             break;
-                        case "Update Locations from Laterooms":
-                            workD = new BackGroundWorkerDelegateWork(UpdateLocationsFromLaterooms.DoImport);
-                            break;
                     }
                     progressD = new BackGroundWorkerDelegateProgress(backgroundWorkerProgressChanged);
                     completeD = new BackGroundWorkerDelegateCompleted(backgroundWorkerRunWorkerCompleted);
