@@ -318,6 +318,7 @@ namespace ImportProducts
                             {
                                 hotel.Location = country;
                                 hotel.LocationId = country.Id;
+                                hotel.Location.IsDeleted = false;
                                 parentId = country.Id;
                             }
                             Location county =
@@ -329,6 +330,7 @@ namespace ImportProducts
                             {
                                 hotel.Location = county;
                                 hotel.LocationId = county.Id;
+                                hotel.Location.IsDeleted = false;
                                 parentId = county.Id;
                             }
                             Location city =
@@ -340,10 +342,6 @@ namespace ImportProducts
                             {
                                 hotel.Location = city;
                                 hotel.LocationId = city.Id;
-                            }
-
-                            if (hotel.Location.IsDeleted)
-                            {
                                 hotel.Location.IsDeleted = false;
                             }
 
