@@ -256,7 +256,7 @@ namespace ImportProducts
                             hotel = new Hotel
                             {
                                 Name = productName,
-                                ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
+                                ProductTypeId = (int)Enums.ProductTypeEnum.Hotels,
                                 Number = product.ProductNumber,
                                 UnitCost = product.UnitCost,
                                 Description = product.Description,
