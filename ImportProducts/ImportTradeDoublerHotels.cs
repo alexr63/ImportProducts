@@ -19,7 +19,7 @@ namespace ImportProducts
 {
     class ImportTradeDoublerHotels
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         static IEnumerable<XElement> StreamRootChildDoc(string uri)
         {
@@ -108,18 +108,6 @@ namespace ImportProducts
                 e.Result = "ERROR:" + err.Message;
                 log.Error("Error error logging", err);
             }
-        }
-
-        private static void DeleteEmptyLocations(SelectedHotelsEntities db)
-        {
-            foreach (Location location in db.Locations.Where(l => !l.IsDeleted))
-            {
-                if (!Common.HotelsInLocation(db, location.Id).Any())
-                {
-                    location.IsDeleted = true;
-                }
-            }
-            db.SaveChanges();
         }
 
         public static void DoImport(object sender, DoWorkEventArgs e)
@@ -522,7 +510,8 @@ namespace ImportProducts
                         }
                     }
 
-                    DeleteEmptyLocations(db);
+                    Common.UpdateLocationLeveling(db);
+                    Common.DeleteEmptyLocations(db);
                 }
 
                 if (!e.Cancel)

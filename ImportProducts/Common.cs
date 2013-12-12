@@ -30,5 +30,50 @@ namespace ImportProducts
                 context.SaveChanges();
             }
         }
+
+        public static void UpdateLocationLeveling(SelectedHotelsEntities db)
+        {
+            try
+            {
+                IList<Hotel> hotels = db.Products.OfType<Hotel>().ToList();
+                var england = db.Locations.SingleOrDefault(l => l.Name == "England" && l.ParentId == null);
+                if (england == null)
+                    return;
+                foreach (Location location in db.Locations.Where(l => l.ParentId == england.Id))
+                {
+                    var existingLocation =
+                        db.Locations.FirstOrDefault(l => l.Name == location.Name && l.ParentId != england.Id);
+                    if (existingLocation != null)
+                    {
+                        Location location1 = location;
+                        var query = from h in hotels
+                            where h.LocationId == location1.Id
+                            select h;
+                        foreach (Hotel hotel in query)
+                        {
+                            hotel.LocationId = existingLocation.Id;
+                            Console.WriteLine("{0}:{1}:{2}", hotel.Id, hotel.Name, hotel.Location.Name);
+                        }
+                    }
+                }
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                ImportTradeDoublerHotels.log.Error("Error error logging", ex);
+            }
+        }
+
+        public static void DeleteEmptyLocations(SelectedHotelsEntities db)
+        {
+            foreach (Location location in db.Locations.Where(l => !l.IsDeleted))
+            {
+                if (!HotelsInLocation(db, location.Id).Any())
+                {
+                    location.IsDeleted = true;
+                }
+            }
+            db.SaveChanges();
+        }
     }
 }
