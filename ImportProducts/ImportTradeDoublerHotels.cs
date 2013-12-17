@@ -186,7 +186,8 @@ namespace ImportProducts
                     Address = (string)el.Element("fields").Element("address"),
                     Currency = (string)el.Element("currency"),
                     Regions1 = (string)el.Element("fields").Element("regions1"),
-                    Regions2 = (string)el.Element("fields").Element("regions2")
+                    Regions2 = (string)el.Element("fields").Element("regions2"),
+                    PostalCode = (string)el.Element("fields").Element("postalcode")
                 };
 
             if (!String.IsNullOrEmpty(countryFilter))
@@ -270,6 +271,10 @@ namespace ImportProducts
                             if (!String.IsNullOrEmpty(product.Currency))
                             {
                                 hotel.CurrencyCode = product.Currency;
+                            }
+                            if (!String.IsNullOrEmpty(product.PostalCode))
+                            {
+                                hotel.PostCode = product.PostalCode;
                             }
 
                             int? parentId = null;
@@ -411,7 +416,13 @@ namespace ImportProducts
                                 hotel.CurrencyCode = product.Currency;
                                 isChanged = true;
                             }
+                            if (hotel.PostCode != product.PostalCode)
+                            {
+                                hotel.PostCode = product.PostalCode;
+                                isChanged = true;
+                            }
 
+#if UPDATELOCATION
                             int? parentId = null;
                             int? locationId = hotel.LocationId;
                             Location country =
@@ -489,6 +500,7 @@ namespace ImportProducts
                             {
                                 isChanged = true;
                             }
+#endif
 
                             if (isChanged)
                             {

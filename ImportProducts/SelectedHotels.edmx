@@ -84,6 +84,7 @@
           <Property Name="CurrencyCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Lat" Type="float" />
           <Property Name="Lon" Type="float" />
+          <Property Name="PostCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Cowrie_Locations">
           <Key>
@@ -434,6 +435,7 @@
           <Property Type="String" Name="CurrencyCode" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Lat" Type="Double" />
           <Property Name="Lon" Type="Double" />
+          <Property Name="PostCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -574,6 +576,7 @@
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(SelectedHotelsModel.Hotel)">
               <MappingFragment StoreEntitySet="Cowrie_Hotels">
+                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
                 <ScalarProperty Name="Lon" ColumnName="Lon" />
                 <ScalarProperty Name="Lat" ColumnName="Lat" />
                 <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />

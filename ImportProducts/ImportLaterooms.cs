@@ -219,6 +219,7 @@ namespace ImportProducts
                                CustomerRating = (string) el.Element("customerrating"),
                                Rooms = (string)el.Element("hotel_total_rooms"),
                                Address = (string)el.Element("hotel_address"),
+                               PostCode = (string)el.Element("hotel_pcode"),
                                CurrencyCode = (string)el.Element("CurrencyCode"),
                                Lat = (string)el.Element("geo_code").Element("lat"),
                                Long = (string)el.Element("geo_code").Element("long")
@@ -302,6 +303,10 @@ namespace ImportProducts
                             if (!String.IsNullOrEmpty(product.Address))
                             {
                                 hotel.Address = product.Address;
+                            }
+                            if (!String.IsNullOrEmpty(product.PostCode))
+                            {
+                                hotel.PostCode = product.PostCode;
                             }
                             if (!String.IsNullOrEmpty(product.CurrencyCode))
                             {
@@ -459,6 +464,11 @@ namespace ImportProducts
                             if (hotel.Address != product.Address)
                             {
                                 hotel.Address = product.Address;
+                                isChanged = true;
+                            }
+                            if (hotel.PostCode != product.PostCode)
+                            {
+                                hotel.PostCode = product.PostCode;
                                 isChanged = true;
                             }
                             if (hotel.CurrencyCode != product.CurrencyCode)
@@ -659,6 +669,7 @@ namespace ImportProducts
             public string CustomerRating { get; set; }
             public string Rooms { get; set; }
             public string Address { get; set; }
+            public string PostCode { get; set; }
             public string CurrencyCode { get; set; }
             public string Lat { get; set; }
             public string Long { get; set; }

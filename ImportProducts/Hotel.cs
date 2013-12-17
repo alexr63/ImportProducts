@@ -22,6 +22,7 @@ namespace ImportProducts
         public string CurrencyCode { get; set; }
         public Nullable<double> Lat { get; set; }
         public Nullable<double> Lon { get; set; }
+        public string PostCode { get; set; }
     
         public virtual Location Location { get; set; }
     }
