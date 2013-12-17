@@ -20,6 +20,8 @@ namespace ImportProducts
         public Nullable<decimal> CustomerRating { get; set; }
         public string Address { get; set; }
         public string CurrencyCode { get; set; }
+        public Nullable<double> Lat { get; set; }
+        public Nullable<double> Lon { get; set; }
     
         public virtual Location Location { get; set; }
     }

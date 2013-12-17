@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -218,7 +219,9 @@ namespace ImportProducts
                                CustomerRating = (string) el.Element("customerrating"),
                                Rooms = (string)el.Element("hotel_total_rooms"),
                                Address = (string)el.Element("hotel_address"),
-                               CurrencyCode = (string)el.Element("CurrencyCode")
+                               CurrencyCode = (string)el.Element("CurrencyCode"),
+                               Lat = (string)el.Element("geo_code").Element("lat"),
+                               Long = (string)el.Element("geo_code").Element("long")
                            };
 
             if (!String.IsNullOrEmpty(countryFilter))
@@ -303,6 +306,14 @@ namespace ImportProducts
                             if (!String.IsNullOrEmpty(product.CurrencyCode))
                             {
                                 hotel.CurrencyCode = product.CurrencyCode;
+                            }
+                            if (!String.IsNullOrEmpty(product.Lat))
+                            {
+                                hotel.Lat = Convert.ToDouble(product.Lat);
+                            }
+                            if (!String.IsNullOrEmpty(product.Long))
+                            {
+                                hotel.Lon = Convert.ToDouble(product.Long);
                             }
                             hotel.CreatedByUser = vendorId;
                             hotel.CreatedDate = DateTime.Now;
@@ -455,7 +466,28 @@ namespace ImportProducts
                                 hotel.CurrencyCode = product.CurrencyCode;
                                 isChanged = true;
                             }
+                            double? lat = null;
+                            if (!String.IsNullOrEmpty(product.Lat))
+                            {
+                                lat = Convert.ToDouble(product.Lat);
+                            }
+                            if (hotel.Lat != lat)
+                            {
+                                hotel.Lat = lat;
+                                isChanged = true;
+                            }
+                            double? lon = null;
+                            if (!String.IsNullOrEmpty(product.Long))
+                            {
+                                lon = Convert.ToDouble(product.Long);
+                            }
+                            if (hotel.Lon != lon)
+                            {
+                                hotel.Lon = lon;
+                                isChanged = true;
+                            }
 
+#if UPDATELOCATION
                             int? parentId = null;
                             int? locationId = hotel.LocationId;
                             Location country =
@@ -530,6 +562,7 @@ namespace ImportProducts
                             {
                                 isChanged = true;
                             }
+#endif
 
                             if (isChanged)
                             {
@@ -589,6 +622,20 @@ namespace ImportProducts
             Cancelled:
                 int q = 0;
             }
+            catch (DbEntityValidationException exception)
+            {
+                foreach (var eve in exception.EntityValidationErrors)
+                {
+                    log.Error(String.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State), exception);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        log.Error(String.Format("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage), exception);
+                    }
+                }
+                throw;
+            }
             catch (Exception ex)
             {
                 e.Result = "ERROR:" + ex.Message;
@@ -613,6 +660,8 @@ namespace ImportProducts
             public string Rooms { get; set; }
             public string Address { get; set; }
             public string CurrencyCode { get; set; }
+            public string Lat { get; set; }
+            public string Long { get; set; }
         }
     }
 }
