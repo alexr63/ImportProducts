@@ -211,7 +211,7 @@ namespace ImportProducts
                                ProductNumber = (string) el.Element("hotel_ref"),
                                Name = (string) el.Element("hotel_name"),
                                Images = el.Element("images"),
-                               UnitCost = (decimal) el.Element("PricesFrom"),
+                               UnitCost = (string) el.Element("PricesFrom"),
                                Description = (string) el.Element("hotel_description"),
                                DescriptionHTML = (string) el.Element("alternate_description"),
                                URL = (string) el.Element("hotel_link"),
@@ -281,7 +281,10 @@ namespace ImportProducts
                             hotel.ProductTypeId = (int) Enums.ProductTypeEnum.Hotels;
                             hotel.Name = product.Name;
                             hotel.Number = product.ProductNumber;
-                            hotel.UnitCost = product.UnitCost;
+                            if (!String.IsNullOrEmpty(product.UnitCost))
+                            {
+                                hotel.UnitCost = Convert.ToDecimal(product.UnitCost);
+                            }
                             hotel.Description = product.Description;
                             hotel.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
                             hotel.Image = (string)product.Images.Element("url");
@@ -410,9 +413,14 @@ namespace ImportProducts
                         {
                             // no need to check for null vallue because of previous if
                             bool isChanged = false;
-                            if (hotel.UnitCost != product.UnitCost)
+                            decimal? unitCost = null;
+                            if (!String.IsNullOrEmpty(product.UnitCost))
                             {
-                                hotel.UnitCost = product.UnitCost;
+                                unitCost = decimal.Parse(product.UnitCost);
+                            }
+                            if (hotel.UnitCost != unitCost)
+                            {
+                                hotel.UnitCost = unitCost;
                                 isChanged = true;
                             }
                             if (hotel.Description != product.Description)
@@ -594,13 +602,19 @@ namespace ImportProducts
                                     }
                                 }
                             }
-                            foreach (ProductImage productImage in hotel.ProductImages)
+                            if (isChanged)
                             {
-                                if (product.Images.Elements("url").All(xe => xe.Value != productImage.URL))
-                                {
-                                    hotel.ProductImages.Remove(productImage);
-                                    isChanged = true;
-                                }
+                                db.SaveChanges();
+                            }
+
+                            isChanged = false;
+                            var imageURLs = product.Images.Elements("url").Select(xe => xe.Value);
+                            var productImagesToRemove = db.ProductImages.Where(pi => pi.ProductId == hotel.Id &&
+                                imageURLs.All(xe => xe != pi.URL));
+                            if (productImagesToRemove.Any())
+                            {
+                                db.ProductImages.RemoveRange(productImagesToRemove);
+                                isChanged = true;
                             }
                             if (isChanged)
                             {
@@ -661,7 +675,7 @@ namespace ImportProducts
             public string ProductNumber { get; set; }
             public string Name { get; set; }
             public XElement Images { get; set; }
-            public decimal UnitCost { get; set; }
+            public string UnitCost { get; set; }
             public string Description { get; set; }
             public string DescriptionHTML { get; set; }
             public string URL { get; set; }

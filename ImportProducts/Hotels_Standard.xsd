@@ -1,100 +1,126 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="hotels" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-  <xs:element name="hotels" msdata:IsDataSet="true" msdata:Locale="en-US">
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="hotels">
     <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="hotel">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="hotel_ref" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_name" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_star" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_address" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_city" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_pcode" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_county" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_country" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_description" type="xs:string" minOccurs="0" />
-              <xs:element name="alternate_description" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_directions" type="xs:string" minOccurs="0" />
-              <xs:element name="alternate_directions" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_link" type="xs:string" minOccurs="0" />
-              <xs:element name="customerrating" type="xs:string" minOccurs="0" />
-              <xs:element name="PricesFrom" type="xs:string" minOccurs="0" />
-              <xs:element name="MaxPrice" type="xs:string" minOccurs="0" />
-              <xs:element name="CurrencyCode" type="xs:string" minOccurs="0" />
-              <xs:element name="images" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="url" nillable="true" minOccurs="0" maxOccurs="unbounded">
-                      <xs:complexType>
-                        <xs:simpleContent msdata:ColumnName="url_Text" msdata:Ordinal="0">
-                          <xs:extension base="xs:string">
-                          </xs:extension>
-                        </xs:simpleContent>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="geo_code" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="lat" type="xs:string" minOccurs="0" />
-                    <xs:element name="long" type="xs:string" minOccurs="0" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="hotel_facilities" minOccurs="0" maxOccurs="unbounded">
-			    <xs:complexType> 
-					<xs:choice minOccurs="0" maxOccurs="unbounded"> 
-						<xs:element name="id" type="xs:string"/> 
-						<xs:element name="name" type="xs:string"/> 
-					</xs:choice> 
-				</xs:complexType> 
-              </xs:element>
-              <xs:element name="checkin_time" type="xs:string" minOccurs="0" />
-              <xs:element name="checkout_time" type="xs:string" minOccurs="0" />
-              <xs:element name="cancellationpolicy" type="xs:string" minOccurs="0" />
-              <xs:element name="cancellationtext" type="xs:string" minOccurs="0" />
-              <xs:element name="accommodation_type" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_appeals" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_star_accreditor" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_total_rooms" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_credit_cards" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="CreditCard" minOccurs="0" maxOccurs="unbounded">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="credit_card_id" type="xs:string" minOccurs="0" />
-                          <xs:element name="credit_card_name" type="xs:string" minOccurs="0" />
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="hotel_city_taxes" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="CityTax" minOccurs="0" maxOccurs="unbounded">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="Type" type="xs:string" minOccurs="0" />
-                          <xs:element name="Value" type="xs:string" minOccurs="0" />
-                          <xs:element name="OptedIn" type="xs:string" minOccurs="0" />
-                          <xs:element name="IsCityTaxArea" type="xs:string" minOccurs="0" />
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:choice>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="hotel"/>
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="hotel">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="hotel_ref"/>
+        <xs:element ref="hotel_name"/>
+        <xs:element ref="hotel_star"/>
+        <xs:element ref="hotel_address"/>
+        <xs:element ref="hotel_city"/>
+        <xs:element ref="hotel_pcode"/>
+        <xs:element ref="hotel_county"/>
+        <xs:element ref="hotel_country"/>
+        <xs:element ref="hotel_description"/>
+        <xs:element ref="alternate_description"/>
+        <xs:element ref="hotel_directions"/>
+        <xs:element ref="alternate_directions"/>
+        <xs:element ref="hotel_link"/>
+        <xs:element ref="customerrating"/>
+        <xs:element ref="PricesFrom"/>
+        <xs:element ref="MaxPrice"/>
+        <xs:element ref="CurrencyCode"/>
+        <xs:element ref="images"/>
+        <xs:element ref="geo_code"/>
+        <xs:element ref="hotel_facilities"/>
+        <xs:element ref="checkin_time"/>
+        <xs:element ref="latest_checkin_time"/>
+        <xs:element ref="checkout_time"/>
+        <xs:element ref="cancellationpolicy"/>
+        <xs:element ref="cancellationtext"/>
+        <xs:element ref="accommodation_type"/>
+        <xs:element ref="hotel_appeals"/>
+        <xs:element ref="hotel_star_accreditor"/>
+        <xs:element ref="hotel_total_rooms"/>
+        <xs:element ref="hotel_city_taxes"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="hotel_ref" type="xs:integer"/>
+  <xs:element name="hotel_name" type="xs:string"/>
+  <xs:element name="hotel_star" type="xs:string"/>
+  <xs:element name="hotel_address" type="xs:string"/>
+  <xs:element name="hotel_city" type="xs:string"/>
+  <xs:element name="hotel_pcode" type="xs:string"/>
+  <xs:element name="hotel_county" type="xs:string"/>
+  <xs:element name="hotel_country" type="xs:string"/>
+  <xs:element name="hotel_description" type="xs:string"/>
+  <xs:element name="alternate_description" type="xs:string"/>
+  <xs:element name="hotel_directions" type="xs:string"/>
+  <xs:element name="alternate_directions" type="xs:string"/>
+  <xs:element name="hotel_link" type="xs:string"/>
+  <xs:element name="customerrating" type="xs:integer"/>
+  <xs:element name="PricesFrom" type="xs:string"/>
+  <xs:element name="MaxPrice" type="xs:string"/>
+  <xs:element name="CurrencyCode" type="xs:NCName"/>
+  <xs:element name="images">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="url"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="url" type="xs:string"/>
+  <xs:element name="geo_code">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="lat"/>
+        <xs:element ref="long"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="lat" type="xs:string"/>
+  <xs:element name="long" type="xs:string"/>
+  <xs:element name="hotel_facilities">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="facility"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="facility" type="xs:string"/>
+  <xs:element name="checkin_time" type="xs:string"/>
+  <xs:element name="latest_checkin_time" type="xs:string"/>
+  <xs:element name="checkout_time" type="xs:string"/>
+  <xs:element name="cancellationpolicy" type="xs:string"/>
+  <xs:element name="cancellationtext" type="xs:string"/>
+  <xs:element name="accommodation_type" type="xs:string"/>
+  <xs:element name="hotel_appeals">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="appeal"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="appeal" type="xs:string"/>
+  <xs:element name="hotel_star_accreditor" type="xs:string"/>
+  <xs:element name="hotel_total_rooms" type="xs:integer"/>
+  <xs:element name="hotel_city_taxes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="CityTax"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CityTax">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Type"/>
+        <xs:element ref="Value"/>
+        <xs:element ref="OptedIn"/>
+        <xs:element ref="IsCityTaxArea"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Type" type="xs:string"/>
+  <xs:element name="Value" type="xs:string"/>
+  <xs:element name="OptedIn" type="xs:string"/>
+  <xs:element name="IsCityTaxArea" type="xs:string"/>
 </xs:schema>
