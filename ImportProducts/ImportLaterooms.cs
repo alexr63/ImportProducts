@@ -410,7 +410,7 @@ namespace ImportProducts
                             db.SaveChanges();
 
                             i++;
-                            Common.UpdateSteps(stepImport: i);
+                            //Common.UpdateSteps(stepImport: i);
                         }
                         else
                         {
@@ -591,18 +591,16 @@ namespace ImportProducts
                             }
 
                             isChanged = false;
-                            foreach (var image in product.Images.Elements("url"))
+                            var imageURLs = product.Images.Elements("url").Where(xe => xe.Value.EndsWith(".jpg") || xe.Value.EndsWith(".png")).Select(xe => xe.Value);
+                            foreach (var imageURL in imageURLs)
                             {
-                                if (!image.Value.Contains("/thumbnail/") && !image.Value.Contains("/detail/"))
+                                ProductImage productImage =
+                                    hotel.ProductImages.SingleOrDefault(pi => pi.URL == imageURL);
+                                if (productImage == null)
                                 {
-                                    ProductImage productImage =
-                                        hotel.ProductImages.SingleOrDefault(pi => pi.URL == image.Value);
-                                    if (productImage == null)
-                                    {
-                                        productImage = new ProductImage {URL = image.Value};
-                                        hotel.ProductImages.Add(productImage);
-                                        isChanged = true;
-                                    }
+                                    productImage = new ProductImage { URL = imageURL };
+                                    hotel.ProductImages.Add(productImage);
+                                    isChanged = true;
                                 }
                             }
                             if (isChanged)
@@ -611,7 +609,6 @@ namespace ImportProducts
                             }
 
                             isChanged = false;
-                            var imageURLs = product.Images.Elements("url").Select(xe => xe.Value);
                             var productImagesToRemove = db.ProductImages.Where(pi => pi.ProductId == hotel.Id &&
                                 imageURLs.All(xe => xe != pi.URL));
                             if (productImagesToRemove.Any())
@@ -625,7 +622,7 @@ namespace ImportProducts
                             }
 
                             i++;
-                            Common.UpdateSteps(stepImport: i);
+                            //Common.UpdateSteps(stepImport: i);
                         }
 
                         if (bw.CancellationPending)
