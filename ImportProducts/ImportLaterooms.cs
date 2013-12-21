@@ -350,28 +350,31 @@ namespace ImportProducts
                                 hotel.Location.IsDeleted = false;
                                 parentId = country.Id;
                             }
-                            Location county =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == product.County &&
-                                    c.ParentId == parentId);
-                            if (county == null)
+                            if (product.County != String.Empty)
                             {
-                                county = new Location
+                                Location county =
+                                    db.Locations.SingleOrDefault(
+                                        c =>
+                                            c.Name == product.County &&
+                                            c.ParentId == parentId);
+                                if (county == null)
                                 {
-                                    Name = product.County,
-                                    ParentId = parentId,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(county);
-                                db.SaveChanges();
-                            }
-                            if (county != null)
-                            {
-                                hotel.Location = county;
-                                hotel.LocationId = county.Id;
-                                hotel.Location.IsDeleted = false;
-                                parentId = county.Id;
+                                    county = new Location
+                                    {
+                                        Name = product.County,
+                                        ParentId = parentId,
+                                        IsDeleted = false
+                                    };
+                                    db.Locations.Add(county);
+                                    db.SaveChanges();
+                                }
+                                if (county != null)
+                                {
+                                    hotel.Location = county;
+                                    hotel.LocationId = county.Id;
+                                    hotel.Location.IsDeleted = false;
+                                    parentId = county.Id;
+                                }
                             }
                             Location city =
                                 db.Locations.SingleOrDefault(
