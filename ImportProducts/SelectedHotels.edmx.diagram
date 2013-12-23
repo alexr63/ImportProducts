@@ -10,11 +10,11 @@
         <AssociationConnector Association="SelectedHotelsModel.Cowrie_CategoryProducts" ManuallyRouted="false" />
         <EntityTypeShape EntityType="SelectedHotelsModel.ProductImage" Width="1.5" PointX="3" PointY="0.75" />
         <AssociationConnector Association="SelectedHotelsModel.FK_Cowrie_ProductImages_Cowrie_Products" />
-        <EntityTypeShape EntityType="SelectedHotelsModel.Hotel" Width="1.5" PointX="5.625" PointY="3.75" />
-        <EntityTypeShape EntityType="SelectedHotelsModel.Location" Width="1.5" PointX="7.75" PointY="3.125" />
+        <EntityTypeShape EntityType="SelectedHotelsModel.Hotel" Width="1.5" PointX="5.375" PointY="1.5" />
+        <EntityTypeShape EntityType="SelectedHotelsModel.Location" Width="1.5" PointX="7.25" PointY="5.5" />
         <AssociationConnector Association="SelectedHotelsModel.FK_Cowrie_Hotels_Cowrie_Locations" />
         <AssociationConnector Association="SelectedHotelsModel.FK_Cowrie_Locations_Cowrie_Locations" />
-        <EntityTypeShape EntityType="SelectedHotelsModel.Book" Width="1.5" PointX="5.625" PointY="6.25" />
+        <EntityTypeShape EntityType="SelectedHotelsModel.Book" Width="1.5" PointX="5.625" PointY="13" />
         <EntityTypeShape EntityType="SelectedHotelsModel.Clothe" Width="1.5" PointX="5.625" PointY="8.5" />
         <EntityTypeShape EntityType="SelectedHotelsModel.ProductType" Width="1.5" PointX="3" PointY="7.75" />
         <AssociationConnector Association="SelectedHotelsModel.FK_Cowrie_Products_Cowrie_ProductTypes" />
@@ -26,6 +26,12 @@
         <InheritanceConnector EntityType="SelectedHotelsModel.HomeAndGarden" />
         <AssociationConnector Association="SelectedHotelsModel.FK_Cowrie_Categories_Cowrie_Categories" />
         <EntityTypeShape EntityType="SelectedHotelsModel.Feed" Width="1.5" PointX="10.75" PointY="5.375" />
+        <EntityTypeShape EntityType="SelectedHotelsModel.HotelLocation" Width="1.5" PointX="9" PointY="2.75" />
+        <EntityTypeShape EntityType="SelectedHotelsModel.HotelType" Width="1.5" PointX="8.125" PointY="0.5" />
+        <AssociationConnector Association="SelectedHotelsModel.FK_Cowrie_HotelLocations_Cowrie_Hotels" />
+        <AssociationConnector Association="SelectedHotelsModel.FK_Cowrie_HotelLocations_Cowrie_Locations" />
+        <AssociationConnector Association="SelectedHotelsModel.FK_Cowrie_Hotels_Cowrie_HotelTypes" />
+        <AssociationConnector Association="SelectedHotelsModel.FK_Cowrie_HotelLocations_Cowrie_HotelTypes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

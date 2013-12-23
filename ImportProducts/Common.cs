@@ -7,7 +7,7 @@ namespace ImportProducts
 {
     public static class Common
     {
-        public static IEnumerable<Hotel> HotelsInLocation(SelectedHotelsEntities db, int locationId)
+        public static IEnumerable<Hotel> HotelsInLocationOrItsParents(SelectedHotelsEntities db, int locationId)
         {
             IList<Hotel> hotels = (from p in db.Products
                                    where !p.IsDeleted
@@ -68,9 +68,56 @@ namespace ImportProducts
         {
             foreach (Location location in db.Locations.Where(l => !l.IsDeleted))
             {
-                if (!HotelsInLocation(db, location.Id).Any())
+                if (!HotelsInLocationOrItsParents(db, location.Id).Any())
                 {
                     location.IsDeleted = true;
+                }
+            }
+            db.SaveChanges();
+        }
+
+        public static void UpdateHotelLocations(SelectedHotelsEntities db)
+        {
+            IList<Hotel> hotels = (from p in db.Products
+                                   where !p.IsDeleted
+                                   select p).OfType<Hotel>().ToList();
+            foreach (Hotel hotel in hotels)
+            {
+                if (db.HotelLocations.SingleOrDefault(hl => hl.HotelId == hotel.Id && hl.LocationId == hotel.Location.Id && hl.HotelTypeId == hotel.HotelType.Id) == null)
+                {
+                    HotelLocation hotelLocation = new HotelLocation
+                    {
+                        HotelId = hotel.Id,
+                        LocationId = hotel.Location.Id,
+                        HotelTypeId = hotel.HotelType.Id
+                    };
+                    hotel.HotelLocations.Add(hotelLocation);
+                }
+                if (hotel.Location.ParentLocation != null)
+                {
+                    if (db.HotelLocations.SingleOrDefault(hl => hl.HotelId == hotel.Id && hl.LocationId == hotel.Location.ParentLocation.Id && hl.HotelTypeId == hotel.HotelType.Id) == null)
+                    {
+                        HotelLocation hotelLocation = new HotelLocation
+                        {
+                            HotelId = hotel.Id,
+                            LocationId = hotel.Location.ParentLocation.Id,
+                            HotelTypeId = hotel.HotelType.Id
+                        };
+                        hotel.HotelLocations.Add(hotelLocation);
+                    }
+                    if (hotel.Location.ParentLocation.ParentLocation != null)
+                    {
+                        if (db.HotelLocations.SingleOrDefault(hl => hl.HotelId == hotel.Id && hl.LocationId == hotel.Location.ParentLocation.ParentLocation.Id && hl.HotelTypeId == hotel.HotelType.Id) == null)
+                        {
+                            HotelLocation hotelLocation = new HotelLocation
+                            {
+                                HotelId = hotel.Id,
+                                LocationId = hotel.Location.ParentLocation.ParentLocation.Id,
+                                HotelTypeId = hotel.HotelType.Id
+                            };
+                            hotel.HotelLocations.Add(hotelLocation);
+                        }
+                    }
                 }
             }
             db.SaveChanges();

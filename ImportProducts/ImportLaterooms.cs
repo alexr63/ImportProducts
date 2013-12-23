@@ -117,7 +117,7 @@ namespace ImportProducts
         {
             foreach (Location location in db.Locations.Where(l => !l.IsDeleted))
             {
-                if (!Common.HotelsInLocation(db, location.Id).Any())
+                if (!Common.HotelsInLocationOrItsParents(db, location.Id).Any())
                 {
                     location.IsDeleted = true;
                 }
@@ -592,7 +592,8 @@ namespace ImportProducts
 
                             isChanged = false;
                             var imageURLs = product.Images.Elements("url").Where(xe => xe.Value.EndsWith(".jpg") || xe.Value.EndsWith(".png")).Select(xe => xe.Value);
-                            foreach (var imageURL in imageURLs)
+                            IEnumerable<string> imageURLList = imageURLs as IList<string> ?? imageURLs.ToList();
+                            foreach (var imageURL in imageURLList)
                             {
                                 ProductImage productImage =
                                     hotel.ProductImages.SingleOrDefault(pi => pi.URL == imageURL);
@@ -610,7 +611,7 @@ namespace ImportProducts
 
                             isChanged = false;
                             var productImagesToRemove = db.ProductImages.Where(pi => pi.ProductId == hotel.Id &&
-                                imageURLs.All(xe => xe != pi.URL));
+                                imageURLList.All(xe => xe != pi.URL));
                             if (productImagesToRemove.Any())
                             {
                                 db.ProductImages.RemoveRange(productImagesToRemove);

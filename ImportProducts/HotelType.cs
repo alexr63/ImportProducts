@@ -12,23 +12,18 @@ namespace ImportProducts
     using System;
     using System.Collections.Generic;
     
-    public partial class Location
+    public partial class HotelType
     {
-        public Location()
+        public HotelType()
         {
             this.Hotels = new HashSet<Hotel>();
-            this.SubLocations = new HashSet<Location>();
             this.HotelLocations = new HashSet<HotelLocation>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public Nullable<int> ParentId { get; set; }
-        public bool IsDeleted { get; set; }
     
         public virtual ICollection<Hotel> Hotels { get; set; }
-        public virtual ICollection<Location> SubLocations { get; set; }
-        public virtual Location ParentLocation { get; set; }
         public virtual ICollection<HotelLocation> HotelLocations { get; set; }
     }
 }

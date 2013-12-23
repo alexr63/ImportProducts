@@ -12,26 +12,15 @@ namespace ImportProducts
     using System;
     using System.Collections.Generic;
     
-    public partial class Hotel : Product
+    public partial class HotelLocation
     {
-        public Hotel()
-        {
-            this.HotelLocations = new HashSet<HotelLocation>();
-        }
-    
-        public Nullable<int> LocationId { get; set; }
-        public Nullable<int> Rooms { get; set; }
-        public Nullable<decimal> Star { get; set; }
-        public Nullable<decimal> CustomerRating { get; set; }
-        public string Address { get; set; }
-        public string CurrencyCode { get; set; }
-        public Nullable<double> Lat { get; set; }
-        public Nullable<double> Lon { get; set; }
-        public string PostCode { get; set; }
+        public int Id { get; set; }
+        public int HotelId { get; set; }
+        public int LocationId { get; set; }
         public int HotelTypeId { get; set; }
     
+        public virtual Hotel Hotel { get; set; }
         public virtual Location Location { get; set; }
-        public virtual ICollection<HotelLocation> HotelLocations { get; set; }
         public virtual HotelType HotelType { get; set; }
     }
 }
