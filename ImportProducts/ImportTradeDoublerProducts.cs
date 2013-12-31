@@ -256,14 +256,14 @@ namespace ImportProducts
 
                         if (category.Name == "Clothes")
                         {
-                            Clothe product =
-                                db.Products.OfType<Clothe>().SingleOrDefault(
+                            Cloth product =
+                                db.Products.OfType<Cloth>().SingleOrDefault(
                                     p =>
                                     p.Name == productName &&
                                     p.Number == xmlProduct.ProductNumber);
                             if (product == null)
                             {
-                                product = new Clothe
+                                product = new Cloth
                                                {
                                                    Name = xmlProduct.Name.Replace("&apos;", "'"),
                                                    ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
