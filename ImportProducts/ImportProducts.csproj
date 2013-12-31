@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ImportProducts</RootNamespace>
     <AssemblyName>ImportProducts</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -23,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -32,21 +34,23 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.0.1\lib\net40\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.0.1\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-client\log4net.dll</HintPath>
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -63,61 +67,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Book.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Category.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Clothe.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
     <Compile Include="Enums.cs" />
-    <Compile Include="Feed.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="HomeAndGarden.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Hotel.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="HotelLocation.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="HotelType.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
     <Compile Include="ImportTradeDoublerHotels.cs" />
     <Compile Include="ImportTradeDoublerProducts.cs" />
     <Compile Include="ImportWebgainsProducts.cs" />
-    <Compile Include="Location.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Product.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ProductImage.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ProductType.cs">
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SelectedHotels.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SelectedHotels.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SelectedHotels.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SelectedHotels.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SelectedHotels.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SelectedHotels.edmx</DependentUpon>
-    </Compile>
     <Compile Include="EditProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,6 +102,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.Config">
       <SubType>Designer</SubType>
@@ -163,23 +117,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EntityDeploy Include="SelectedHotels.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SelectedHotels.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="SelectedHotels.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SelectedHotels.Context.cs</LastGenOutput>
-      <DependentUpon>SelectedHotels.edmx</DependentUpon>
-    </None>
-    <None Include="SelectedHotels.edmx.diagram">
-      <DependentUpon>SelectedHotels.edmx</DependentUpon>
-    </None>
-    <None Include="SelectedHotels.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SelectedHotels.cs</LastGenOutput>
-      <DependentUpon>SelectedHotels.edmx</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -190,6 +127,12 @@
   <ItemGroup>
     <Content Include="App_Data\ImportProducts.sql" />
     <Content Include="notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SelectedHotelsModel\SelectedHotelsModel.csproj">
+      <Project>{58ed5699-0ce6-4868-9876-f99d40899857}</Project>
+      <Name>SelectedHotelsModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

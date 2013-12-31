@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
+using SelectedHotelsModel;
 
 namespace ImportProducts
 {

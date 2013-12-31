@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using System.Threading;
 using System.Xml.Schema;
 using Ionic.Zip;
+using SelectedHotelsModel;
 
 namespace ImportProducts
 {
