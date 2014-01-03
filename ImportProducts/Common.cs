@@ -8,18 +8,6 @@ namespace ImportProducts
 {
     public static class Common
     {
-        public static IEnumerable<Hotel> HotelsInLocationOrItsParents(SelectedHotelsEntities db, int locationId)
-        {
-            IList<Hotel> hotels = (from p in db.Products
-                                   where !p.IsDeleted
-                                   select p).OfType<Hotel>().ToList();
-            var query = from h in hotels
-                        where h.LocationId == locationId || h.Location.ParentId == locationId ||
-                              (h.Location.ParentLocation != null && h.Location.ParentLocation.ParentId == locationId)
-                        select h;
-            return query;
-        }
-
         public static void UpdateSteps(int? stepImport = null, int? stepAddToCategories = null, int? stepAddImages = null)
         {
             using (var context = new SelectedHotelsEntities())
@@ -69,7 +57,7 @@ namespace ImportProducts
         {
             foreach (Location location in db.Locations.Where(l => !l.IsDeleted))
             {
-                if (!HotelsInLocationOrItsParents(db, location.Id).Any())
+                if (!db.HotelsInLocation(location.Id).Any())
                 {
                     location.IsDeleted = true;
                 }

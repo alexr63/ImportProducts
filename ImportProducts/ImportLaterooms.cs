@@ -118,7 +118,7 @@ namespace ImportProducts
         {
             foreach (Location location in db.Locations.Where(l => !l.IsDeleted))
             {
-                if (!Common.HotelsInLocationOrItsParents(db, location.Id).Any())
+                if (!db.HotelsInLocation(location.Id).Any())
                 {
                     location.IsDeleted = true;
                 }
