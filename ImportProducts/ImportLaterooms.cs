@@ -410,6 +410,18 @@ namespace ImportProducts
 
                             db.SaveChanges();
 
+                            var imageURLs = product.Images.Elements("url").Where(xe => xe.Value.EndsWith(".jpg") || xe.Value.EndsWith(".png")).Select(xe => xe.Value);
+                            IEnumerable<string> imageURLList = imageURLs as IList<string> ?? imageURLs.ToList();
+                            foreach (var imageURL in imageURLList)
+                            {
+                                ProductImage productImage = new ProductImage
+                                {
+                                    URL = imageURL
+                                };
+                                hotel.ProductImages.Add(productImage);
+                            }
+                            db.SaveChanges();
+
                             i++;
                             //Common.UpdateSteps(stepImport: i);
                         }
