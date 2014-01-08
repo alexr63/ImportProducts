@@ -137,27 +137,30 @@ namespace ImportProducts
                     {
                         case "Laterooms":
                         case "Laterooms (filtered)":
-                            workD = new BackGroundWorkerDelegateWork(ImportLaterooms.DoImport);
+                            workD = ImportLaterooms.DoImport;
                             break;
                         case "Trade Doubler":
                         case "Home and garden":
                         case "Clothes":
-                            workD = new BackGroundWorkerDelegateWork(ImportTradeDoublerProducts.DoImport);
+                            workD = ImportTradeDoublerProducts.DoImport;
                             break;
                         case "Trade Doubler Hotels":
-                            workD = new BackGroundWorkerDelegateWork(ImportTradeDoublerHotels.DoImport);
+                            workD = ImportTradeDoublerHotels.DoImport;
                             break;
                         case "Productserve":
 #if ImportProductserve
-                            workD = new BackGroundWorkerDelegateWork(ImportProductserve.DoImport);
+                            workD = ImportProductserve.DoImport;
 #endif
                             break;
                         case "Webgains":
-                            workD = new BackGroundWorkerDelegateWork(ImportWebgainsProducts.DoImport);
+                            workD = ImportWebgainsProducts.DoImport;
+                            break;
+                        case "Excel":
+                            workD = ImportExcelHotels.DoImport;
                             break;
                     }
-                    progressD = new BackGroundWorkerDelegateProgress(backgroundWorkerProgressChanged);
-                    completeD = new BackGroundWorkerDelegateCompleted(backgroundWorkerRunWorkerCompleted);
+                    progressD = backgroundWorkerProgressChanged;
+                    completeD = backgroundWorkerRunWorkerCompleted;
                     bgw.Add(keyDownload, AddBackGroundWorker(workD, progressD, completeD));
                     bgProgress.Add(keyDownload, 0);
                     activeStep = "Start download";
