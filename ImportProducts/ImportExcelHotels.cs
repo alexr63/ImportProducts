@@ -82,6 +82,7 @@ namespace ImportProducts
                             hotel.UnitCost = hotelView.UnitCost;
                             hotel.Description = hotelView.Description;
                             hotel.URL = hotelView.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
+                            hotel.Image = hotelView.Image;
                             hotel.Star = hotelView.Star;
                             hotel.CustomerRating = hotelView.CustomerRating;
                             hotel.Rooms = hotelView.Rooms;
@@ -95,7 +96,7 @@ namespace ImportProducts
                             hotel.CreatedDate = DateTime.Now;
                             hotel.IsDeleted = false;
 
-                            Location location = db.Locations.SingleOrDefault(c => c.Name == hotelView.Location);
+                            Location location = db.Locations.FirstOrDefault(c => c.Name == hotelView.Location);
                             if (location != null)
                             {
                                 hotel.Location = location;
