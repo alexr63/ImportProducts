@@ -175,6 +175,7 @@ namespace ImportProducts
                     Name = (string)el.Element("name"),
                     Image = (string)el.Element("imageUrl"),
                     UnitCost = (decimal)el.Element("price"),
+                    CurrencyCode = (string)el.Element("currency"),
                     Description = (string)el.Element("description"),
                     DescriptionHTML = (string)el.Element("description"),
                     URL = (string)el.Element("productUrl"),
@@ -264,79 +265,86 @@ namespace ImportProducts
                             if (product == null)
                             {
                                 product = new Cloth
-                                               {
-                                                   Name = xmlProduct.Name.Replace("&apos;", "'"),
-                                                   ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
-                                                   Number = xmlProduct.ProductNumber,
-                                                   UnitCost = xmlProduct.UnitCost,
-                                                   Description = xmlProduct.Description,
-                                                   URL = xmlProduct.URL,
-                                                   Image = xmlProduct.Image,
-                                                   CreatedByUser = vendorId,
-                                                   Colour = xmlProduct.Colours,
-                                                   Size = xmlProduct.Size,
-                                                   Brand = xmlProduct.Brand,
-                                               };
+                                {
+                                    Name = xmlProduct.Name.Replace("&apos;", "'"),
+                                    ProductTypeId = (int) Enums.ProductTypeEnum.Clothes,
+                                    Number = xmlProduct.ProductNumber,
+                                    UnitCost = xmlProduct.UnitCost,
+                                    CurrencyCode = xmlProduct.CurrencyCode,
+                                    Description = xmlProduct.Description,
+                                    URL = xmlProduct.URL,
+                                    Image = xmlProduct.Image,
+                                    CreatedByUser = vendorId,
+                                    CreatedDate = DateTime.Now,
+                                    Colour = xmlProduct.Colours,
+                                    Size = xmlProduct.Size,
+                                    Brand = xmlProduct.Brand,
+                                    IsDeleted = false
+                                };
 
                                 product.Categories.Add(subCategory);
                                 db.Products.Add(product);
+                                db.SaveChanges();
+
+                                List<string> imageURLList = new List<string>
+                                {
+                                    xmlProduct.Image1,
+                                    xmlProduct.Image2,
+                                    xmlProduct.Image3,
+                                    xmlProduct.Image4
+                                };
+                                foreach (var imageURL in imageURLList)
+                                {
+                                    if (imageURL != null)
+                                    {
+                                        ProductImage productImage = new ProductImage {URL = imageURL};
+                                        product.ProductImages.Add(productImage);
+                                    }
+                                }
+
                                 db.SaveChanges();
                             }
                             else
                             {
                                 product.UnitCost = xmlProduct.UnitCost;
+                                product.CurrencyCode = xmlProduct.CurrencyCode;
                                 product.Description = xmlProduct.Description;
                                 product.URL = xmlProduct.URL;
-                                if (!product.Categories.Contains(subCategory))
+                                product.Image = xmlProduct.Image;
+                                product.Colour = xmlProduct.Colours;
+                                product.Size = xmlProduct.Size;
+                                product.Brand = xmlProduct.Brand;
+                                product.ProductTypeId = (int)Enums.ProductTypeEnum.Clothes;
+                                db.SaveChanges();
+
+                                List<string> imageURLList = new List<string>
                                 {
-                                    product.Categories.Add(subCategory);
+                                    xmlProduct.Image1,
+                                    xmlProduct.Image2,
+                                    xmlProduct.Image3,
+                                    xmlProduct.Image4
+                                };
+                                foreach (var imageURL in imageURLList)
+                                {
+                                    if (imageURL != null)
+                                    {
+                                        ProductImage productImage =
+                                            product.ProductImages.SingleOrDefault(pi => pi.URL == imageURL);
+                                        if (productImage == null)
+                                        {
+                                            productImage = new ProductImage {URL = imageURL};
+                                            product.ProductImages.Add(productImage);
+                                        }
+                                    }
                                 }
                                 db.SaveChanges();
-                            }
 
-                            StringBuilder sb = new StringBuilder();
-                            sb.AppendLine("DELETE");
-                            sb.AppendLine("FROM         Cowrie_ProductImages");
-                            sb.AppendLine("WHERE     ProductID = @ProductID");
-                            SqlCommand commandDelete =
-                                new SqlCommand(
-                                    sb.ToString(),
-                                    destinationConnection);
-                            commandDelete.Parameters.Add("@ProductID", SqlDbType.Int);
-                            commandDelete.Parameters["@ProductID"].Value = product.Id;
-                            commandDelete.ExecuteNonQuery();
-
-                            bool isChanged = false;
-                            if (xmlProduct.Image1 != null)
-                            {
-                                ProductImage productImage = new ProductImage();
-                                productImage.URL = xmlProduct.Image1;
-                                product.ProductImages.Add(productImage);
-                                isChanged = true;
-                            }
-                            if (xmlProduct.Image2 != null)
-                            {
-                                ProductImage productImage = new ProductImage();
-                                productImage.URL = xmlProduct.Image2;
-                                product.ProductImages.Add(productImage);
-                                isChanged = true;
-                            }
-                            if (xmlProduct.Image3 != null)
-                            {
-                                ProductImage productImage = new ProductImage();
-                                productImage.URL = xmlProduct.Image3;
-                                product.ProductImages.Add(productImage);
-                                isChanged = true;
-                            }
-                            if (xmlProduct.Image4 != null)
-                            {
-                                ProductImage productImage = new ProductImage();
-                                productImage.URL = xmlProduct.Image4;
-                                product.ProductImages.Add(productImage);
-                                isChanged = true;
-                            }
-                            if (isChanged)
-                            {
+                                var productImagesToRemove = db.ProductImages.Where(pi => pi.ProductId == product.Id &&
+                                    imageURLList.All(xe => xe != pi.URL));
+                                if (productImagesToRemove.Any())
+                                {
+                                    db.ProductImages.RemoveRange(productImagesToRemove);
+                                }
                                 db.SaveChanges();
                             }
                         }
