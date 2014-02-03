@@ -260,8 +260,8 @@ namespace ImportProducts
                             Cloth product =
                                 db.Products.OfType<Cloth>().SingleOrDefault(
                                     p =>
-                                    p.Name == productName &&
-                                    p.Number == xmlProduct.ProductNumber);
+                                        p.Name == productName &&
+                                        p.Number == xmlProduct.ProductNumber);
                             if (product == null)
                             {
                                 product = new Cloth
@@ -295,13 +295,38 @@ namespace ImportProducts
                                 };
                                 foreach (var imageURL in imageURLList)
                                 {
-                                    if (imageURL != null)
+                                    if (!String.IsNullOrEmpty(imageURL))
                                     {
                                         ProductImage productImage = new ProductImage {URL = imageURL};
                                         product.ProductImages.Add(productImage);
                                     }
                                 }
+                                db.SaveChanges();
 
+                                List<string> clothSizeList = new List<string>();
+                                if (xmlProduct.Size.Contains(","))
+                                {
+                                    foreach (var size in xmlProduct.Size.Split(','))
+                                    {
+                                        if (!String.IsNullOrEmpty(size))
+                                        {
+                                            clothSizeList.Add(size);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (!String.IsNullOrEmpty(xmlProduct.Size))
+                                    {
+                                        clothSizeList.Add(xmlProduct.Size);
+                                    }
+                                }
+
+                                foreach (var size in clothSizeList)
+                                {
+                                    ClothSize clothSize = new ClothSize {Size = size};
+                                    product.ClothSizes.Add(clothSize);
+                                }
                                 db.SaveChanges();
                             }
                             else
@@ -314,7 +339,7 @@ namespace ImportProducts
                                 product.Colour = xmlProduct.Colours;
                                 product.Size = xmlProduct.Size;
                                 product.Brand = xmlProduct.Brand;
-                                product.ProductTypeId = (int)Enums.ProductTypeEnum.Clothes;
+                                product.ProductTypeId = (int) Enums.ProductTypeEnum.Clothes;
                                 db.SaveChanges();
 
                                 List<string> imageURLList = new List<string>
@@ -326,10 +351,10 @@ namespace ImportProducts
                                 };
                                 foreach (var imageURL in imageURLList)
                                 {
-                                    if (imageURL != null)
+                                    if (!String.IsNullOrEmpty(imageURL))
                                     {
                                         ProductImage productImage =
-                                            product.ProductImages.SingleOrDefault(pi => pi.URL == imageURL);
+                                            product.ProductImages.FirstOrDefault(pi => pi.URL == imageURL);
                                         if (productImage == null)
                                         {
                                             productImage = new ProductImage {URL = imageURL};
@@ -340,10 +365,55 @@ namespace ImportProducts
                                 db.SaveChanges();
 
                                 var productImagesToRemove = db.ProductImages.Where(pi => pi.ProductId == product.Id &&
-                                    imageURLList.All(xe => xe != pi.URL));
+                                                                                         imageURLList.All(
+                                                                                             xe => xe != pi.URL));
                                 if (productImagesToRemove.Any())
                                 {
                                     db.ProductImages.RemoveRange(productImagesToRemove);
+                                }
+                                db.SaveChanges();
+
+                                List<string> clothSizeList = new List<string>();
+                                if (xmlProduct.Size.Contains(","))
+                                {
+                                    foreach (var size in xmlProduct.Size.Split(','))
+                                    {
+                                        if (!String.IsNullOrEmpty(size))
+                                        {
+                                            clothSizeList.Add(size);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (!String.IsNullOrEmpty(xmlProduct.Size))
+                                    {
+                                        clothSizeList.Add(xmlProduct.Size);
+                                    }
+                                }
+
+                                foreach (var size in clothSizeList)
+                                {
+                                    if (!String.IsNullOrEmpty(size))
+                                    {
+                                        ClothSize clothSize =
+                                            product.ClothSizes.SingleOrDefault(cs => cs.Size == size);
+                                        if (clothSize == null)
+                                        {
+                                            clothSize = new ClothSize {Size = size};
+                                            product.ClothSizes.Add(clothSize);
+                                        }
+
+                                    }
+                                }
+                                db.SaveChanges();
+
+                                var clothSizesToRemove = db.ClothSizes.Where(cs => cs.ClothId == product.Id &&
+                                                                                         clothSizeList.All(
+                                                                                             csl => csl != cs.Size));
+                                if (clothSizesToRemove.Any())
+                                {
+                                    db.ClothSizes.RemoveRange(clothSizesToRemove);
                                 }
                                 db.SaveChanges();
                             }
@@ -353,26 +423,26 @@ namespace ImportProducts
                             HomeAndGarden product =
                                 db.Products.OfType<HomeAndGarden>().SingleOrDefault(
                                     p =>
-                                    p.Name == productName &&
-                                    p.Number == xmlProduct.ProductNumber);
+                                        p.Name == productName &&
+                                        p.Number == xmlProduct.ProductNumber);
                             if (product == null)
                             {
                                 product = new HomeAndGarden
-                                               {
-                                                   Name = xmlProduct.Name.Replace("&apos;", "'"),
-                                                   ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
-                                                   Number = xmlProduct.ProductNumber,
-                                                   UnitCost = xmlProduct.UnitCost,
-                                                   Description = xmlProduct.Description,
-                                                   URL = xmlProduct.URL,
-                                                   Image = xmlProduct.Image,
-                                                   CreatedByUser = vendorId,
-                                                   Weight = xmlProduct.Weight,
-                                                   Size = xmlProduct.Size,
-                                                   Brand = xmlProduct.Brand,
-                                                   Model = xmlProduct.Model,
-                                                   Manufacturer = xmlProduct.Manufacturer,
-                                               };
+                                {
+                                    Name = xmlProduct.Name.Replace("&apos;", "'"),
+                                    ProductTypeId = (int) Enums.ProductTypeEnum.HomeAndGardens,
+                                    Number = xmlProduct.ProductNumber,
+                                    UnitCost = xmlProduct.UnitCost,
+                                    Description = xmlProduct.Description,
+                                    URL = xmlProduct.URL,
+                                    Image = xmlProduct.Image,
+                                    CreatedByUser = vendorId,
+                                    Weight = xmlProduct.Weight,
+                                    Size = xmlProduct.Size,
+                                    Brand = xmlProduct.Brand,
+                                    Model = xmlProduct.Model,
+                                    Manufacturer = xmlProduct.Manufacturer,
+                                };
 
                                 product.Categories.Add(subCategory);
                                 db.Products.Add(product);
