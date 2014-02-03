@@ -277,7 +277,6 @@ namespace ImportProducts
                                     CreatedByUser = vendorId,
                                     CreatedDate = DateTime.Now,
                                     Colour = xmlProduct.Colours,
-                                    Size = xmlProduct.Size,
                                     Brand = xmlProduct.Brand,
                                     IsDeleted = false
                                 };
@@ -337,7 +336,6 @@ namespace ImportProducts
                                 product.URL = xmlProduct.URL;
                                 product.Image = xmlProduct.Image;
                                 product.Colour = xmlProduct.Colours;
-                                product.Size = xmlProduct.Size;
                                 product.Brand = xmlProduct.Brand;
                                 product.ProductTypeId = (int) Enums.ProductTypeEnum.Clothes;
                                 db.SaveChanges();
