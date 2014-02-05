@@ -171,6 +171,7 @@ namespace ImportProducts
                 select new
                 {
                     Category = (string)el.Element("TDCategoryName"),
+                    MerchantCategory = (string)el.Element("merchantCategoryName"),
                     ProductNumber = (string)el.Element("TDProductId"),
                     Name = (string)el.Element("name"),
                     Image = (string)el.Element("imageUrl"),
@@ -255,6 +256,20 @@ namespace ImportProducts
                             db.SaveChanges();
                         }
 
+                        MerchantCategory merchantCategory = null;
+                        if (!String.IsNullOrEmpty(xmlProduct.MerchantCategory))
+                        {
+                            merchantCategory =
+                                db.MerchantCategories.SingleOrDefault(mc => mc.Name == xmlProduct.MerchantCategory);
+                            if (merchantCategory == null)
+                            {
+                                merchantCategory = new MerchantCategory();
+                                merchantCategory.Name = xmlProduct.MerchantCategory;
+                                db.MerchantCategories.Add(merchantCategory);
+                                db.SaveChanges();
+                            }
+                        }
+
                         if (category.Name == "Clothes")
                         {
                             Cloth product =
@@ -282,6 +297,7 @@ namespace ImportProducts
                                 };
 
                                 product.Categories.Add(subCategory);
+                                product.MerchantCategory = merchantCategory;
                                 db.Products.Add(product);
                                 db.SaveChanges();
 
@@ -338,6 +354,18 @@ namespace ImportProducts
                                 product.Colour = xmlProduct.Colours;
                                 product.Brand = xmlProduct.Brand;
                                 product.ProductTypeId = (int) Enums.ProductTypeEnum.Clothes;
+                                product.MerchantCategory = merchantCategory;
+                                db.SaveChanges();
+
+                                if (!product.Categories.Contains(subCategory))
+                                {
+                                    product.Categories.Add(subCategory);
+                                }
+                                var productCategoriesToRemove = product.Categories.Where(pc => pc.Name != subCategory.Name);
+                                foreach (Category productCategoryToRemove in productCategoriesToRemove)
+                                {
+                                    product.Categories.Remove(productCategoryToRemove);
+                                }
                                 db.SaveChanges();
 
                                 List<string> imageURLList = new List<string>
