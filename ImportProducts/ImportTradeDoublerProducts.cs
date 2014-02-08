@@ -270,6 +270,20 @@ namespace ImportProducts
                             }
                         }
 
+                        Brand brand = null;
+                        if (!String.IsNullOrEmpty(xmlProduct.Brand))
+                        {
+                            brand =
+                                db.Brands.SingleOrDefault(b => b.Name == xmlProduct.Brand);
+                            if (brand == null)
+                            {
+                                brand = new Brand();
+                                brand.Name = xmlProduct.Brand;
+                                db.Brands.Add(brand);
+                                db.SaveChanges();
+                            }
+                        }
+
                         if (category.Name == "Clothes")
                         {
                             Cloth product =
@@ -292,12 +306,12 @@ namespace ImportProducts
                                     CreatedByUser = vendorId,
                                     CreatedDate = DateTime.Now,
                                     Colour = xmlProduct.Colours,
-                                    Brand = xmlProduct.Brand,
                                     IsDeleted = false
                                 };
 
                                 product.Categories.Add(subCategory);
                                 product.MerchantCategory = merchantCategory;
+                                product.Brand = brand;
                                 db.Products.Add(product);
                                 db.SaveChanges();
 
@@ -352,9 +366,9 @@ namespace ImportProducts
                                 product.URL = xmlProduct.URL;
                                 product.Image = xmlProduct.Image;
                                 product.Colour = xmlProduct.Colours;
-                                product.Brand = xmlProduct.Brand;
                                 product.ProductTypeId = (int) Enums.ProductTypeEnum.Clothes;
                                 product.MerchantCategory = merchantCategory;
+                                product.Brand = brand;
                                 db.SaveChanges();
 
                                 if (!product.Categories.Contains(subCategory))
