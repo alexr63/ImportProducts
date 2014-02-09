@@ -194,6 +194,7 @@ namespace ImportProducts
                     Image2 = (string)el.Element("fields").Element("Image2_Large"),
                     Image3 = (string)el.Element("fields").Element("Image3_Large"),
                     Image4 = (string)el.Element("fields").Element("Image4_Large"),
+                    Style = (string)el.Element("fields").Element("Product_Style"),
                 };
 
             foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
@@ -306,6 +307,7 @@ namespace ImportProducts
                                     CreatedByUser = vendorId,
                                     CreatedDate = DateTime.Now,
                                     Colour = xmlProduct.Colours,
+                                    Gender = xmlProduct.Gender,
                                     IsDeleted = false
                                 };
 
@@ -332,6 +334,35 @@ namespace ImportProducts
                                 }
                                 db.SaveChanges();
 
+                                if (!String.IsNullOrEmpty(xmlProduct.Style))
+                                {
+                                    List<string> styleList = new List<string>();
+                                    if (xmlProduct.Style.Contains(","))
+                                    {
+                                        foreach (var style in xmlProduct.Style.Split(','))
+                                        {
+                                            if (!String.IsNullOrEmpty(style))
+                                            {
+                                                styleList.Add(style);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        styleList.Add(xmlProduct.Style);
+                                    }
+
+                                    foreach (var styleName in styleList)
+                                    {
+                                        Style style = db.Styles.SingleOrDefault(s => s.Name == styleName);
+                                        if (style == null)
+                                        {
+                                            style = new Style {Name = styleName};
+                                        }
+                                        product.Styles.Add(style);
+                                    }
+                                }
+
                                 List<string> clothSizeList = new List<string>();
                                 if (xmlProduct.Size.Contains(","))
                                 {
@@ -353,7 +384,7 @@ namespace ImportProducts
 
                                 foreach (var size in clothSizeList)
                                 {
-                                    ClothSize clothSize = new ClothSize {Size = size};
+                                    ClothSize clothSize = new ClothSize { Size = size };
                                     product.ClothSizes.Add(clothSize);
                                 }
                                 db.SaveChanges();
@@ -369,6 +400,7 @@ namespace ImportProducts
                                 product.ProductTypeId = (int) Enums.ProductTypeEnum.Clothes;
                                 product.MerchantCategory = merchantCategory;
                                 product.Brand = brand;
+                                product.Gender = xmlProduct.Gender;
                                 db.SaveChanges();
 
                                 if (!product.Categories.Contains(subCategory))
@@ -413,6 +445,46 @@ namespace ImportProducts
                                 }
                                 db.SaveChanges();
 
+                                if (!String.IsNullOrEmpty(xmlProduct.Style))
+                                {
+                                    List<string> styleList = new List<string>();
+                                    if (xmlProduct.Style.Contains(","))
+                                    {
+                                        foreach (var style in xmlProduct.Style.Split(','))
+                                        {
+                                            if (!String.IsNullOrEmpty(style))
+                                            {
+                                                styleList.Add(style);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        styleList.Add(xmlProduct.Style);
+                                    }
+
+                                    foreach (var styleName in styleList)
+                                    {
+                                        if (!String.IsNullOrEmpty(styleName))
+                                        {
+                                            Style style = product.Styles.SingleOrDefault(s => s.Name == styleName);
+                                            if (style == null)
+                                            {
+                                                style = new Style {Name = styleName};
+                                            }
+                                            product.Styles.Add(style);
+                                        }
+                                    }
+                                    db.SaveChanges();
+
+                                    var stylesToRemove = product.Styles.Where(s => styleList.All(sl => sl != s.Name));
+                                    if (stylesToRemove.Any())
+                                    {
+                                        db.Styles.RemoveRange(stylesToRemove);
+                                        db.SaveChanges();
+                                    }
+                                }
+
                                 List<string> clothSizeList = new List<string>();
                                 if (xmlProduct.Size.Contains(","))
                                 {
@@ -440,7 +512,7 @@ namespace ImportProducts
                                             product.ClothSizes.SingleOrDefault(cs => cs.Size == size);
                                         if (clothSize == null)
                                         {
-                                            clothSize = new ClothSize {Size = size};
+                                            clothSize = new ClothSize { Size = size };
                                             product.ClothSizes.Add(clothSize);
                                         }
 
@@ -454,8 +526,8 @@ namespace ImportProducts
                                 if (clothSizesToRemove.Any())
                                 {
                                     db.ClothSizes.RemoveRange(clothSizesToRemove);
+                                    db.SaveChanges();
                                 }
-                                db.SaveChanges();
                             }
                         }
                         else if (categoryId == (int) Enums.ProductTypeEnum.HomeAndGardens)
