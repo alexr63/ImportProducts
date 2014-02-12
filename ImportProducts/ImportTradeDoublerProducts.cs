@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -9,11 +8,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Schema;
 using SelectedHotelsModel;
 
 namespace ImportProducts
@@ -241,8 +238,10 @@ namespace ImportProducts
                     foreach (var xmlProduct in xmlProducts)
                     {
                         string productName = xmlProduct.Name.Replace("&apos;", "'");
+#if DEBUG
                         Console.WriteLine(productName); // debug print
-
+#endif
+#if !DEBUG
                         Category subCategory = db.Categories.SingleOrDefault(
                             c =>
                             c.Name == xmlProduct.Category &&
@@ -284,6 +283,7 @@ namespace ImportProducts
                                 db.SaveChanges();
                             }
                         }
+#endif
 
                         if (category.Name == "Clothes")
                         {
@@ -294,6 +294,7 @@ namespace ImportProducts
                                         p.Number == xmlProduct.ProductNumber);
                             if (product == null)
                             {
+#if !DEBUG
                                 product = new Cloth
                                 {
                                     Name = xmlProduct.Name.Replace("&apos;", "'"),
@@ -363,6 +364,35 @@ namespace ImportProducts
                                     }
                                 }
 
+                                if (!String.IsNullOrEmpty(xmlProduct.Department))
+                                {
+                                    List<string> departmentList = new List<string>();
+                                    if (xmlProduct.Department.Contains(","))
+                                    {
+                                        foreach (var department in xmlProduct.Department.Split(','))
+                                        {
+                                            if (!String.IsNullOrEmpty(department))
+                                            {
+                                                departmentList.Add(department);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        departmentList.Add(xmlProduct.Department);
+                                    }
+
+                                    foreach (var departmentName in departmentList)
+                                    {
+                                        Department department = db.Departments.SingleOrDefault(d => d.Name == departmentName);
+                                        if (department == null)
+                                        {
+                                            department = new Department{ Name = departmentName };
+                                        }
+                                        product.Departments.Add(department);
+                                    }
+                                }
+
                                 List<string> clothSizeList = new List<string>();
                                 if (xmlProduct.Size.Contains(","))
                                 {
@@ -388,9 +418,11 @@ namespace ImportProducts
                                     product.ClothSizes.Add(clothSize);
                                 }
                                 db.SaveChanges();
+#endif
                             }
                             else
                             {
+#if !DEBUG
                                 product.UnitCost = xmlProduct.UnitCost;
                                 product.CurrencyCode = xmlProduct.CurrencyCode;
                                 product.Description = xmlProduct.Description;
@@ -467,7 +499,7 @@ namespace ImportProducts
                                     {
                                         if (!String.IsNullOrEmpty(styleName))
                                         {
-                                            Style style = product.Styles.SingleOrDefault(s => s.Name == styleName);
+                                            Style style = db.Styles.SingleOrDefault(s => s.Name == styleName);
                                             if (style == null)
                                             {
                                                 style = new Style {Name = styleName};
@@ -477,14 +509,61 @@ namespace ImportProducts
                                     }
                                     db.SaveChanges();
 
-                                    var stylesToRemove = product.Styles.Where(s => styleList.All(sl => sl != s.Name));
+                                    var stylesToRemove = product.Styles.Where(s => !styleList.Any(sl => sl == s.Name));
                                     if (stylesToRemove.Any())
                                     {
-                                        db.Styles.RemoveRange(stylesToRemove);
+                                        foreach (var styleToRemove in stylesToRemove.ToList())
+                                        {
+                                            product.Styles.Remove(styleToRemove);
+                                        }
+                                        db.SaveChanges();
+                                    }
+                                }
+#endif
+                                if (!String.IsNullOrEmpty(xmlProduct.Department))
+                                {
+                                    List<string> departmentList = new List<string>();
+                                    if (xmlProduct.Department.Contains(","))
+                                    {
+                                        foreach (var department in xmlProduct.Department.Split(','))
+                                        {
+                                            if (!String.IsNullOrEmpty(department))
+                                            {
+                                                departmentList.Add(department);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        departmentList.Add(xmlProduct.Department);
+                                    }
+
+                                    foreach (var departmentName in departmentList)
+                                    {
+                                        if (!String.IsNullOrEmpty(departmentName))
+                                        {
+                                            Department department = db.Departments.SingleOrDefault(d => d.Name == departmentName);
+                                            if (department == null)
+                                            {
+                                                department = new Department { Name = departmentName };
+                                            }
+                                            product.Departments.Add(department);
+                                        }
+                                    }
+                                    db.SaveChanges();
+
+                                    var departmentsToRemove = product.Departments.Where(d => !departmentList.Any(dl => dl == d.Name));
+                                    if (departmentsToRemove.Any())
+                                    {
+                                        foreach (var departmentToRemove in departmentsToRemove.ToList())
+                                        {
+                                            product.Departments.Remove(departmentToRemove);
+                                        }
                                         db.SaveChanges();
                                     }
                                 }
 
+#if !DEBUG
                                 List<string> clothSizeList = new List<string>();
                                 if (xmlProduct.Size.Contains(","))
                                 {
@@ -528,8 +607,10 @@ namespace ImportProducts
                                     db.ClothSizes.RemoveRange(clothSizesToRemove);
                                     db.SaveChanges();
                                 }
+#endif
                             }
                         }
+#if HOMEANDGARDENS
                         else if (categoryId == (int) Enums.ProductTypeEnum.HomeAndGardens)
                         {
                             HomeAndGarden product =
@@ -615,6 +696,7 @@ namespace ImportProducts
                                 db.SaveChanges();
                             }
                         }
+#endif
                         currentProduct++;
                         if (bw.CancellationPending)
                         {
