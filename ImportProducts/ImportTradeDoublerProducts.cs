@@ -241,7 +241,6 @@ namespace ImportProducts
 #if DEBUG
                         Console.WriteLine(productName); // debug print
 #endif
-#if !DEBUG
                         Category subCategory = db.Categories.SingleOrDefault(
                             c =>
                             c.Name == xmlProduct.Category &&
@@ -283,7 +282,22 @@ namespace ImportProducts
                                 db.SaveChanges();
                             }
                         }
-#endif
+
+                        Colour colour = null;
+                        if (!String.IsNullOrEmpty(xmlProduct.Colours))
+                        {
+                            colour =
+                                db.Colours.SingleOrDefault(c => c.Name == xmlProduct.Colours);
+                            if (colour == null)
+                            {
+                                colour = new Colour();
+                                colour.Name = xmlProduct.Colours;
+                                db.Colours.Add(colour);
+                                db.SaveChanges();
+                            }
+                        }
+
+                        Gender gender = db.Genders.SingleOrDefault(g => g.Name == xmlProduct.Gender);
 
                         if (category.Name == "Clothes")
                         {
@@ -294,7 +308,6 @@ namespace ImportProducts
                                         p.Number == xmlProduct.ProductNumber);
                             if (product == null)
                             {
-#if !DEBUG
                                 product = new Cloth
                                 {
                                     Name = xmlProduct.Name.Replace("&apos;", "'"),
@@ -307,14 +320,14 @@ namespace ImportProducts
                                     Image = xmlProduct.Image,
                                     CreatedByUser = vendorId,
                                     CreatedDate = DateTime.Now,
-                                    Colour = xmlProduct.Colours,
-                                    Gender = xmlProduct.Gender,
                                     IsDeleted = false
                                 };
 
                                 product.Categories.Add(subCategory);
                                 product.MerchantCategory = merchantCategory;
                                 product.Brand = brand;
+                                product.Colour = colour;
+                                product.Gender = gender;
                                 db.Products.Add(product);
                                 db.SaveChanges();
 
@@ -414,25 +427,28 @@ namespace ImportProducts
 
                                 foreach (var size in clothSizeList)
                                 {
-                                    ClothSize clothSize = new ClothSize { Size = size };
-                                    product.ClothSizes.Add(clothSize);
+                                    if (!String.IsNullOrEmpty(size))
+                                    {
+                                        if (product.Sizes.All(s => s.Name != size))
+                                        {
+                                            product.Sizes.Add(new Size { Name = size });
+                                        }
+                                    }
                                 }
                                 db.SaveChanges();
-#endif
                             }
                             else
                             {
-#if !DEBUG
                                 product.UnitCost = xmlProduct.UnitCost;
                                 product.CurrencyCode = xmlProduct.CurrencyCode;
                                 product.Description = xmlProduct.Description;
                                 product.URL = xmlProduct.URL;
                                 product.Image = xmlProduct.Image;
-                                product.Colour = xmlProduct.Colours;
+                                product.Colour = colour;
                                 product.ProductTypeId = (int) Enums.ProductTypeEnum.Clothes;
                                 product.MerchantCategory = merchantCategory;
                                 product.Brand = brand;
-                                product.Gender = xmlProduct.Gender;
+                                product.Gender = gender;
                                 db.SaveChanges();
 
                                 if (!product.Categories.Contains(subCategory))
@@ -440,7 +456,7 @@ namespace ImportProducts
                                     product.Categories.Add(subCategory);
                                 }
                                 var productCategoriesToRemove = product.Categories.Where(pc => pc.Name != subCategory.Name);
-                                foreach (Category productCategoryToRemove in productCategoriesToRemove)
+                                foreach (Category productCategoryToRemove in productCategoriesToRemove.ToList())
                                 {
                                     product.Categories.Remove(productCategoryToRemove);
                                 }
@@ -519,7 +535,7 @@ namespace ImportProducts
                                         db.SaveChanges();
                                     }
                                 }
-#endif
+
                                 if (!String.IsNullOrEmpty(xmlProduct.Department))
                                 {
                                     List<string> departmentList = new List<string>();
@@ -563,7 +579,6 @@ namespace ImportProducts
                                     }
                                 }
 
-#if !DEBUG
                                 List<string> clothSizeList = new List<string>();
                                 if (xmlProduct.Size.Contains(","))
                                 {
@@ -587,27 +602,23 @@ namespace ImportProducts
                                 {
                                     if (!String.IsNullOrEmpty(size))
                                     {
-                                        ClothSize clothSize =
-                                            product.ClothSizes.SingleOrDefault(cs => cs.Size == size);
-                                        if (clothSize == null)
+                                        if (product.Sizes.All(s => s.Name != size))
                                         {
-                                            clothSize = new ClothSize { Size = size };
-                                            product.ClothSizes.Add(clothSize);
+                                            product.Sizes.Add(new Size {Name = size});
                                         }
-
                                     }
                                 }
                                 db.SaveChanges();
 
-                                var clothSizesToRemove = db.ClothSizes.Where(cs => cs.ClothId == product.Id &&
-                                                                                         clothSizeList.All(
-                                                                                             csl => csl != cs.Size));
-                                if (clothSizesToRemove.Any())
+                                var sizesToRemove = product.Sizes.Where(s => !clothSizeList.Any(sl => sl == s.Name));
+                                if (sizesToRemove.Any())
                                 {
-                                    db.ClothSizes.RemoveRange(clothSizesToRemove);
+                                    foreach (var sizeToRemove in sizesToRemove.ToList())
+                                    {
+                                        product.Sizes.Remove(sizeToRemove);
+                                    }
                                     db.SaveChanges();
                                 }
-#endif
                             }
                         }
 #if HOMEANDGARDENS
