@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
@@ -192,6 +193,7 @@ namespace ImportProducts
                     Image3 = (string)el.Element("fields").Element("Image3_Large"),
                     Image4 = (string)el.Element("fields").Element("Image4_Large"),
                     Style = (string)el.Element("fields").Element("Product_Style"),
+                    CustomerRating = (string)el.Element("fields").Element("Product_Rating"),
                 };
 
             foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
@@ -229,10 +231,7 @@ namespace ImportProducts
             try
             {
                 using (SelectedHotelsEntities db = new SelectedHotelsEntities())
-                using (SqlConnection destinationConnection = new SqlConnection(db.Database.Connection.ConnectionString))
                 {
-                    destinationConnection.Open();
-
                     var category = db.Categories.Find(categoryId);
 
                     foreach (var xmlProduct in xmlProducts)
@@ -328,6 +327,15 @@ namespace ImportProducts
                                 product.Brand = brand;
                                 product.Colour = colour;
                                 product.Gender = gender;
+                                if (xmlProduct.CustomerRating != null)
+                                {
+                                    MatchCollection matches = Regex.Matches(xmlProduct.CustomerRating,
+                                        @"([0-9]*\.?[0-9]*)(.*)");
+                                    if (matches != null)
+                                    {
+                                        product.CustomerRating = decimal.Parse(matches[0].Groups[1].Value);
+                                    }
+                                }
                                 db.Products.Add(product);
                                 db.SaveChanges();
 
@@ -425,14 +433,17 @@ namespace ImportProducts
                                     }
                                 }
 
-                                foreach (var size in clothSizeList)
+                                clothSizeList = clothSizeList.Distinct().ToList();
+                                foreach (var sizeName in clothSizeList)
                                 {
-                                    if (!String.IsNullOrEmpty(size))
+                                    if (!String.IsNullOrEmpty(sizeName))
                                     {
-                                        if (product.Sizes.All(s => s.Name != size))
+                                        Size size = db.Sizes.SingleOrDefault(s => s.Name == sizeName);
+                                        if (size == null)
                                         {
-                                            product.Sizes.Add(new Size { Name = size });
+                                            size = new Size { Name = sizeName };
                                         }
+                                        product.Sizes.Add(size);
                                     }
                                 }
                                 db.SaveChanges();
@@ -449,6 +460,15 @@ namespace ImportProducts
                                 product.MerchantCategory = merchantCategory;
                                 product.Brand = brand;
                                 product.Gender = gender;
+                                if (xmlProduct.CustomerRating != null)
+                                {
+                                    MatchCollection matches = Regex.Matches(xmlProduct.CustomerRating,
+                                        @"([0-9]*\.?[0-9]*)(.*)");
+                                    if (matches != null)
+                                    {
+                                        product.CustomerRating = decimal.Parse(matches[0].Groups[1].Value);
+                                    }
+                                }
                                 db.SaveChanges();
 
                                 if (!product.Categories.Contains(subCategory))
@@ -493,9 +513,9 @@ namespace ImportProducts
                                 }
                                 db.SaveChanges();
 
+                                List<string> styleList = new List<string>();
                                 if (!String.IsNullOrEmpty(xmlProduct.Style))
                                 {
-                                    List<string> styleList = new List<string>();
                                     if (xmlProduct.Style.Contains(","))
                                     {
                                         foreach (var style in xmlProduct.Style.Split(','))
@@ -510,7 +530,11 @@ namespace ImportProducts
                                     {
                                         styleList.Add(xmlProduct.Style);
                                     }
+                                }
 
+                                List<string> oldStyleList = product.Styles.Select(s => s.Name).ToList();
+                                if (!styleList.OrderBy(s => s).SequenceEqual(oldStyleList.OrderBy(s => s)))
+                                {
                                     foreach (var styleName in styleList)
                                     {
                                         if (!String.IsNullOrEmpty(styleName))
@@ -525,7 +549,7 @@ namespace ImportProducts
                                     }
                                     db.SaveChanges();
 
-                                    var stylesToRemove = product.Styles.Where(s => !styleList.Any(sl => sl == s.Name));
+                                    var stylesToRemove = product.Styles.Where(s => styleList.All(sl => sl != s.Name));
                                     if (stylesToRemove.Any())
                                     {
                                         foreach (var styleToRemove in stylesToRemove.ToList())
@@ -536,9 +560,9 @@ namespace ImportProducts
                                     }
                                 }
 
+                                List<string> departmentList = new List<string>();
                                 if (!String.IsNullOrEmpty(xmlProduct.Department))
                                 {
-                                    List<string> departmentList = new List<string>();
                                     if (xmlProduct.Department.Contains(","))
                                     {
                                         foreach (var department in xmlProduct.Department.Split(','))
@@ -553,7 +577,11 @@ namespace ImportProducts
                                     {
                                         departmentList.Add(xmlProduct.Department);
                                     }
+                                }
 
+                                List<string> oldDepartmentList = product.Departments.Select(d => d.Name).ToList();
+                                if (!departmentList.OrderBy(s => s).SequenceEqual(oldDepartmentList.OrderBy(s => s)))
+                                {
                                     foreach (var departmentName in departmentList)
                                     {
                                         if (!String.IsNullOrEmpty(departmentName))
@@ -568,7 +596,7 @@ namespace ImportProducts
                                     }
                                     db.SaveChanges();
 
-                                    var departmentsToRemove = product.Departments.Where(d => !departmentList.Any(dl => dl == d.Name));
+                                    var departmentsToRemove = product.Departments.Where(d => departmentList.All(dl => dl != d.Name));
                                     if (departmentsToRemove.Any())
                                     {
                                         foreach (var departmentToRemove in departmentsToRemove.ToList())
@@ -598,26 +626,33 @@ namespace ImportProducts
                                     }
                                 }
 
-                                foreach (var size in clothSizeList)
+                                clothSizeList = clothSizeList.Distinct().ToList();
+                                List<string> oldClothSizeList = product.Sizes.Select(s => s.Name).ToList();
+                                if (!clothSizeList.OrderBy(s => s).SequenceEqual(oldClothSizeList.OrderBy(s => s)))
                                 {
-                                    if (!String.IsNullOrEmpty(size))
+                                    foreach (var sizeName in clothSizeList)
                                     {
-                                        if (product.Sizes.All(s => s.Name != size))
+                                        if (!String.IsNullOrEmpty(sizeName))
                                         {
-                                            product.Sizes.Add(new Size {Name = size});
+                                            Size size = db.Sizes.SingleOrDefault(s => s.Name == sizeName);
+                                            if (size == null)
+                                            {
+                                                size = new Size {Name = sizeName};
+                                            }
+                                            product.Sizes.Add(size);
                                         }
                                     }
-                                }
-                                db.SaveChanges();
-
-                                var sizesToRemove = product.Sizes.Where(s => !clothSizeList.Any(sl => sl == s.Name));
-                                if (sizesToRemove.Any())
-                                {
-                                    foreach (var sizeToRemove in sizesToRemove.ToList())
-                                    {
-                                        product.Sizes.Remove(sizeToRemove);
-                                    }
                                     db.SaveChanges();
+
+                                    var sizesToRemove = product.Sizes.Where(s => clothSizeList.All(sl => sl != s.Name));
+                                    if (sizesToRemove.Any())
+                                    {
+                                        foreach (var sizeToRemove in sizesToRemove.ToList())
+                                        {
+                                            product.Sizes.Remove(sizeToRemove);
+                                        }
+                                        db.SaveChanges();
+                                    }
                                 }
                             }
                         }
