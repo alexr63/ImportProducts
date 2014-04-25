@@ -96,10 +96,33 @@ namespace ImportProducts
                             hotel.CreatedDate = DateTime.Now;
                             hotel.IsDeleted = false;
 
-                            Location location = db.Locations.FirstOrDefault(c => c.Name == hotelView.Location);
+                            Location location = db.Locations.SingleOrDefault(c => c.Name == hotelView.Location);
                             if (location != null)
                             {
-                                hotel.Location = location;
+                                var hotelLocation = new HotelLocation
+                                {
+                                    HotelTypeId = hotelView.HotelTypeId,
+                                    LocationId = location.Id
+                                };
+                                hotel.HotelLocations.Add(hotelLocation);
+                                if (location.ParentLocation != null)
+                                {
+                                    var parentHotelLocation = new HotelLocation
+                                    {
+                                        HotelTypeId = hotelView.HotelTypeId,
+                                        LocationId = location.ParentLocation.Id
+                                    };
+                                    hotel.HotelLocations.Add(parentHotelLocation);
+                                }
+                                if (location.ParentLocation.ParentLocation != null)
+                                {
+                                    var parentParentHotelLocation = new HotelLocation
+                                    {
+                                        HotelTypeId = hotelView.HotelTypeId,
+                                        LocationId = location.ParentLocation.ParentLocation.Id
+                                    };
+                                    hotel.HotelLocations.Add(parentParentHotelLocation);
+                                }
                             }
 
                             Category category = db.Categories.Find(categoryId);
@@ -294,7 +317,7 @@ namespace ImportProducts
                     Common.UpdateSteps();
                 }
             Cancelled:
-                int q = 0;
+                ;
             }
             catch (DbEntityValidationException exception)
             {

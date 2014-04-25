@@ -271,6 +271,14 @@ namespace ImportProducts
 #if DEBUG
                         Console.WriteLine(i + " - " + product.Name); // debug print
 #endif
+                        if (product.County == "Greater London (county)")
+                        {
+                            product.County = "Greater-London";
+                        }
+                        if (product.County == "Greater Manchester (county)")
+                        {
+                            product.County = "Greater-Manchester";
+                        }
 
                         // create new product record
                         Hotel hotel =
@@ -327,77 +335,25 @@ namespace ImportProducts
                             hotel.CreatedByUser = vendorId;
                             hotel.CreatedDate = DateTime.Now;
                             hotel.IsDeleted = false;
+                            hotel.HotelTypeId = 1;
+                            db.Products.Add(hotel);
+                            db.SaveChanges();
 
-                            int? parentId = null;
-                            Location country =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == product.Country &&
-                                    c.ParentId == null);
-                            if (country == null)
+                            Location location = null;
+                            if (product.Country != String.Empty)
                             {
-                                country = new Location
-                                {
-                                    Name = product.Country,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(country);
-                                db.SaveChanges();
-                            }
-                            if (country != null)
-                            {
-                                hotel.Location = country;
-                                hotel.LocationId = country.Id;
-                                hotel.Location.IsDeleted = false;
-                                parentId = country.Id;
+                                location = Common.AddLocation(db, product.Country, null, 1);
+                                Common.SetLocation(db, location, hotel);
                             }
                             if (product.County != String.Empty)
                             {
-                                Location county =
-                                    db.Locations.SingleOrDefault(
-                                        c =>
-                                            c.Name == product.County &&
-                                            c.ParentId == parentId);
-                                if (county == null)
-                                {
-                                    county = new Location
-                                    {
-                                        Name = product.County,
-                                        ParentId = parentId,
-                                        IsDeleted = false
-                                    };
-                                    db.Locations.Add(county);
-                                    db.SaveChanges();
-                                }
-                                if (county != null)
-                                {
-                                    hotel.Location = county;
-                                    hotel.LocationId = county.Id;
-                                    hotel.Location.IsDeleted = false;
-                                    parentId = county.Id;
-                                }
+                                location = Common.AddLocation(db, product.County, location.Id, 2);
+                                Common.SetLocation(db, location, hotel);
                             }
-                            Location city =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == product.City &&
-                                    c.ParentId == parentId);
-                            if (city == null)
+                            if (product.City != String.Empty)
                             {
-                                city = new Location
-                                {
-                                    Name = product.City,
-                                    ParentId = parentId,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(city);
-                                db.SaveChanges();
-                            }
-                            if (city != null)
-                            {
-                                hotel.Location = city;
-                                hotel.LocationId = city.Id;
-                                hotel.Location.IsDeleted = false;
+                                location = Common.AddLocation(db, product.City, location.Id, 3);
+                                Common.SetLocation(db, location, hotel);
                             }
 
                             Category category = db.Categories.Find(categoryId);
@@ -405,9 +361,6 @@ namespace ImportProducts
                             {
                                 hotel.Categories.Add(category);
                             }
-
-                            db.Products.Add(hotel);
-
                             db.SaveChanges();
 
                             var imageURLs = product.Images.Elements("url").Where(xe => xe.Value.EndsWith(".jpg") || xe.Value.EndsWith(".png")).Select(xe => xe.Value);
@@ -428,7 +381,6 @@ namespace ImportProducts
                         else
                         {
                             // no need to check for null vallue because of previous if
-                            bool isChanged = false;
                             decimal? unitCost = null;
                             if (!String.IsNullOrEmpty(product.UnitCost))
                             {
@@ -437,22 +389,18 @@ namespace ImportProducts
                             if (hotel.UnitCost != unitCost)
                             {
                                 hotel.UnitCost = unitCost;
-                                isChanged = true;
                             }
                             if (hotel.Description != product.Description)
                             {
                                 hotel.Description = product.Description;
-                                isChanged = true;
                             }
                             if (hotel.URL != product.URL.Replace("[[PARTNERID]]", "2248").Trim(' '))
                             {
                                 hotel.URL = product.URL.Replace("[[PARTNERID]]", "2248").Trim(' ');
-                                isChanged = true;
                             }
                             if (hotel.Image != (string)product.Images.Element("url"))
                             {
                                 hotel.Image = (string)product.Images.Element("url");
-                                isChanged = true;
                             }
                             int? star = null;
                             string strStar = new string(product.Star.TakeWhile(char.IsDigit).ToArray());
@@ -463,7 +411,6 @@ namespace ImportProducts
                             if (hotel.Star != star)
                             {
                                 hotel.Star = star;
-                                isChanged = true;
                             }
                             int? customerRating = null;
                             if (!String.IsNullOrEmpty(product.CustomerRating))
@@ -473,7 +420,6 @@ namespace ImportProducts
                             if (hotel.CustomerRating != customerRating)
                             {
                                 hotel.CustomerRating = customerRating;
-                                isChanged = true;
                             }
                             int? rooms = null;
                             if (!String.IsNullOrEmpty(product.Rooms))
@@ -483,22 +429,18 @@ namespace ImportProducts
                             if (hotel.Rooms != rooms)
                             {
                                 hotel.Rooms = rooms;
-                                isChanged = true;
                             }
                             if (hotel.Address != product.Address)
                             {
                                 hotel.Address = product.Address;
-                                isChanged = true;
                             }
                             if (hotel.PostCode != product.PostCode)
                             {
                                 hotel.PostCode = product.PostCode;
-                                isChanged = true;
                             }
                             if (hotel.CurrencyCode != product.CurrencyCode)
                             {
                                 hotel.CurrencyCode = product.CurrencyCode;
-                                isChanged = true;
                             }
                             double? lat = null;
                             if (!String.IsNullOrEmpty(product.Lat))
@@ -508,7 +450,6 @@ namespace ImportProducts
                             if (hotel.Lat != lat)
                             {
                                 hotel.Lat = lat;
-                                isChanged = true;
                             }
                             double? lon = null;
                             if (!String.IsNullOrEmpty(product.Long))
@@ -518,92 +459,9 @@ namespace ImportProducts
                             if (hotel.Lon != lon)
                             {
                                 hotel.Lon = lon;
-                                isChanged = true;
                             }
+                            db.SaveChanges();
 
-#if UPDATELOCATION
-                            int? parentId = null;
-                            int? locationId = hotel.LocationId;
-                            Location country =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == product.Country &&
-                                    c.ParentId == null);
-                            if (country == null)
-                            {
-                                country = new Location
-                                {
-                                    Name = product.Country,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(country);
-                                db.SaveChanges();
-                            }
-                            if (country != null)
-                            {
-                                hotel.Location = country;
-                                hotel.LocationId = country.Id;
-                                hotel.Location.IsDeleted = false;
-                                parentId = country.Id;
-                            }
-                            Location county =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == product.County &&
-                                    c.ParentId == parentId);
-                            if (county == null)
-                            {
-                                county = new Location
-                                {
-                                    Name = product.County,
-                                    ParentId = parentId,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(county);
-                                db.SaveChanges();
-                            }
-                            if (county != null)
-                            {
-                                hotel.Location = county;
-                                hotel.LocationId = county.Id;
-                                hotel.Location.IsDeleted = false;
-                                parentId = county.Id;
-                            }
-                            Location city =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == product.City &&
-                                    c.ParentId == parentId);
-                            if (city == null)
-                            {
-                                city = new Location
-                                {
-                                    Name = product.City,
-                                    ParentId = parentId,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(city);
-                                db.SaveChanges();
-                            }
-                            if (city != null)
-                            {
-                                hotel.Location = city;
-                                hotel.LocationId = city.Id;
-                                hotel.Location.IsDeleted = false;
-                            }
-
-                            if (hotel.LocationId != locationId)
-                            {
-                                isChanged = true;
-                            }
-#endif
-
-                            if (isChanged)
-                            {
-                                db.SaveChanges();
-                            }
-
-                            isChanged = false;
                             var imageURLs = product.Images.Elements("url").Where(xe => xe.Value.EndsWith(".jpg") || xe.Value.EndsWith(".png")).Select(xe => xe.Value);
                             IEnumerable<string> imageURLList = imageURLs as IList<string> ?? imageURLs.ToList();
                             foreach (var imageURL in imageURLList)
@@ -614,26 +472,17 @@ namespace ImportProducts
                                 {
                                     productImage = new ProductImage { URL = imageURL };
                                     hotel.ProductImages.Add(productImage);
-                                    isChanged = true;
                                 }
                             }
-                            if (isChanged)
-                            {
-                                db.SaveChanges();
-                            }
+                            db.SaveChanges();
 
-                            isChanged = false;
                             var productImagesToRemove = db.ProductImages.Where(pi => pi.ProductId == hotel.Id &&
                                 imageURLList.All(xe => xe != pi.URL));
                             if (productImagesToRemove.Any())
                             {
                                 db.ProductImages.RemoveRange(productImagesToRemove);
-                                isChanged = true;
                             }
-                            if (isChanged)
-                            {
-                                db.SaveChanges();
-                            }
+                            db.SaveChanges();
 
                             i++;
                             //Common.UpdateSteps(stepImport: i);
@@ -658,7 +507,7 @@ namespace ImportProducts
                     Common.UpdateSteps();
                 }
             Cancelled:
-                int q = 0;
+                ;
             }
             catch (DbEntityValidationException exception)
             {

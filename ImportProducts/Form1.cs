@@ -576,9 +576,7 @@ namespace ImportProducts
         {
             using (SelectedHotelsEntities db = new SelectedHotelsEntities())
             {
-                Common.UpdateHotelLocations(db);
-                //Common.UpdateLocationLeveling(db);
-                //Common.DeleteEmptyLocations(db);
+                Common.DeleteEmptyLocations(db);
             }
         }
     }

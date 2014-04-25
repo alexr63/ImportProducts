@@ -46,35 +46,41 @@
                 </xs:complexType>
               </xs:element>
               <xs:element name="hotel_facilities" minOccurs="0" maxOccurs="unbounded">
-			    <xs:complexType> 
-					<xs:choice minOccurs="0" maxOccurs="unbounded"> 
-						<xs:element name="id" type="xs:string"/> 
-						<xs:element name="name" type="xs:string"/> 
-					</xs:choice> 
-				</xs:complexType> 
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="facility" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:simpleContent msdata:ColumnName="facility_Text" msdata:Ordinal="0">
+                          <xs:extension base="xs:string">
+                          </xs:extension>
+                        </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
               </xs:element>
               <xs:element name="checkin_time" type="xs:string" minOccurs="0" />
+              <xs:element name="latest_checkin_time" type="xs:string" minOccurs="0" />
               <xs:element name="checkout_time" type="xs:string" minOccurs="0" />
               <xs:element name="cancellationpolicy" type="xs:string" minOccurs="0" />
               <xs:element name="cancellationtext" type="xs:string" minOccurs="0" />
               <xs:element name="accommodation_type" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_appeals" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_star_accreditor" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_total_rooms" type="xs:string" minOccurs="0" />
-              <xs:element name="hotel_credit_cards" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="hotel_appeals" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="CreditCard" minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="appeal" nillable="true" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="credit_card_id" type="xs:string" minOccurs="0" />
-                          <xs:element name="credit_card_name" type="xs:string" minOccurs="0" />
-                        </xs:sequence>
+                        <xs:simpleContent msdata:ColumnName="appeal_Text" msdata:Ordinal="0">
+                          <xs:extension base="xs:string">
+                          </xs:extension>
+                        </xs:simpleContent>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
+              <xs:element name="hotel_star_accreditor" type="xs:string" minOccurs="0" />
+              <xs:element name="hotel_total_rooms" type="xs:string" minOccurs="0" />
               <xs:element name="hotel_city_taxes" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>

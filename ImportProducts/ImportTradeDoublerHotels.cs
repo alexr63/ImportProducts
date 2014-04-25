@@ -277,77 +277,24 @@ namespace ImportProducts
                             {
                                 hotel.PostCode = product.PostalCode;
                             }
+                            db.Products.Add(hotel);
+                            db.SaveChanges();
 
-                            int? parentId = null;
-                            Location country =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == (product.Regions2 ?? product.Regions1) &&
-                                    c.ParentId == null);
-                            if (country == null)
+                            Location location = null;
+                            if ((product.Regions2 ?? product.Regions1) != String.Empty)
                             {
-                                country = new Location
-                                {
-                                    Name = product.Regions2 ?? product.Regions1,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(country);
-                                db.SaveChanges();
+                                location = Common.AddLocation(db, product.Regions2 ?? product.Regions1, null, 1);
+                                Common.SetLocation(db, location, hotel);
                             }
-                            if (country != null)
+                            if (product.Regions1 != String.Empty && product.Regions2 != String.Empty)
                             {
-                                hotel.Location = country;
-                                hotel.LocationId = country.Id;
-                                hotel.Location.IsDeleted = false;
-                                parentId = country.Id;
+                                location = Common.AddLocation(db, product.Regions1, location.Id, 2);
+                                Common.SetLocation(db, location, hotel);
                             }
-                            if (product.Regions2 != null)
+                            if (product.City != String.Empty)
                             {
-                                Location county =
-                                    db.Locations.SingleOrDefault(
-                                        c =>
-                                        c.Name == product.Regions1 &&
-                                        c.ParentId == parentId);
-                                if (county == null)
-                                {
-                                    county = new Location
-                                    {
-                                        Name = product.Regions1,
-                                        ParentId = parentId,
-                                        IsDeleted = false
-                                    };
-                                    db.Locations.Add(county);
-                                    db.SaveChanges();
-                                }
-                                if (county != null)
-                                {
-                                    hotel.Location = county;
-                                    hotel.LocationId = county.Id;
-                                    hotel.Location.IsDeleted = false;
-                                    parentId = county.Id;
-                                }
-                            }
-                            Location city =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == product.City &&
-                                    c.ParentId == parentId);
-                            if (city == null)
-                            {
-                                city = new Location
-                                {
-                                    Name = product.City,
-                                    ParentId = parentId,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(city);
-                                db.SaveChanges();
-                            }
-                            if (city != null)
-                            {
-                                hotel.Location = city;
-                                hotel.LocationId = city.Id;
-                                hotel.Location.IsDeleted = false;
+                                location = Common.AddLocation(db, product.City, location.Id, 3);
+                                Common.SetLocation(db, location, hotel);
                             }
 
                             Category category = db.Categories.Find(categoryId);
@@ -355,8 +302,6 @@ namespace ImportProducts
                             {
                                 hotel.Categories.Add(category);
                             }
-
-                            db.Products.Add(hotel);
 
                             db.SaveChanges();
 
@@ -423,86 +368,6 @@ namespace ImportProducts
                                 isChanged = true;
                             }
 
-#if UPDATELOCATION
-                            int? parentId = null;
-                            int? locationId = hotel.LocationId;
-                            Location country =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == (product.Regions2 ?? product.Regions1) &&
-                                    c.ParentId == null);
-                            if (country == null)
-                            {
-                                country = new Location
-                                {
-                                    Name = product.Regions2 ?? product.Regions1,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(country);
-                                db.SaveChanges();
-                            }
-                            if (country != null)
-                            {
-                                hotel.Location = country;
-                                hotel.LocationId = country.Id;
-                                hotel.Location.IsDeleted = false;
-                                parentId = country.Id;
-                            }
-                            if (product.Regions2 != null)
-                            {
-                                Location county =
-                                    db.Locations.SingleOrDefault(
-                                        c =>
-                                            c.Name == product.Regions1 &&
-                                            c.ParentId == parentId);
-                                if (county == null)
-                                {
-                                    county = new Location
-                                    {
-                                        Name = product.Regions1,
-                                        ParentId = parentId,
-                                        IsDeleted = false
-                                    };
-                                    db.Locations.Add(county);
-                                    db.SaveChanges();
-                                }
-                                if (county != null)
-                                {
-                                    hotel.Location = county;
-                                    hotel.LocationId = county.Id;
-                                    hotel.Location.IsDeleted = false;
-                                    parentId = county.Id;
-                                }
-                            }
-                            Location city =
-                                db.Locations.SingleOrDefault(
-                                    c =>
-                                    c.Name == product.City &&
-                                    c.ParentId == parentId);
-                            if (city == null)
-                            {
-                                city = new Location
-                                {
-                                    Name = product.City,
-                                    ParentId = parentId,
-                                    IsDeleted = false
-                                };
-                                db.Locations.Add(city);
-                                db.SaveChanges();
-                            }
-                            if (city != null)
-                            {
-                                hotel.Location = city;
-                                hotel.LocationId = city.Id;
-                                hotel.Location.IsDeleted = false;
-                            }
-
-                            if (hotel.LocationId != locationId)
-                            {
-                                isChanged = true;
-                            }
-#endif
-
                             if (isChanged)
                             {
                                 db.SaveChanges();
@@ -523,7 +388,6 @@ namespace ImportProducts
                         }
                     }
 
-                    Common.UpdateLocationLeveling(db);
                     Common.DeleteEmptyLocations(db);
                 }
 
@@ -532,7 +396,7 @@ namespace ImportProducts
                     Common.UpdateSteps();
                 }
             Cancelled:
-                int q = 0;
+                ;
             }
             catch (DbEntityValidationException dbEx)
             {
