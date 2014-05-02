@@ -254,7 +254,8 @@ namespace ImportProducts
                                 Image = product.Image,
                                 CreatedByUser = vendorId,
                                 CreatedDate = DateTime.Now,
-                                IsDeleted = false
+                                IsDeleted = false,
+                                HotelTypeId = (int)Enums.HotelTypeEnum.Hotels
                             };
 
                             if (!String.IsNullOrEmpty(product.StarRating))
@@ -387,8 +388,6 @@ namespace ImportProducts
                             bw.ReportProgress((int) (100*i/productCount));
                         }
                     }
-
-                    Common.DeleteEmptyLocations(db);
                 }
 
                 if (!e.Cancel)

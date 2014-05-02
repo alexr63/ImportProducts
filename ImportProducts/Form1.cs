@@ -571,13 +571,5 @@ namespace ImportProducts
                 BindData();
             }
         }
-
-        private void deleteLocationsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (SelectedHotelsEntities db = new SelectedHotelsEntities())
-            {
-                Common.DeleteEmptyLocations(db);
-            }
-        }
     }
 }

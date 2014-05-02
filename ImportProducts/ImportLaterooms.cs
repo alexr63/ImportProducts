@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Data.Entity.Validation;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Threading;
@@ -17,8 +14,6 @@ using SelectedHotelsModel;
 
 namespace ImportProducts
 {
-
-
     class ImportLaterooms
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -112,18 +107,6 @@ namespace ImportProducts
                 e.Result = "ERROR:" + err.Message;
                 log.Error("Error error logging", err);
             }
-        }
-
-        private static void DeleteEmptyLocations(SelectedHotelsEntities db)
-        {
-            foreach (Location location in db.Locations.Where(l => !l.IsDeleted))
-            {
-                if (!db.HotelsInLocation(location.Id).Any())
-                {
-                    location.IsDeleted = true;
-                }
-            }
-            db.SaveChanges();
         }
 
         public static void DoImport(object sender, DoWorkEventArgs e)
@@ -335,7 +318,7 @@ namespace ImportProducts
                             hotel.CreatedByUser = vendorId;
                             hotel.CreatedDate = DateTime.Now;
                             hotel.IsDeleted = false;
-                            hotel.HotelTypeId = 1;
+                            hotel.HotelTypeId = (int) Enums.HotelTypeEnum.Hotels;
                             db.Products.Add(hotel);
                             db.SaveChanges();
 
@@ -498,8 +481,6 @@ namespace ImportProducts
                             bw.ReportProgress((int) (100*i/productCount));
                         }
                     }
-
-                    DeleteEmptyLocations(db);
                 }
 
                 if (!e.Cancel)

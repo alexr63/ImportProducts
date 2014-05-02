@@ -14,5 +14,12 @@ namespace ImportProducts
             Books,
             HomeAndGardens
         }
+
+        public enum HotelTypeEnum
+        {
+            Hotels = 1,
+            Restaurants,
+            Pubs
+        }
     }
 }

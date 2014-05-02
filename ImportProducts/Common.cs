@@ -52,17 +52,5 @@ namespace ImportProducts
                 context.SaveChanges();
             }
         }
-
-        public static void DeleteEmptyLocations(SelectedHotelsEntities db)
-        {
-            foreach (Location location in db.Locations.Where(l => !l.IsDeleted))
-            {
-                if (!db.HotelsInLocation(location.Id).Any())
-                {
-                    location.IsDeleted = true;
-                }
-            }
-            db.SaveChanges();
-        }
     }
 }
