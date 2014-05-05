@@ -287,12 +287,12 @@ namespace ImportProducts
                                 location = Common.AddLocation(db, product.Regions2 ?? product.Regions1, null, 1);
                                 Common.SetLocation(db, location, hotel);
                             }
-                            if (product.Regions1 != String.Empty && product.Regions2 != String.Empty)
+                            if (product.Regions1 != null && product.Regions2 != null)
                             {
                                 location = Common.AddLocation(db, product.Regions1, location.Id, 2);
                                 Common.SetLocation(db, location, hotel);
                             }
-                            if (product.City != String.Empty)
+                            if (product.City != null)
                             {
                                 location = Common.AddLocation(db, product.City, location.Id, 3);
                                 Common.SetLocation(db, location, hotel);
@@ -303,7 +303,6 @@ namespace ImportProducts
                             {
                                 hotel.Categories.Add(category);
                             }
-
                             db.SaveChanges();
 
                             i++;
@@ -312,26 +311,21 @@ namespace ImportProducts
                         else
                         {
                             // no need to check for null vallue because of previous if
-                            bool isChanged = false;
                             if (hotel.UnitCost != product.UnitCost)
                             {
                                 hotel.UnitCost = product.UnitCost;
-                                isChanged = true;
                             }
                             if (hotel.Description != product.Description)
                             {
                                 hotel.Description = product.Description;
-                                isChanged = true;
                             }
                             if (hotel.URL != product.URL)
                             {
                                 hotel.URL = product.URL;
-                                isChanged = true;
                             }
                             if (hotel.Image != product.Image)
                             {
                                 hotel.Image = product.Image;
-                                isChanged = true;
                             }
                             decimal? star = null;
                             if (!String.IsNullOrEmpty(product.StarRating))
@@ -341,7 +335,6 @@ namespace ImportProducts
                             if (hotel.Star != star)
                             {
                                 hotel.Star = star;
-                                isChanged = true;
                             }
                             decimal? customerRating = null;
                             if (!String.IsNullOrEmpty(product.AverageOverallRating))
@@ -351,28 +344,20 @@ namespace ImportProducts
                             if (hotel.CustomerRating != customerRating)
                             {
                                 hotel.CustomerRating = customerRating;
-                                isChanged = true;
                             }
                             if (hotel.Address != product.Address)
                             {
                                 hotel.Address = product.Address;
-                                isChanged = true;
                             }
                             if (hotel.CurrencyCode != product.Currency)
                             {
                                 hotel.CurrencyCode = product.Currency;
-                                isChanged = true;
                             }
                             if (hotel.PostCode != product.PostalCode)
                             {
                                 hotel.PostCode = product.PostalCode;
-                                isChanged = true;
                             }
-
-                            if (isChanged)
-                            {
-                                db.SaveChanges();
-                            }
+                            db.SaveChanges();
 
                             i++;
                             Common.UpdateSteps(stepImport: i);
