@@ -194,6 +194,7 @@ namespace ImportProducts
                     Image4 = (string)el.Element("fields").Element("Image4_Large"),
                     Style = (string)el.Element("fields").Element("Product_Style"),
                     CustomerRating = (string)el.Element("fields").Element("Product_Rating"),
+                    MerchantCategoryName = (string)el.Element("fields").Element("MerchantCategoryName")
                 };
 
             foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
@@ -255,14 +256,20 @@ namespace ImportProducts
                         }
 
                         MerchantCategory merchantCategory = null;
-                        if (!String.IsNullOrEmpty(xmlProduct.MerchantCategory))
+                        if (!String.IsNullOrEmpty(xmlProduct.MerchantCategoryName))
                         {
+                            string[] merchantCategoryNames = xmlProduct.MerchantCategoryName.Split(new[] {" > "},
+                                StringSplitOptions.None);
+                            string name = merchantCategoryNames[1];
+                            string parentName = merchantCategoryNames[0];
                             merchantCategory =
-                                db.MerchantCategories.SingleOrDefault(mc => mc.Name == xmlProduct.MerchantCategory);
+                                db.MerchantCategories.SingleOrDefault(
+                                    mc => mc.Name == name && mc.ParentName == parentName);
                             if (merchantCategory == null)
                             {
                                 merchantCategory = new MerchantCategory();
-                                merchantCategory.Name = xmlProduct.MerchantCategory;
+                                merchantCategory.Name = name;
+                                merchantCategory.ParentName = parentName;
                                 db.MerchantCategories.Add(merchantCategory);
                                 db.SaveChanges();
                             }
@@ -317,13 +324,14 @@ namespace ImportProducts
                                     Description = xmlProduct.Description,
                                     URL = xmlProduct.URL,
                                     Image = xmlProduct.Image,
+                                    MerchantCategoryName = xmlProduct.MerchantCategoryName,
+                                    MerchantCategory = merchantCategory,
                                     CreatedByUser = vendorId,
                                     CreatedDate = DateTime.Now,
                                     IsDeleted = false
                                 };
 
                                 product.Categories.Add(subCategory);
-                                product.MerchantCategory = merchantCategory;
                                 product.Brand = brand;
                                 product.Colour = colour;
                                 product.Gender = gender;
@@ -455,9 +463,10 @@ namespace ImportProducts
                                 product.Description = xmlProduct.Description;
                                 product.URL = xmlProduct.URL;
                                 product.Image = xmlProduct.Image;
+                                product.MerchantCategoryName = xmlProduct.MerchantCategoryName;
+                                product.MerchantCategory = merchantCategory;
                                 product.Colour = colour;
                                 product.ProductTypeId = (int) Enums.ProductTypeEnum.Clothes;
-                                product.MerchantCategory = merchantCategory;
                                 product.Brand = brand;
                                 product.Gender = gender;
                                 if (xmlProduct.CustomerRating != null)
