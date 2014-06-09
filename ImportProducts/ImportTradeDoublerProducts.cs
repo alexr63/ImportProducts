@@ -260,16 +260,26 @@ namespace ImportProducts
                         {
                             string[] merchantCategoryNames = xmlProduct.MerchantCategoryName.Split(new[] {" > "},
                                 StringSplitOptions.None);
-                            string name = merchantCategoryNames[1];
-                            string parentName = merchantCategoryNames[0];
+                            string childCategoryName = merchantCategoryNames[1];
+                            string parentCategoryName = merchantCategoryNames[0];
+                            MerchantCategory parentCategory =
+                                db.MerchantCategories.SingleOrDefault(
+                                    mc => mc.Name == parentCategoryName && mc.ParentId == null);
+                            if (parentCategory == null)
+                            {
+                                parentCategory = new MerchantCategory();
+                                parentCategory.Name = parentCategoryName;
+                                db.MerchantCategories.Add(parentCategory);
+                                db.SaveChanges();
+                            }
                             merchantCategory =
                                 db.MerchantCategories.SingleOrDefault(
-                                    mc => mc.Name == name && mc.ParentName == parentName);
+                                    mc => mc.Name == childCategoryName && mc.ParentId == parentCategory.Id);
                             if (merchantCategory == null)
                             {
                                 merchantCategory = new MerchantCategory();
-                                merchantCategory.Name = name;
-                                merchantCategory.ParentName = parentName;
+                                merchantCategory.Name = childCategoryName;
+                                merchantCategory.ParentId = parentCategory.Id;
                                 db.MerchantCategories.Add(merchantCategory);
                                 db.SaveChanges();
                             }
