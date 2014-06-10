@@ -334,7 +334,6 @@ namespace ImportProducts
                                     Description = xmlProduct.Description,
                                     URL = xmlProduct.URL,
                                     Image = xmlProduct.Image,
-                                    MerchantCategoryName = xmlProduct.MerchantCategoryName,
                                     MerchantCategory = merchantCategory,
                                     CreatedByUser = vendorId,
                                     CreatedDate = DateTime.Now,
@@ -473,7 +472,6 @@ namespace ImportProducts
                                 product.Description = xmlProduct.Description;
                                 product.URL = xmlProduct.URL;
                                 product.Image = xmlProduct.Image;
-                                product.MerchantCategoryName = xmlProduct.MerchantCategoryName;
                                 product.MerchantCategory = merchantCategory;
                                 product.Colour = colour;
                                 product.ProductTypeId = (int) Enums.ProductTypeEnum.Clothes;
