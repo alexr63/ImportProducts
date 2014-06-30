@@ -36,6 +36,7 @@ namespace ImportProducts
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
             int? stepImport = param.StepImport;
+            int feedId = param.FeedId;
 
             var excel = new ExcelQueryFactory(_URL);
             var xlsHotels = from h in excel.Worksheet<HotelView>("Query")
@@ -131,6 +132,7 @@ namespace ImportProducts
                                 hotel.Categories.Add(category);
                             }
 
+                            hotel.FeedId = feedId;
                             db.Products.Add(hotel);
 
                             db.SaveChanges();

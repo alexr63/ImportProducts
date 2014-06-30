@@ -25,6 +25,7 @@ namespace ImportProducts
         public int? StepImport;
         public int? StepAddToCategories;
         public int? StepAddImages;
+        public int FeedId;
     }
 
     public partial class Form1 : Form
@@ -132,6 +133,7 @@ namespace ImportProducts
                     bgParams.StepImport = stepImport;
                     bgParams.StepAddToCategories = stepAddToCategories;
                     bgParams.StepAddImages = stepAddImages;
+                    bgParams.FeedId = selectedFeed.Id;
 
                     switch (keyDownload)
                     {

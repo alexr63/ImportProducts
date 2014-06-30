@@ -9,7 +9,9 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Threading;
 using System.Xml.Schema;
+using ImportProducts.Properties;
 using Ionic.Zip;
+using NGeo.GeoNames;
 using SelectedHotelsModel;
 
 namespace ImportProducts
@@ -121,6 +123,7 @@ namespace ImportProducts
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
             int? stepImport = param.StepImport;
+            int feedId = param.FeedId;
 
             if (!File.Exists(_URL))
             {
@@ -319,6 +322,7 @@ namespace ImportProducts
                             hotel.CreatedDate = DateTime.Now;
                             hotel.IsDeleted = false;
                             hotel.HotelTypeId = (int) Enums.HotelTypeEnum.Hotels;
+                            hotel.FeedId = feedId;
                             db.Products.Add(hotel);
                             db.SaveChanges();
 
@@ -337,6 +341,40 @@ namespace ImportProducts
                             {
                                 location = Common.AddLocation(db, product.City, location.Id, 3);
                                 Common.SetLocation(db, location, hotel);
+                            }
+
+                            // GeoNames
+                            var geoNames = db.GeoNames.Where(gn => gn.Name.ToLower() == product.City.ToLower())
+                                .OrderByDescending(gn => gn.Population)
+                                .ThenByDescending(gn => gn.ModificationDate);
+                            if (geoNames != null)
+                            {
+                                var geoName = geoNames.FirstOrDefault();
+                                if (geoName != null)
+                                {
+                                    hotel.GeoLocationId = geoName.Id;
+                                }
+                            }
+                            else
+                            {
+                                if (hotel.Lat.HasValue && hotel.Lon.HasValue)
+                                {
+                                    using (var geoNamesClient = new GeoNamesClient())
+                                    {
+                                        var finder = new NearbyPlaceNameFinder
+                                        {
+                                            Latitude = hotel.Lat.Value,
+                                            Longitude = hotel.Lon.Value,
+                                            UserName = Settings.Default.GeoNamesUserName
+                                        };
+                                        var results = geoNamesClient.FindNearbyPlaceName(finder);
+                                        if (results != null && results.Count > 0)
+                                        {
+                                            var toponym = results.First();
+                                            hotel.GeoLocationId = toponym.GeoNameId;
+                                        }
+                                    }
+                                }
                             }
 
                             Category category = db.Categories.Find(categoryId);
@@ -363,6 +401,50 @@ namespace ImportProducts
                         }
                         else
                         {
+                            // GeoNames
+                            if (!hotel.GeoLocationId.HasValue)
+                            {
+                                var geoNames = db.GeoNames.Where(gn => gn.Name.ToLower() == product.City.ToLower())
+                                    .OrderByDescending(gn => gn.Population)
+                                    .ThenByDescending(gn => gn.ModificationDate);
+                                if (geoNames != null && geoNames.Any())
+                                {
+#if DEBUG
+                                    continue;
+#endif
+                                    var geoName = geoNames.FirstOrDefault();
+                                    if (geoName != null)
+                                    {
+                                        hotel.GeoLocationId = geoName.Id;
+                                    }
+                                }
+                                else
+                                {
+                                    log.Info(String.Format("City {0} is not found for hotel {1}.", product.City,
+                                        hotel.Id));
+                                    if (hotel.Lat.HasValue && hotel.Lon.HasValue)
+                                    {
+                                        using (var geoNamesClient = new GeoNamesClient())
+                                        {
+                                            var finder = new NearbyPlaceNameFinder
+                                            {
+                                                Latitude = hotel.Lat.Value,
+                                                Longitude = hotel.Lon.Value,
+                                                UserName = Settings.Default.GeoNamesUserName
+                                            };
+                                            var results = geoNamesClient.FindNearbyPlaceName(finder);
+                                            if (results != null && results.Count > 0)
+                                            {
+                                                var toponym = results.First();
+                                                log.Info(String.Format("Using {0} instead of city {1}", toponym.Name,
+                                                    product.City));
+                                                hotel.GeoLocationId = toponym.GeoNameId;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             // no need to check for null vallue because of previous if
                             decimal? unitCost = null;
                             if (!String.IsNullOrEmpty(product.UnitCost))

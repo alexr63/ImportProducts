@@ -120,6 +120,7 @@ namespace ImportProducts
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
+            int feedId = param.FeedId;
 
             string xmlFileName = String.Format("{0}\\{1}", Properties.Settings.Default.TempPath, "webgainsproducts.xml");
             if (File.Exists(xmlFileName))
@@ -273,6 +274,7 @@ namespace ImportProducts
                                 IsDeleted = false
                             };
 
+                            product2.FeedId = feedId;
                             db.Products.Add(product2);
                             db.SaveChanges();
                         }

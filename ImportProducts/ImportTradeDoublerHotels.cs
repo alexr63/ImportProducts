@@ -123,6 +123,7 @@ namespace ImportProducts
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
             int? stepImport = param.StepImport;
+            int feedId = param.FeedId;
 
             if (!File.Exists(_URL))
             {
@@ -278,6 +279,7 @@ namespace ImportProducts
                             {
                                 hotel.PostCode = product.PostalCode;
                             }
+                            hotel.FeedId = feedId;
                             db.Products.Add(hotel);
                             db.SaveChanges();
 

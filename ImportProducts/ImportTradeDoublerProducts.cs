@@ -123,6 +123,7 @@ namespace ImportProducts
             string advancedCategoryRoot = param.AdvancedCategoryRoot;
             string countryFilter = param.CountryFilter;
             string cityFilter = param.CityFilter;
+            int feedId = param.FeedId;
 
             if (!File.Exists(_URL))
             {
@@ -353,6 +354,7 @@ namespace ImportProducts
                                         product.CustomerRating = decimal.Parse(matches[0].Groups[1].Value);
                                     }
                                 }
+                                product.FeedId = feedId;
                                 db.Products.Add(product);
                                 db.SaveChanges();
 
