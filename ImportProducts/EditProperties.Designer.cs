@@ -221,6 +221,8 @@
             // 
             this.comboBoxCountry.DisplayMember = "Name";
             this.comboBoxCountry.FormattingEnabled = true;
+            this.comboBoxCountry.Items.AddRange(new object[] {
+            "England"});
             this.comboBoxCountry.Location = new System.Drawing.Point(167, 190);
             this.comboBoxCountry.Name = "comboBoxCountry";
             this.comboBoxCountry.Size = new System.Drawing.Size(121, 21);

@@ -16,14 +16,6 @@ namespace ImportProducts
         {
             InitializeComponent();
             SelectedHotelsEntities db = new SelectedHotelsEntities();
-            List<Location> countries = (from l in db.Locations
-                                        where l.ParentId == null
-                                       orderby l.Name
-                                       select l).ToList();
-            Location emptyCountry = new Location { Id = 0, Name = String.Empty };
-            countries.Insert(0, emptyCountry);
-            comboBoxCountry.DataSource = countries;
-
             List<ProductType> productTypes = (from t in db.ProductTypes
                                               orderby t.Name
                                               select t).ToList();

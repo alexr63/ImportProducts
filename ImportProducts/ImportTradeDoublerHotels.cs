@@ -283,23 +283,6 @@ namespace ImportProducts
                             db.Products.Add(hotel);
                             db.SaveChanges();
 
-                            Location location = null;
-                            if ((product.Regions2 ?? product.Regions1) != String.Empty)
-                            {
-                                location = Common.AddLocation(db, product.Regions2 ?? product.Regions1, null, 1);
-                                Common.SetLocation(db, location, hotel);
-                            }
-                            if (product.Regions1 != null && product.Regions2 != null)
-                            {
-                                location = Common.AddLocation(db, product.Regions1, location.Id, 2);
-                                Common.SetLocation(db, location, hotel);
-                            }
-                            if (product.City != null)
-                            {
-                                location = Common.AddLocation(db, product.City, location.Id, 3);
-                                Common.SetLocation(db, location, hotel);
-                            }
-
                             Category category = db.Categories.Find(categoryId);
                             if (category != null)
                             {

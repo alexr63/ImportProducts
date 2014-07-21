@@ -326,23 +326,6 @@ namespace ImportProducts
                             db.Products.Add(hotel);
                             db.SaveChanges();
 
-                            Location location = null;
-                            if (product.Country != String.Empty)
-                            {
-                                location = Common.AddLocation(db, product.Country, null, 1);
-                                Common.SetLocation(db, location, hotel);
-                            }
-                            if (product.County != String.Empty)
-                            {
-                                location = Common.AddLocation(db, product.County, location.Id, 2);
-                                Common.SetLocation(db, location, hotel);
-                            }
-                            if (product.City != String.Empty)
-                            {
-                                location = Common.AddLocation(db, product.City, location.Id, 3);
-                                Common.SetLocation(db, location, hotel);
-                            }
-
                             // GeoNames
                             var geoNames = db.GeoNames.Where(gn => gn.Name.ToLower() == product.City.ToLower())
                                 .OrderByDescending(gn => gn.Population)
@@ -352,7 +335,7 @@ namespace ImportProducts
                                 var geoName = geoNames.FirstOrDefault();
                                 if (geoName != null)
                                 {
-                                    hotel.GeoLocationId = geoName.Id;
+                                    hotel.GeoNameId = geoName.Id;
                                 }
                             }
                             else
@@ -371,7 +354,7 @@ namespace ImportProducts
                                         if (results != null && results.Count > 0)
                                         {
                                             var toponym = results.First();
-                                            hotel.GeoLocationId = toponym.GeoNameId;
+                                            hotel.GeoNameId = toponym.GeoNameId;
                                         }
                                     }
                                 }
@@ -402,7 +385,7 @@ namespace ImportProducts
                         else
                         {
                             // GeoNames
-                            if (!hotel.GeoLocationId.HasValue)
+                            if (!hotel.GeoNameId.HasValue)
                             {
                                 var geoNames = db.GeoNames.Where(gn => gn.Name.ToLower() == product.City.ToLower())
                                     .OrderByDescending(gn => gn.Population)
@@ -415,7 +398,7 @@ namespace ImportProducts
                                     var geoName = geoNames.FirstOrDefault();
                                     if (geoName != null)
                                     {
-                                        hotel.GeoLocationId = geoName.Id;
+                                        hotel.GeoNameId = geoName.Id;
                                     }
                                 }
                                 else
@@ -438,7 +421,7 @@ namespace ImportProducts
                                                 var toponym = results.First();
                                                 log.Info(String.Format("Using {0} instead of city {1}", toponym.Name,
                                                     product.City));
-                                                hotel.GeoLocationId = toponym.GeoNameId;
+                                                hotel.GeoNameId = toponym.GeoNameId;
                                             }
                                         }
                                     }
