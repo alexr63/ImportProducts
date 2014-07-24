@@ -326,39 +326,7 @@ namespace ImportProducts
                             db.Products.Add(hotel);
                             db.SaveChanges();
 
-                            // GeoNames
-                            var geoNames = db.GeoNames.Where(gn => gn.Name.ToLower() == product.City.ToLower())
-                                .OrderByDescending(gn => gn.Population)
-                                .ThenByDescending(gn => gn.ModificationDate);
-                            if (geoNames != null)
-                            {
-                                var geoName = geoNames.FirstOrDefault();
-                                if (geoName != null)
-                                {
-                                    hotel.GeoNameId = geoName.Id;
-                                }
-                            }
-                            else
-                            {
-                                if (hotel.Lat.HasValue && hotel.Lon.HasValue)
-                                {
-                                    using (var geoNamesClient = new GeoNamesClient())
-                                    {
-                                        var finder = new NearbyPlaceNameFinder
-                                        {
-                                            Latitude = hotel.Lat.Value,
-                                            Longitude = hotel.Lon.Value,
-                                            UserName = Settings.Default.GeoNamesUserName
-                                        };
-                                        var results = geoNamesClient.FindNearbyPlaceName(finder);
-                                        if (results != null && results.Count > 0)
-                                        {
-                                            var toponym = results.First();
-                                            hotel.GeoNameId = toponym.GeoNameId;
-                                        }
-                                    }
-                                }
-                            }
+                            SetGeoNameId(product, db, hotel);
 
                             Category category = db.Categories.Find(categoryId);
                             if (category != null)
@@ -384,48 +352,9 @@ namespace ImportProducts
                         }
                         else
                         {
-                            // GeoNames
                             if (!hotel.GeoNameId.HasValue)
                             {
-                                var geoNames = db.GeoNames.Where(gn => gn.Name.ToLower() == product.City.ToLower())
-                                    .OrderByDescending(gn => gn.Population)
-                                    .ThenByDescending(gn => gn.ModificationDate);
-                                if (geoNames != null && geoNames.Any())
-                                {
-#if DEBUG
-                                    continue;
-#endif
-                                    var geoName = geoNames.FirstOrDefault();
-                                    if (geoName != null)
-                                    {
-                                        hotel.GeoNameId = geoName.Id;
-                                    }
-                                }
-                                else
-                                {
-                                    log.Info(String.Format("City {0} is not found for hotel {1}.", product.City,
-                                        hotel.Id));
-                                    if (hotel.Lat.HasValue && hotel.Lon.HasValue)
-                                    {
-                                        using (var geoNamesClient = new GeoNamesClient())
-                                        {
-                                            var finder = new NearbyPlaceNameFinder
-                                            {
-                                                Latitude = hotel.Lat.Value,
-                                                Longitude = hotel.Lon.Value,
-                                                UserName = Settings.Default.GeoNamesUserName
-                                            };
-                                            var results = geoNamesClient.FindNearbyPlaceName(finder);
-                                            if (results != null && results.Count > 0)
-                                            {
-                                                var toponym = results.First();
-                                                log.Info(String.Format("Using {0} instead of city {1}", toponym.Name,
-                                                    product.City));
-                                                hotel.GeoNameId = toponym.GeoNameId;
-                                            }
-                                        }
-                                    }
-                                }
+                                SetGeoNameId(product, db, hotel);
                             }
 
                             // no need to check for null vallue because of previous if
@@ -573,6 +502,54 @@ namespace ImportProducts
             {
                 e.Result = "ERROR:" + ex.Message;
                 log.Error("Error error logging", ex);
+            }
+        }
+
+        private static void SetGeoNameId(ProductView product, SelectedHotelsEntities db, Hotel hotel)
+        {
+            var placeName = product.Country;
+            if (!String.IsNullOrEmpty(product.County))
+            {
+                placeName = product.County;
+            }
+            if (!String.IsNullOrEmpty(product.City))
+            {
+                placeName = product.City;
+            }
+            var geoNames = db.GeoNames.Where(gn => gn.Name.ToLower() == placeName.ToLower())
+                .OrderByDescending(gn => gn.Population)
+                .ThenByDescending(gn => gn.ModificationDate);
+            if (geoNames != null && geoNames.Any())
+            {
+                var geoName = geoNames.FirstOrDefault();
+                if (geoName != null)
+                {
+                    hotel.GeoNameId = geoName.Id;
+                }
+            }
+            if (hotel.GeoNameId == null && hotel.Lat.HasValue && hotel.Lon.HasValue)
+            {
+                using (var geoNamesClient = new GeoNamesClient())
+                {
+                    var finder = new NearbyPlaceNameFinder
+                    {
+                        Latitude = hotel.Lat.Value,
+                        Longitude = hotel.Lon.Value,
+                        UserName = Settings.Default.GeoNamesUserName
+                    };
+                    try
+                    {
+                        var results = geoNamesClient.FindNearbyPlaceName(finder);
+                        if (results != null && results.Count > 0)
+                        {
+                            var toponym = results.First();
+                            hotel.GeoNameId = toponym.GeoNameId;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
             }
         }
 
