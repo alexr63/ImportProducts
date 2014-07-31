@@ -519,7 +519,7 @@ namespace ImportProducts
             var geoNames = db.GeoNames.Where(gn => gn.Name.ToLower() == placeName.ToLower())
                 .OrderByDescending(gn => gn.Population)
                 .ThenByDescending(gn => gn.ModificationDate);
-            if (geoNames != null && geoNames.Any())
+            if (geoNames.Any())
             {
                 var geoName = geoNames.FirstOrDefault();
                 if (geoName != null)
