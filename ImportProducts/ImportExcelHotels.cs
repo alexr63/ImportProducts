@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity.Spatial;
 using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.IO;
@@ -90,8 +91,7 @@ namespace ImportProducts
                             hotel.Address = hotelView.Address;
                             hotel.PostCode = hotelView.PostCode;
                             hotel.CurrencyCode = hotelView.CurrencyCode;
-                            hotel.Lat = hotelView.Lat;
-                            hotel.Lon = hotelView.Lon;
+                            hotel.Location = DbGeography.FromText(String.Format("POINT({0} {1})", hotelView.Lon, hotelView.Lat));
                             hotel.HotelTypeId = hotelView.HotelTypeId;
                             hotel.CreatedByUser = vendorId;
                             hotel.CreatedDate = DateTime.Now;
@@ -169,16 +169,10 @@ namespace ImportProducts
                                 hotel.CurrencyCode = hotelView.CurrencyCode;
                                 isChanged = true;
                             }
-                            double? lat = hotelView.Lat;
-                            if (hotel.Lat != lat)
+                            DbGeography location = DbGeography.FromText(String.Format("POINT({0} {1})", hotelView.Lon, hotelView.Lat));
+                            if (hotel.Location != location)
                             {
-                                hotel.Lat = lat;
-                                isChanged = true;
-                            }
-                            double? lon = hotelView.Lon;
-                            if (hotel.Lon != lon)
-                            {
-                                hotel.Lon = lon;
+                                hotel.Location = DbGeography.FromText(String.Format("POINT({0} {1})", hotelView.Lon, hotelView.Lat));
                                 isChanged = true;
                             }
                             int hotelTypeId = hotelView.HotelTypeId;

@@ -204,7 +204,7 @@ namespace ImportProducts
                         }
                         else
                         {
-                            if (!hotel.Lat.HasValue)
+                            if (hotel.Location == null)
                             {
                                 Common.SetLocation(product, db, hotel);
                             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity.Spatial;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
@@ -210,14 +211,6 @@ namespace ImportProducts
                             {
                                 hotel.CurrencyCode = product.CurrencyCode;
                             }
-                            if (!String.IsNullOrEmpty(product.Lat))
-                            {
-                                hotel.Lat = Convert.ToDouble(product.Lat);
-                            }
-                            if (!String.IsNullOrEmpty(product.Long))
-                            {
-                                hotel.Lon = Convert.ToDouble(product.Long);
-                            }
                             hotel.CreatedByUser = vendorId;
                             hotel.CreatedDate = DateTime.Now;
                             hotel.IsDeleted = false;
@@ -226,6 +219,7 @@ namespace ImportProducts
                             db.Products.Add(hotel);
                             db.SaveChanges();
 
+                            Common.SetLocation(product, db, hotel);
                             Common.SetGeoNameId(product, db, hotel);
 
                             Category category = db.Categories.Find(categoryId);
@@ -252,12 +246,15 @@ namespace ImportProducts
                         }
                         else
                         {
+                            if (hotel.Location == null)
+                            {
+                                Common.SetLocation(product, db, hotel);
+                            }
                             if (!hotel.GeoNameId.HasValue)
                             {
                                 Common.SetGeoNameId(product, db, hotel);
                             }
 
-                            // no need to check for null vallue because of previous if
                             decimal? unitCost = null;
                             if (!String.IsNullOrEmpty(product.UnitCost))
                             {
@@ -318,24 +315,6 @@ namespace ImportProducts
                             if (hotel.CurrencyCode != product.CurrencyCode)
                             {
                                 hotel.CurrencyCode = product.CurrencyCode;
-                            }
-                            double? lat = null;
-                            if (!String.IsNullOrEmpty(product.Lat))
-                            {
-                                lat = Convert.ToDouble(product.Lat);
-                            }
-                            if (hotel.Lat != lat)
-                            {
-                                hotel.Lat = lat;
-                            }
-                            double? lon = null;
-                            if (!String.IsNullOrEmpty(product.Long))
-                            {
-                                lon = Convert.ToDouble(product.Long);
-                            }
-                            if (hotel.Lon != lon)
-                            {
-                                hotel.Lon = lon;
                             }
                             db.SaveChanges();
 
