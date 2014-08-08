@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Data.Entity.Validation;
-using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
-using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using SelectedHotelsModel;
@@ -20,96 +13,7 @@ namespace ImportProducts
 {
     class ImportTradeDoublerHotels
     {
-        public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        static IEnumerable<XElement> StreamRootChildDoc(string uri)
-        {
-            using (XmlReader reader = XmlReader.Create(uri))
-            {
-                reader.MoveToContent();
-                // Parse the file and display each of the nodes.
-                while (reader.Read())
-                {
-                    switch (reader.NodeType)
-                    {
-                        case XmlNodeType.Element:
-                            if (reader.Name == "product")
-                            {
-                                XElement el = XElement.ReadFrom(reader) as XElement;
-                                if (el != null)
-                                    yield return el;
-                            }
-                            break;
-                    }
-                }
-            }
-        }
-
-        public static void SaveFileFromURL(string url, string destinationFileName, int timeoutInSeconds, BackgroundWorker bw, DoWorkEventArgs e)
-        {
-            // Create a web request to the URL
-            HttpWebRequest MyRequest = (HttpWebRequest)WebRequest.Create(url);
-            MyRequest.Timeout = timeoutInSeconds * 1000;
-            try
-            {
-                // Get the web response
-                HttpWebResponse MyResponse = (HttpWebResponse)MyRequest.GetResponse();
-
-                // Make sure the response is valid
-                if (HttpStatusCode.OK == MyResponse.StatusCode)
-                {
-                    // Open the response stream
-                    using (Stream MyResponseStream = MyResponse.GetResponseStream())
-                    {
-                        // Set step for backgroundWorker
-                        Form1.activeStep = "Load file..";
-                        bw.ReportProgress(0);           // start new step of background process
-                        
-                        // Open the destination file
-                        using (
-                            FileStream MyFileStream = new FileStream(destinationFileName, FileMode.OpenOrCreate,
-                                                                     FileAccess.Write))
-                        {
-                            // Get size of stream - it is impossible in advance at all
-                            // so we just can set approximate value if know it or get it before by experience
-                            long countBuffer = 1000000;
-                            long currentBuffer = 0;
-                            // Create a 4K buffer to chunk the file
-                            byte[] MyBuffer = new byte[4096];
-                            int BytesRead;
-                            // Read the chunk of the web response into the buffer
-                            while (0 < (BytesRead = MyResponseStream.Read(MyBuffer, 0, MyBuffer.Length)))
-                            {
-                                // Write the chunk from the buffer to the file
-                                MyFileStream.Write(MyBuffer, 0, BytesRead);
-                                // show progress & catch Cancel
-                                currentBuffer++;
-                                if (bw.CancellationPending)
-                                {
-                                    // cancel background work
-                                    e.Cancel = true;                                    
-                                    // Due to too huge size of download it is neccessary explicit closing Stream else operation in background will be cancelled after total download file
-                                    MyRequest.Abort();
-                                    break;
-                                }
-                                else if (bw.WorkerReportsProgress && currentBuffer % 100 == 0) bw.ReportProgress((int)(100 * currentBuffer / countBuffer));
-                            }
-                            // visualization finish process
-                            if (!e.Cancel && currentBuffer < countBuffer)
-                            {
-                                bw.ReportProgress(100);
-                                Thread.Sleep(100);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception err)
-            {
-                e.Result = "ERROR:" + err.Message;
-                log.Error("Error error logging", err);
-            }
-        }
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static void DoImport(object sender, DoWorkEventArgs e)
         {
@@ -133,7 +37,7 @@ namespace ImportProducts
                     File.Delete(xmlFileName);
                 }
                 // inside function display progressbar
-                SaveFileFromURL(_URL, xmlFileName, 60, bw, e);
+                Common.SaveFileFromURL(_URL, xmlFileName, 60, bw, e, log);
 
                 // exit if user cancel during saving file or error
                 if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;
@@ -170,31 +74,30 @@ namespace ImportProducts
             // read hotels from XML
             // use XmlReader to avoid huge file size dependence
             var xmlProducts =
-                from el in StreamRootChildDoc(_URL)
-                select new
+                from el in Common.StreamRootChildDoc(_URL, "product")
+                where (string)el.Element("TDCategoryName") == "Hotels"
+                select new ProductView
                 {
-                    Category = (string)el.Element("TDCategoryName"),
+                    Country = (string)el.Element("fields").Element("country"),
+                    City = (string)el.Element("fields").Element("city"),
                     ProductNumber = (string)el.Element("TDProductId"),
                     Name = (string)el.Element("name"),
                     Image = (string)el.Element("imageUrl"),
-                    UnitCost = (decimal)el.Element("price"),
+                    UnitCost = (string)el.Element("price"),
                     Description = (string)el.Element("description"),
                     DescriptionHTML = (string)el.Element("description"),
                     URL = (string)el.Element("productUrl"),
-                    Country = (string)el.Element("fields").Element("country"),
-                    City = (string)el.Element("fields").Element("city"),
-                    StarRating = (string)el.Element("fields").Element("StarRating"),
-                    AverageOverallRating = (string)el.Element("fields").Element("AverageOverallRating"),
+                    Star = (string)el.Element("fields").Element("StarRating"),
+                    CustomerRating = (string)el.Element("fields").Element("AverageOverallRating"),
                     Address = (string)el.Element("fields").Element("address"),
-                    Currency = (string)el.Element("currency"),
-                    Regions1 = (string)el.Element("fields").Element("regions1"),
-                    Regions2 = (string)el.Element("fields").Element("regions2"),
-                    PostalCode = (string)el.Element("fields").Element("postalcode")
+                    PostCode = (string)el.Element("fields").Element("postalcode"),
+                    Telephone = (string)el.Element("fields").Element("telephone"),
+                    CurrencyCode = (string)el.Element("currency")
                 };
 
             if (!String.IsNullOrEmpty(countryFilter))
             {
-                xmlProducts = xmlProducts.Where(p => p.Regions1 == countryFilter || p.Regions2 == countryFilter);
+                xmlProducts = xmlProducts.Where(p => p.Country == countryFilter);
             }
 
             if (!String.IsNullOrEmpty(cityFilter))
@@ -249,7 +152,6 @@ namespace ImportProducts
                                 Name = productName,
                                 ProductTypeId = (int)Enums.ProductTypeEnum.Hotels,
                                 Number = product.ProductNumber,
-                                UnitCost = product.UnitCost,
                                 Description = product.Description,
                                 URL = product.URL,
                                 Image = product.Image,
@@ -259,29 +161,36 @@ namespace ImportProducts
                                 HotelTypeId = (int)Enums.HotelTypeEnum.Hotels
                             };
 
-                            if (!String.IsNullOrEmpty(product.StarRating))
+                            if (!String.IsNullOrEmpty(product.UnitCost))
                             {
-                                hotel.Star = decimal.Parse(product.StarRating);
+                                hotel.UnitCost = Convert.ToDecimal(product.UnitCost);
                             }
-                            if (!String.IsNullOrEmpty(product.AverageOverallRating))
+                            if (!String.IsNullOrEmpty(product.Star))
                             {
-                                hotel.CustomerRating = decimal.Parse(product.AverageOverallRating);
+                                hotel.Star = decimal.Parse(product.Star);
+                            }
+                            if (!String.IsNullOrEmpty(product.CustomerRating))
+                            {
+                                hotel.CustomerRating = decimal.Parse(product.CustomerRating);
                             }
                             if (!String.IsNullOrEmpty(product.Address))
                             {
                                 hotel.Address = product.Address;
                             }
-                            if (!String.IsNullOrEmpty(product.Currency))
+                            if (!String.IsNullOrEmpty(product.CurrencyCode))
                             {
-                                hotel.CurrencyCode = product.Currency;
+                                hotel.CurrencyCode = product.CurrencyCode;
                             }
-                            if (!String.IsNullOrEmpty(product.PostalCode))
+                            if (!String.IsNullOrEmpty(product.PostCode))
                             {
-                                hotel.PostCode = product.PostalCode;
+                                hotel.PostCode = product.PostCode;
                             }
                             hotel.FeedId = feedId;
                             db.Products.Add(hotel);
                             db.SaveChanges();
+
+                            Common.SetLocation(product, db, hotel);
+                            Common.SetGeoNameId(product, db, hotel);
 
                             Category category = db.Categories.Find(categoryId);
                             if (category != null)
@@ -295,10 +204,24 @@ namespace ImportProducts
                         }
                         else
                         {
-                            // no need to check for null vallue because of previous if
-                            if (hotel.UnitCost != product.UnitCost)
+                            if (!hotel.Lat.HasValue)
                             {
-                                hotel.UnitCost = product.UnitCost;
+                                Common.SetLocation(product, db, hotel);
+                            }
+                            if (!hotel.GeoNameId.HasValue)
+                            {
+                                Common.SetGeoNameId(product, db, hotel);
+                            }
+
+                            // no need to check for null vallue because of previous if
+                            decimal? unitCost = null;
+                            if (!String.IsNullOrEmpty(product.UnitCost))
+                            {
+                                unitCost = decimal.Parse(product.UnitCost);
+                            }
+                            if (hotel.UnitCost != unitCost)
+                            {
+                                hotel.UnitCost = unitCost;
                             }
                             if (hotel.Description != product.Description)
                             {
@@ -313,18 +236,18 @@ namespace ImportProducts
                                 hotel.Image = product.Image;
                             }
                             decimal? star = null;
-                            if (!String.IsNullOrEmpty(product.StarRating))
+                            if (!String.IsNullOrEmpty(product.Star))
                             {
-                                star = decimal.Parse(product.StarRating);
+                                star = decimal.Parse(product.Star);
                             }
                             if (hotel.Star != star)
                             {
                                 hotel.Star = star;
                             }
                             decimal? customerRating = null;
-                            if (!String.IsNullOrEmpty(product.AverageOverallRating))
+                            if (!String.IsNullOrEmpty(product.CustomerRating))
                             {
-                                customerRating = decimal.Parse(product.AverageOverallRating);
+                                customerRating = decimal.Parse(product.CustomerRating);
                             }
                             if (hotel.CustomerRating != customerRating)
                             {
@@ -334,13 +257,13 @@ namespace ImportProducts
                             {
                                 hotel.Address = product.Address;
                             }
-                            if (hotel.CurrencyCode != product.Currency)
+                            if (hotel.PostCode != product.PostCode)
                             {
-                                hotel.CurrencyCode = product.Currency;
+                                hotel.PostCode = product.PostCode;
                             }
-                            if (hotel.PostCode != product.PostalCode)
+                            if (hotel.CurrencyCode != product.CurrencyCode)
                             {
-                                hotel.PostCode = product.PostalCode;
+                                hotel.CurrencyCode = product.CurrencyCode;
                             }
                             db.SaveChanges();
 
@@ -367,16 +290,19 @@ namespace ImportProducts
             Cancelled:
                 ;
             }
-            catch (DbEntityValidationException dbEx)
+            catch (DbEntityValidationException exception)
             {
-                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                foreach (var eve in exception.EntityValidationErrors)
                 {
-                    foreach (var validationError in validationErrors.ValidationErrors)
+                    log.Error(String.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State), exception);
+                    foreach (var ve in eve.ValidationErrors)
                     {
-                        Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName,
-                                               validationError.ErrorMessage);
+                        log.Error(String.Format("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage), exception);
                     }
                 }
+                throw;
             }
             catch (Exception ex)
             {

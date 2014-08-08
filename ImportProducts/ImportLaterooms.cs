@@ -20,97 +20,6 @@ namespace ImportProducts
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        static IEnumerable<XElement> StreamRootChildDoc(string uri)
-        {
-            using (XmlReader reader = XmlReader.Create(uri))
-            {
-                reader.MoveToContent();
-                // Parse the file and display each of the nodes.
-                while (reader.Read())
-                {
-                    switch (reader.NodeType)
-                    {
-                        case XmlNodeType.Element:
-                            if (reader.Name == "hotel")
-                            {
-                                XElement el = XElement.ReadFrom(reader) as XElement;
-                                if (el != null)
-                                    yield return el;
-                            }
-                            break;
-                    }
-                }
-            }
-        }
-
-
-        public static void SaveFileFromURL(string url, string destinationFileName, int timeoutInSeconds, BackgroundWorker bw, DoWorkEventArgs e)
-        {
-
-            // Create a web request to the URL
-            HttpWebRequest MyRequest = (HttpWebRequest)WebRequest.Create(url);
-            MyRequest.Timeout = timeoutInSeconds * 1000;
-            try
-            {
-                // Get the web response
-                HttpWebResponse MyResponse = (HttpWebResponse)MyRequest.GetResponse();
-
-                // Make sure the response is valid
-                if (HttpStatusCode.OK == MyResponse.StatusCode)
-                {
-                    // Open the response stream
-                    using (Stream MyResponseStream = MyResponse.GetResponseStream())
-                    {
-                        // Set step for backgroundWorker
-                        Form1.activeStep = "Load file..";
-                        bw.ReportProgress(0);           // start new step of background process
-
-                        // Open the destination file
-                        using (
-                            FileStream MyFileStream = new FileStream(destinationFileName, FileMode.OpenOrCreate,
-                                                                     FileAccess.Write))
-                        {
-                            // Get size of stream - it is impossible in advance at all
-                            // so we just can set approximate value if know it or get it before by experience
-                            long countBuffer = 30000;
-                            long currentBuffer = 0;
-                            // Create a 4K buffer to chunk the file
-                            byte[] MyBuffer = new byte[4096];
-                            int BytesRead;
-                            // Read the chunk of the web response into the buffer
-                            while (0 < (BytesRead = MyResponseStream.Read(MyBuffer, 0, MyBuffer.Length)))
-                            {
-                                // Write the chunk from the buffer to the file
-                                MyFileStream.Write(MyBuffer, 0, BytesRead);
-                                // show progress & catch Cancel
-                                currentBuffer++;
-                                if (bw.CancellationPending)
-                                {
-                                    // it is neccessary explicit closing Stream else operation in background will be cancelled after total download file
-                                    MyRequest.Abort();
-                                    // cancel background work
-                                    e.Cancel = true;
-                                    break;
-                                }
-                                else if (bw.WorkerReportsProgress && currentBuffer % 100 == 0) bw.ReportProgress((int)(100 * currentBuffer / countBuffer));
-                            }
-                            // visualization finish process
-                            if (!e.Cancel && currentBuffer < countBuffer)
-                            {
-                                bw.ReportProgress(100);
-                                Thread.Sleep(100);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception err)
-            {
-                e.Result = "ERROR:" + err.Message;
-                log.Error("Error error logging", err);
-            }
-        }
-
         public static void DoImport(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker bw = sender as BackgroundWorker;
@@ -137,7 +46,7 @@ namespace ImportProducts
                     {
                         File.Delete(zipFileName);
                     }
-                    SaveFileFromURL(_URL, zipFileName, 60, bw, e);
+                    Common.SaveFileFromURL(_URL, zipFileName, 60, bw, e, log);
 
                     // if user cancel during saving file or ERROR
                     if (e.Cancel || (e.Result != null) && e.Result.ToString().Substring(0, 6).Equals("ERROR:")) return;
@@ -189,7 +98,7 @@ namespace ImportProducts
             // read hotels from XML
             // use XmlReader to avoid huge file size dependence
             var xmlProducts =
-                from el in StreamRootChildDoc(_URL)
+                from el in Common.StreamRootChildDoc(_URL, "hotel")
                 select new ProductView
                            {
                                Country = (string) el.Element("hotel_country"),
@@ -257,15 +166,6 @@ namespace ImportProducts
 #if DEBUG
                         Console.WriteLine(i + " - " + product.Name); // debug print
 #endif
-                        if (product.County == "Greater London (county)")
-                        {
-                            product.County = "Greater-London";
-                        }
-                        if (product.County == "Greater Manchester (county)")
-                        {
-                            product.County = "Greater-Manchester";
-                        }
-
                         // create new product record
                         Hotel hotel =
                             db.Products.SingleOrDefault(
@@ -326,7 +226,7 @@ namespace ImportProducts
                             db.Products.Add(hotel);
                             db.SaveChanges();
 
-                            SetGeoNameId(product, db, hotel);
+                            Common.SetGeoNameId(product, db, hotel);
 
                             Category category = db.Categories.Find(categoryId);
                             if (category != null)
@@ -348,13 +248,13 @@ namespace ImportProducts
                             db.SaveChanges();
 
                             i++;
-                            //Common.UpdateSteps(stepImport: i);
+                            Common.UpdateSteps(stepImport: i);
                         }
                         else
                         {
                             if (!hotel.GeoNameId.HasValue)
                             {
-                                SetGeoNameId(product, db, hotel);
+                                Common.SetGeoNameId(product, db, hotel);
                             }
 
                             // no need to check for null vallue because of previous if
@@ -462,7 +362,7 @@ namespace ImportProducts
                             db.SaveChanges();
 
                             i++;
-                            //Common.UpdateSteps(stepImport: i);
+                            Common.UpdateSteps(stepImport: i);
                         }
 
                         if (bw.CancellationPending)
@@ -503,76 +403,6 @@ namespace ImportProducts
                 e.Result = "ERROR:" + ex.Message;
                 log.Error("Error error logging", ex);
             }
-        }
-
-        private static void SetGeoNameId(ProductView product, SelectedHotelsEntities db, Hotel hotel)
-        {
-            var placeName = product.Country;
-            if (!String.IsNullOrEmpty(product.County))
-            {
-                placeName = product.County;
-            }
-            if (!String.IsNullOrEmpty(product.City))
-            {
-                placeName = product.City;
-            }
-            var geoNames = db.GeoNames.Where(gn => gn.Name.ToLower() == placeName.ToLower())
-                .OrderByDescending(gn => gn.Population)
-                .ThenByDescending(gn => gn.ModificationDate);
-            if (geoNames.Any())
-            {
-                var geoName = geoNames.FirstOrDefault();
-                if (geoName != null)
-                {
-                    hotel.GeoNameId = geoName.Id;
-                }
-            }
-            if (hotel.GeoNameId == null && hotel.Lat.HasValue && hotel.Lon.HasValue)
-            {
-                using (var geoNamesClient = new GeoNamesClient())
-                {
-                    var finder = new NearbyPlaceNameFinder
-                    {
-                        Latitude = hotel.Lat.Value,
-                        Longitude = hotel.Lon.Value,
-                        UserName = Settings.Default.GeoNamesUserName
-                    };
-                    try
-                    {
-                        var results = geoNamesClient.FindNearbyPlaceName(finder);
-                        if (results != null && results.Count > 0)
-                        {
-                            var toponym = results.First();
-                            hotel.GeoNameId = toponym.GeoNameId;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            }
-        }
-
-        private class ProductView
-        {
-            public string Country { get; set; }
-            public string County { get; set; }
-            public string City { get; set; }
-            public string ProductNumber { get; set; }
-            public string Name { get; set; }
-            public XElement Images { get; set; }
-            public string UnitCost { get; set; }
-            public string Description { get; set; }
-            public string DescriptionHTML { get; set; }
-            public string URL { get; set; }
-            public string Star { get; set; }
-            public string CustomerRating { get; set; }
-            public string Rooms { get; set; }
-            public string Address { get; set; }
-            public string PostCode { get; set; }
-            public string CurrencyCode { get; set; }
-            public string Lat { get; set; }
-            public string Long { get; set; }
         }
     }
 }
