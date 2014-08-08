@@ -139,7 +139,7 @@ namespace ImportProducts
                     hotel.GeoNameId = geoName.Id;
                 }
             }
-            if (hotel.GeoNameId == null && hotel.Location.Latitude.HasValue && hotel.Location.Longitude.HasValue)
+            if (hotel.GeoNameId == null && hotel.Location != null && hotel.Location.Latitude.HasValue && hotel.Location.Longitude.HasValue)
             {
                 using (var geoNamesClient = new GeoNamesClient())
                 {
@@ -177,14 +177,20 @@ namespace ImportProducts
             }
             else
             {
-                IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "" };
-                var addresses =
-                    geocoder.Geocode(String.Format("{0}, {1}, {2}", product.County, product.City, product.Address));
-                if (addresses.Any())
+                try
                 {
-                    var address = addresses.First();
-                    hotel.Location =
-                        DbGeography.FromText(String.Format("POINT({0} {1})", address.Coordinates.Longitude, address.Coordinates.Latitude));
+                    IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "" };
+                    var addresses =
+                        geocoder.Geocode(String.Format("{0}, {1}, {2}", product.Country, product.City, product.Address));
+                    if (addresses.Any())
+                    {
+                        var address = addresses.First();
+                        hotel.Location =
+                            DbGeography.FromText(String.Format("POINT({0} {1})", address.Coordinates.Longitude, address.Coordinates.Latitude));
+                    }
+                }
+                catch (Exception)
+                {
                 }
             }
         }
