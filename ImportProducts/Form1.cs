@@ -146,6 +146,8 @@ namespace ImportProducts
                         case "Clothes":
                             workD = ImportTradeDoublerProducts.DoImport;
                             break;
+                        case "Trade Doubler hotels.com EMEA2":
+                        case "Trade Doubler hotels.com EMEA1":
                         case "Trade Doubler expedia":
                         case "Trade Doubler Hotels":
                             workD = ImportTradeDoublerHotels.DoImport;

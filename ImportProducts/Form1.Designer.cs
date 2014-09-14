@@ -128,7 +128,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(763, 238);
+            this.dataGridView1.Size = new System.Drawing.Size(763, 353);
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowEnter);
             // 
@@ -140,7 +140,7 @@
             this.tsddButton,
             this.tsslCurrent,
             this.tsslInfo});
-            this.statusStrip.Location = new System.Drawing.Point(0, 240);
+            this.statusStrip.Location = new System.Drawing.Point(0, 355);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(763, 22);
             this.statusStrip.TabIndex = 2;
@@ -200,7 +200,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(763, 262);
+            this.ClientSize = new System.Drawing.Size(763, 377);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.menuStrip1);

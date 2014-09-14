@@ -223,7 +223,7 @@ namespace ImportProducts
                             {
                                 hotel.UnitCost = unitCost;
                             }
-                            if (hotel.Description != product.Description)
+                            if (hotel.Description != product.Description && product.Description != product.Name)
                             {
                                 hotel.Description = product.Description;
                             }
