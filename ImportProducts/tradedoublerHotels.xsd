@@ -46,6 +46,7 @@
                     <xs:element name="_airportCode" type="xs:string" minOccurs="0" />
                     <xs:element name="_airportCode1" type="xs:string" minOccurs="0" />
                     <xs:element name="_amenity_Accessibility_equipment_for_the_deaf" type="xs:string" minOccurs="0" />
+                    <xs:element name="_regions1" type="xs:string" minOccurs="0" />
                     <xs:element name="airportCode" type="xs:string" minOccurs="0" />
                     <xs:element name="airportCode1" type="xs:string" minOccurs="0" />
                     <xs:element name="airportCode10" type="xs:string" minOccurs="0" />

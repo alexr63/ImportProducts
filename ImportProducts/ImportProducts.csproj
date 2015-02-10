@@ -150,6 +150,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common.cs" />
+    <Compile Include="tradedoublerHotels.cs">
+      <DependentUpon>tradedoublerHotels.xsd</DependentUpon>
+    </Compile>
     <Compile Include="tradedoublerHotels.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

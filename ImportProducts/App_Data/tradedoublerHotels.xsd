@@ -43,6 +43,11 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="address" type="xs:string" minOccurs="0" />
+                    <xs:element name="_airportCode" type="xs:string" minOccurs="0" />
+                    <xs:element name="_airportCode1" type="xs:string" minOccurs="0" />
+                    <xs:element name="_amenity_Accessibility_equipment_for_the_deaf" type="xs:string" minOccurs="0" />
+                    <xs:element name="_regions1" type="xs:string" minOccurs="0" />
+                    <xs:element name="airportCode" type="xs:string" minOccurs="0" />
                     <xs:element name="airportCode1" type="xs:string" minOccurs="0" />
                     <xs:element name="airportCode10" type="xs:string" minOccurs="0" />
                     <xs:element name="airportCode2" type="xs:string" minOccurs="0" />
@@ -75,12 +80,18 @@
                     <xs:element name="chain" type="xs:string" minOccurs="0" />
                     <xs:element name="city" type="xs:string" minOccurs="0" />
                     <xs:element name="cityLandingLink" type="xs:string" minOccurs="0" />
+                    <xs:element name="Confidence" type="xs:string" minOccurs="0" />
                     <xs:element name="country" type="xs:string" minOccurs="0" />
                     <xs:element name="currency" type="xs:string" minOccurs="0" />
                     <xs:element name="expediaId" type="xs:string" minOccurs="0" />
+                    <xs:element name="ExpediaID" type="xs:string" minOccurs="0" />
+                    <xs:element name="highRate" type="xs:string" minOccurs="0" />
                     <xs:element name="Hotels.comID" type="xs:string" minOccurs="0" />
                     <xs:element name="Hotels.comURL" type="xs:string" minOccurs="0" />
+                    <xs:element name="latitude" type="xs:string" minOccurs="0" />
                     <xs:element name="location" type="xs:string" minOccurs="0" />
+                    <xs:element name="longitude" type="xs:string" minOccurs="0" />
+                    <xs:element name="lowRate" type="xs:string" minOccurs="0" />
                     <xs:element name="neighbourhoods1" type="xs:string" minOccurs="0" />
                     <xs:element name="neighbourhoods2" type="xs:string" minOccurs="0" />
                     <xs:element name="neighbourhoods3" type="xs:string" minOccurs="0" />
@@ -89,6 +100,7 @@
                     <xs:element name="regions1" type="xs:string" minOccurs="0" />
                     <xs:element name="regions2" type="xs:string" minOccurs="0" />
                     <xs:element name="StarRating" type="xs:string" minOccurs="0" />
+                    <xs:element name="stateprovince" type="xs:string" minOccurs="0" />
                     <xs:element name="telephone" type="xs:string" minOccurs="0" />
                     <xs:element name="theme_Adventure" type="xs:string" minOccurs="0" />
                     <xs:element name="theme_Airport" type="xs:string" minOccurs="0" />

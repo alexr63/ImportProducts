@@ -57,11 +57,11 @@ namespace ImportProducts
                 log.Error(e2.Message);
                 errors = true;
             });
-            if (errors)
-            {
-                e.Cancel = true;
-                return;
-            }
+            //if (errors)
+            //{
+            //    e.Cancel = true;
+            //    return;
+            //}
 
             // show progress & catch Cancel
             if (bw.CancellationPending)
