@@ -117,7 +117,7 @@ namespace ImportProducts
                 log.Error("Error error logging", err);
             }
         }
-        public static void SetGeoNameId(ProductView product, SelectedHotelsEntities db, Hotel hotel)
+        public static void SetGeoNameId(ProductView product, SelectedHotelsEntities db, Hotel hotel, log4net.ILog log)
         {
             var placeName = product.Country;
             if (!String.IsNullOrEmpty(product.County))
@@ -158,14 +158,19 @@ namespace ImportProducts
                             hotel.GeoNameId = toponym.GeoNameId;
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        log.Error("Error error logging", ex);
+                        if (ex.InnerException != null)
+                        {
+                            log.Error("Error error logging", ex.InnerException);
+                        }
                     }
                 }
             }
         }
 
-        public static void SetLocation(ProductView product, SelectedHotelsEntities db, Hotel hotel)
+        public static void SetLocation(ProductView product, SelectedHotelsEntities db, Hotel hotel, log4net.ILog log)
         {
             if (!String.IsNullOrEmpty(product.Lat) && !String.IsNullOrEmpty(product.Long))
             {
@@ -189,8 +194,9 @@ namespace ImportProducts
                             DbGeography.FromText(String.Format("POINT({0} {1})", address.Coordinates.Longitude, address.Coordinates.Latitude));
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    log.Error("Error error logging", ex);
                 }
             }
         }

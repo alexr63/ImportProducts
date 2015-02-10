@@ -189,8 +189,8 @@ namespace ImportProducts
                             db.Products.Add(hotel);
                             db.SaveChanges();
 
-                            Common.SetLocation(product, db, hotel);
-                            Common.SetGeoNameId(product, db, hotel);
+                            Common.SetLocation(product, db, hotel, log);
+                            Common.SetGeoNameId(product, db, hotel, log);
 
                             Category category = db.Categories.Find(categoryId);
                             if (category != null)
@@ -206,11 +206,11 @@ namespace ImportProducts
                         {
                             if (hotel.Location == null)
                             {
-                                Common.SetLocation(product, db, hotel);
+                                Common.SetLocation(product, db, hotel, log);
                             }
                             if (!hotel.GeoNameId.HasValue)
                             {
-                                Common.SetGeoNameId(product, db, hotel);
+                                Common.SetGeoNameId(product, db, hotel, log);
                             }
 
                             // no need to check for null vallue because of previous if
