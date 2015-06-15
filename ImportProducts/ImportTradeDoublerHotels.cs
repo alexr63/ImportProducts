@@ -267,6 +267,18 @@ namespace ImportProducts
                             }
                             db.SaveChanges();
 
+                            db.Database.SqlQuery<string>(@"
+                                DELETE FROM Cowrie_HotelViews
+                            ");
+                            db.Database.SqlQuery<string>(@"
+                                INSERT INTO Cowrie_HotelViews
+                                SELECT        Extent1.Id, Extent2.Name, Cowrie_GeoNames.Name AS GeoName, 'Hotels' AS HotelTypeName
+                                FROM            Cowrie_Hotels AS Extent1 INNER JOIN
+                                                         Cowrie_Products AS Extent2 ON Extent1.Id = Extent2.Id INNER JOIN
+                                                         Cowrie_GeoNames ON Extent1.GeoNameId = Cowrie_GeoNames.Id
+                                WHERE        (Extent1.GeoNameId IS NOT NULL) AND (Extent1.HotelTypeId = 1)
+                            ");
+
                             i++;
                             Common.UpdateSteps(stepImport: i);
                         }

@@ -674,6 +674,17 @@ namespace ImportProducts
                                     }
                                 }
                             }
+
+                            db.Database.SqlQuery<string>(@"
+                                DELETE FROM Cowrie_ClothViews
+                            ");
+                            db.Database.SqlQuery<string>(@"
+                                INSERT INTO Cowrie_ClothViews
+                                SELECT        Extent1.Id, Extent2.Name, Cowrie_Brands.Name AS BrandName
+                                FROM            Cowrie_Clothes AS Extent1 INNER JOIN
+                                                         Cowrie_Products AS Extent2 ON Extent1.Id = Extent2.Id INNER JOIN
+                                                         Cowrie_Brands ON Extent1.BrandId = Cowrie_Brands.Id
+                            ");
                         }
 #if HOMEANDGARDENS
                         else if (categoryId == (int) Enums.ProductTypeEnum.HomeAndGardens)
